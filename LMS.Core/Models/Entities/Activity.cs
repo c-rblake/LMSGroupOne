@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace LMS.Core.Models.Entities
 {
-    class Activity
+    public class Activity
     {
+        public int Id { get; set; }
     }
 }

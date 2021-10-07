@@ -12,6 +12,11 @@ namespace LMS.Core.Models.Entities
         public string Name { get; set; }
         public string Description { get; set; }
         public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
+        public DateTime? EndDate { get; set; }
+
+        //NAV Properties
+        public ICollection<Module> Modules { get; set; }
+        public ICollection<Document> Documents { get; set; }
+        public ICollection<Person> Persons { get; set; }
     }
 }

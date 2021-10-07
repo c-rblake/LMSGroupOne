@@ -14,8 +14,8 @@ namespace LMS.Core.Models.Entities
         public int CourseId { get; set; }
 
         //NavProperties
-        public ICollection<Document> Documents { get; set; }
         public Course Course { get; set; }
+        public ICollection<Document> Documents { get; set; }
 
     }
 }
