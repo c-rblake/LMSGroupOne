@@ -11,7 +11,7 @@ namespace LMS.Core.Models.Entities
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public int CourseId { get; set; }
+        public int? CourseId { get; set; }
 
         //NavProperties
         public Course Course { get; set; }
