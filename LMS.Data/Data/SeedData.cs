@@ -95,8 +95,8 @@ namespace LMS.Data.Data
                 var activity = new Activity
                 {
                     Name = fake.Company.CompanySuffix() + fake.Random.Word(),
-                    ActivityTypeId = fake.Random.Int(0, activityTypes.Count),
-                    ModuleId = fake.Random.Int(0, modules.Count),
+                    ActivityTypeId = fake.Random.Int(1, activityTypes.Count),
+                    ModuleId = fake.Random.Int(1, modules.Count),
                     Description = fake.Lorem.Sentence(),
                     StartDate = DateTime.Now.AddDays(fake.Random.Int(-7, 12)),
                     EndDate = DateTime.Now.AddDays(fake.Random.Int(100, 150))                    
