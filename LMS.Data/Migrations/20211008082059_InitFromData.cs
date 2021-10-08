@@ -1,9 +1,9 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace LMSGroupOne.Migrations
+namespace LMS.Data.Migrations
 {
-    public partial class AddEntities : Migration
+    public partial class InitFromData : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -113,7 +113,7 @@ namespace LMSGroupOne.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CourseId = table.Column<int>(type: "int", nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -255,11 +255,10 @@ namespace LMSGroupOne.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DocumentUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TimeStamp = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    PersonId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PersonId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ModuleId = table.Column<int>(type: "int", nullable: true),
                     ActivityId = table.Column<int>(type: "int", nullable: true),
-                    CourseId = table.Column<int>(type: "int", nullable: true),
-                    PersonId1 = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    CourseId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -271,11 +270,11 @@ namespace LMSGroupOne.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Documents_AspNetUsers_PersonId1",
-                        column: x => x.PersonId1,
+                        name: "FK_Documents_AspNetUsers_PersonId",
+                        column: x => x.PersonId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Documents_Courses_CourseId",
                         column: x => x.CourseId,
@@ -360,9 +359,9 @@ namespace LMSGroupOne.Migrations
                 column: "ModuleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Documents_PersonId1",
+                name: "IX_Documents_PersonId",
                 table: "Documents",
-                column: "PersonId1");
+                column: "PersonId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Modules_CourseId",
