@@ -17,7 +17,7 @@ namespace LMS.Core.Models.Entities
         public string DocumentUrl { get; set; }
         public DateTime TimeStamp { get; set; }
         [Required]
-        public Guid PersonId { get; set; }
+        public string PersonId { get; set; }
 
         public int? ModuleId { get; set; }
         public int? ActivityId { get; set; }
@@ -27,6 +27,8 @@ namespace LMS.Core.Models.Entities
         public Module Module { get; set; }
         public Activity Activity { get; set; }
         public Course Course { get; set; }
+        
+        public Person Person { get; set; }
 
     }
 }

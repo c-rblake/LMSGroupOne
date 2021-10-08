@@ -4,14 +4,16 @@ using LMSGroupOne.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace LMSGroupOne.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211008072101_PersonEntity")]
+    partial class PersonEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -126,8 +128,10 @@ namespace LMSGroupOne.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PersonId")
-                        .IsRequired()
+                    b.Property<Guid>("PersonId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("PersonId1")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("TimeStamp")
@@ -141,7 +145,7 @@ namespace LMSGroupOne.Migrations
 
                     b.HasIndex("ModuleId");
 
-                    b.HasIndex("PersonId");
+                    b.HasIndex("PersonId1");
 
                     b.ToTable("Documents");
                 });
@@ -163,7 +167,6 @@ namespace LMSGroupOne.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("StartDate")
@@ -433,9 +436,7 @@ namespace LMSGroupOne.Migrations
 
                     b.HasOne("LMS.Core.Models.Entities.Person", "Person")
                         .WithMany("Documents")
-                        .HasForeignKey("PersonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PersonId1");
 
                     b.Navigation("Activity");
 
