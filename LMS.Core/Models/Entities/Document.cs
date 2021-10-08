@@ -16,6 +16,7 @@ namespace LMS.Core.Models.Entities
         public string Description { get; set; }
         public string DocumentUrl { get; set; }
         public DateTime TimeStamp { get; set; }
+
         [Required]
         public string PersonId { get; set; }
 

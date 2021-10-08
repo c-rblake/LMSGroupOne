@@ -20,7 +20,7 @@ namespace LMS.Core.Models.Entities
 
         //[DisplayFormat(DataFormatString="{0:yyyy-MM-dd}", ApplyFormatInEditMode=true)]
         //in viewModel
-        [DataType(DataType.Date)]
+        
         public DateTime StartDate { get; set; }
 
         //[DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
