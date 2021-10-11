@@ -31,12 +31,14 @@ namespace LMSGroupOne
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
+                 options.UseSqlServer(
+                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddDefaultIdentity<Person>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+            //UserManager RoleManager
             services.AddControllersWithViews();
             services.AddScoped<IUnitOfWorks, UnitOfWorks>();
             services.AddAutoMapper(typeof(MapperProfile));
