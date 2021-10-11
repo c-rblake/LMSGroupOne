@@ -1,5 +1,7 @@
 using LMS.Core.Models.Entities;
+using LMS.Core.Repositories;
 using LMS.Data.Data;
+using LMS.Data.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -34,10 +36,10 @@ namespace LMSGroupOne
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddDefaultIdentity<Person>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
-            //UserManager RoleManager
             services.AddControllersWithViews();
+            services.AddScoped<IUnitOfWorks, UnitOfWorks>();
+            services.AddAutoMapper(typeof(MapperProfile));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
