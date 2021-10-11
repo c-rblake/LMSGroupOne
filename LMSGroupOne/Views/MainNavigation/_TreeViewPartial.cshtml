@@ -7,10 +7,7 @@
 
 <div id="menuDivId" style="background-color:aqua;">
 
-    <div id="selectBar" style="top:0px; left:0px; width:100%; height:32px; position:absolute; background-color:#ffff0055;"></div>
-
-    <div id="selectSelection" style="top:0px; left:0px; width:100%; height:32px; position:absolute; background-color:#ff000033;"></div>
-
+    
 
     <ul class="list-group" style="user-select: none;">
         @{
@@ -161,9 +158,15 @@
         #longPress;
         #pressTimer;
 
-        constructor()
+        #selectBar;
+        #selectSelection;
+        //#dragText;
+
+        #menuDiv;
+
+        constructor(menuDivId)
         {
-            this.#dragElement = document.getElementById("dragText");
+            //this.#dragElement = document.getElementById("dragText");
             this.#pressPositionX = 0;
             this.#pressPositionY = 0;
             this.#initialMove = false;
@@ -183,6 +186,35 @@
                 t[i].addEventListener("click", (event)=>this.#OnClick(event));
                 t[i].addEventListener("mousedown", (event)=>this.#OnDown(event));
             }
+
+
+            //this.#selectBar = document.getElementById("selectBar");
+            //this.#selectSelection = document.getElementById("selectSelection");
+
+            this.#menuDiv = document.getElementById(menuDivId);
+
+
+            this.#selectBar = document.createElement("div");
+            this.#selectSelection = document.createElement("div");
+            this.#menuDiv.prepend(this.#selectBar);
+            this.#menuDiv.prepend(this.#selectSelection);
+            this.#selectBar.style = "top:0px; left:0px; width:100%; height:32px; position:absolute; background-color:#ffff0055;";
+            this.#selectSelection.style ="top:0px;left:0px;width:100%;height:32px;position:absolute;background-color:#ff000033;";
+
+
+            this.#dragElement = document.createElement("nobr");
+            document.body.append(this.#dragElement);
+            this.#dragElement.style = "top:0px; left:0px; width:00px; height:0px; position:absolute; background-color:#ffff0055; z-index:100;";
+            
+            //this.#selectBar.outerHTML = '<div id="selectBar" style="top:0px; left:0px; width:100%; height:32px; position:absolute; background-color:#ffff0055;"></div>';
+
+
+            //<div id="selectBar" style="top:0px; left:0px; width:100%; height:32px; position:absolute; background-color:#ffff0055;"></div>
+
+            //<div id="selectSelection" style="top:0px; left:0px; width:100%; height:32px; position:absolute; background-color:#ff000033;"></div>
+
+
+            //<nobr id="dragText" style="top:0px; left:0px; width:00px; height:0px; position:absolute; background-color:#ffff0055; z-index:100;">hello world</nobr>
 
         }
 
@@ -262,15 +294,15 @@
             // selection bar
             let rect = event.target.parentNode.getBoundingClientRect();
             let rect2 = event.target.parentNode.parentNode.getBoundingClientRect();
-            let mr = document.getElementById("menuDivId").getBoundingClientRect();
+            let mr = this.#menuDiv.getBoundingClientRect();
 
-            
+            let marginal = rect.top - rect2.top;
 
-            document.getElementById("selectBar").style.top = (rect.top - mr.top) + "px";
-            document.getElementById("selectBar").style.height = (rect.height) + "px";
+            this.#selectBar.style.top = (rect.top - mr.top) + "px";
+            this.#selectBar.style.height = (rect.height) + "px";
 
-            document.getElementById("selectSelection").style.top = (rect.top - mr.top) + "px";
-            document.getElementById("selectSelection").style.height = (rect2.height) + "px";
+            this.#selectSelection.style.top = (rect.top - mr.top) + "px";
+            this.#selectSelection.style.height = (rect2.height - marginal * 2) + "px";
 
         }
 
@@ -297,14 +329,14 @@
             console.log("on down:" + event.clientY);
 
             this.#longPress = false; //longpress is false initially
-            this.#pressTimer = window.setTimeout(()=> {
+            this.#pressTimer = window.setTimeout(() => {
                 // your code here
                 console.log("timer");
                 this.#dragElement.innerHTML = event.target.parentNode.innerHTML;
                 this.#dragElement.id = event.target.id;
                 this.#dragElement.dataset.itemType = event.target.dataset.itemType;
                 this.#longPress = true; //if run hold function, longpress is true
-            }, 100)
+            }, 100);
         }
 
 
@@ -315,7 +347,7 @@
 
 
 
-    new TreeHandler();
+    new TreeHandler("menuDivId");
 
 
 
