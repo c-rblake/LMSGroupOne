@@ -11,25 +11,101 @@ namespace LMS.Api.Data
 {
     public class SeedData
     {
+        private static Faker fake;
         public static async Task InitializeAsync(IServiceProvider services)
         {
 
             using var db = new LMSApiContext(services.GetRequiredService<DbContextOptions<LMSApiContext>>());
+            fake = new Faker("sv");
 
 
-            if (await db.Authors.AnyAsync()) return;
-            var faker = new Faker("sv");
+            //if (await db.Authors.AnyAsync()) return;
+            
+
+            List<string> exsampleTypes = new List<string>
+            { "Book", "Article"};
+
+            var types = GetTypes(exsampleTypes);
+            var genres = GetGenres();
+            db.Types.AddRange(types);
+            db.Genres.AddRange(genres);
+            //var authors = GetAuthors();
+            //db.Authors.AddRange(authors);
+            await db.SaveChangesAsync();
+
+            var worksandAuthors = GetWorkAndAuthors(types, genres);
+            db.AddRange(worksandAuthors);
+            
+            await db.SaveChangesAsync();
+        }
+
+        private static List<Work> GetWorkAndAuthors(List<Core.Entities.Type> types, List<Genre> genres)
+        {
             var works = new List<Work>();
+            for (int i = 0; i < 5; i++)
+            {
+                var work = new Work
+                {
+                    Description = fake.Lorem.Sentence(),
+                    TypeId = fake.Random.Int(1, types.Count),
+                    GenreId = fake.Random.Int(1, genres.Count),
+                    Level = fake.Random.Word(),
+                    PublicationDate = DateTime.Now.AddYears(fake.Random.Int(-15, 0)),
+                    Authors = GetAuthors()
+                };
+            works.Add(work);
+                        
+            }
+            return works;
+        }
+
+        private static ICollection<Author> GetAuthors()
+        {
+            var authors = new List<Author>();
+            for (int i = 0; i < 2; i++)
+            {
+                var author = new Author
+                {
+                    FirstName = fake.Name.FirstName(),
+                    LastName = fake.Name.LastName(),                  
+                    DateOfBirth = DateTime.Now.AddYears(fake.Random.Int(-65, -25))
+                };
+                authors.Add(author);
+            }
+            return authors;
+        }
+
+        private static List<Genre> GetGenres()
+        {
+            var genres = new List<Genre>();
 
             for (int i = 0; i < 5; i++)
             {
+                var genre = new Genre
+                { 
+                Description = fake.Random.Word() + fake.Company.CompanySuffix(),
+                Name = fake.Random.Word()
+                };
+                genres.Add(genre);
+            }
+            return genres;
+        }
 
+        private static List<LMS.Api.Core.Entities.Type> GetTypes(List<string> exsampleTypes)
+        {
+            var types = new List<LMS.Api.Core.Entities.Type>();
+
+            foreach (var exampleName in exsampleTypes)
+            {
+                var typ = new LMS.Api.Core.Entities.Type
+                {
+                    Name = exampleName,
+                    Description = fake.Lorem.Sentence()
+                };
+                types.Add(typ);
             }
 
-
-
-
-
+            return types;
         }
     }
 }

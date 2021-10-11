@@ -25,17 +25,16 @@ namespace LMS.Api.Data
         {
             modelBuilder.Entity<AuthorWork>()
                 .HasKey(aw => new { aw.AuthorId, aw.WorkId });
+
+            //modelBuilder.Entity<Author>()
+            //    .HasMany(v => v.Works)
+            //    .WithMany(ps => ps.Authors)
+            //    .UsingEntity<AuthorWork>
+            //    (vps => vps.HasOne(p => p.Works).WithMany(p => p.Authors),
+            //    vps => vps.HasOne(p => p.Author).WithMany(p => p.Works));
         }
 
-        //protected override void OnModelCreating(ModelBuilder modelBuilder) //TODO
-        //{
-        //    modelBuilder.Entity<Author>()
-        //        .HasMany(v => v.Works)
-        //        .WithMany(ps => ps.Authors)
-        //        .UsingEntity<AuthorWork>
-        //        (vps => vps.HasOne(p => p.Work).WithMany(p => p.Authors),
-        //        vps => vps.HasOne(p => p.Vehicle).WithMany(p => p.VehicleParkingSpots));
-        //}
+
 
 
     }
