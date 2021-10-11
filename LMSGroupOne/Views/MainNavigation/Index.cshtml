@@ -1,0 +1,37 @@
+﻿@model LMSGroupOne.Models.MainNavigation.TreeNode
+
+@{
+    ViewData["Title"] = "MainNavigation Page";
+}
+
+<div class="text-left">
+    <h1 class="display-4">MainNavigation</h1>
+</div>
+
+
+<nobr id="dragText" style="top:0px; left:0px; width:00px; height:0px; position:absolute; background-color:#ffff0055; z-index:100;">hello world</nobr>
+
+<div class="container-fluid">
+    <div class="row">
+
+        @*the navigation tree section*@
+        <div class="col-3 overflow-hidden">
+
+            @await Html.PartialAsync("_TreeViewPartial")
+
+        </div>
+
+        @*the main content section*@
+        <div class="col-9">
+
+            @await Html.PartialAsync("_MainContentPartial")
+
+        </div>
+
+
+        
+
+    </div>
+</div>
+
+

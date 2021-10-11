@@ -1,0 +1,524 @@
+﻿@using LMSGroupOne.Models.MainNavigation
+@model LMSGroupOne.Models.MainNavigation.TreeNode
+
+
+
+
+
+<div id="menuDivId" style="background-color:aqua;">
+
+    <div id="selectBar" style="top:0px; left:0px; width:100%; height:32px; position:absolute; background-color:#ffff0055;"></div>
+
+    <div id="selectSelection" style="top:0px; left:0px; width:100%; height:32px; position:absolute; background-color:#ff000033;"></div>
+
+
+    <ul class="list-group" style="user-select: none;">
+        @{
+            TreeRecursive(Model, Model);
+        }
+    </ul>
+
+
+
+
+</div>
+
+<script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
+
+<style>
+    treeItem {
+    }
+
+    carretIcon {
+    }
+</style>
+
+@functions
+{
+
+    private void TreeName(TreeNode node, TreeNode parentNode)
+    {
+        <span contenteditable="false" id="@node.Id" data-item-type="@node.Type" data-item-extra="text" data-item-parent-id="@parentNode.Id" data-item-parent-type="@parentNode.Type" style="display: inline-block; page-break-inside:avoid;">
+            @node.Name
+        </span>
+    }
+
+    private void TreeEditableNew(TreeNode node, TreeNode parentNode)
+    {
+        if (node.Editable)
+        {
+            <i id="@node.Id" data-item-type="@node.Type" data-item-creates="@node.CanCreate" data-item-parent-id="@parentNode.Id" data-item-parent-type="@parentNode.Type" data-item-extra="new" class="fas fa-plus-circle" style="color:green"></i>
+        }
+    }
+
+    private void TreeEditableDelete(TreeNode node)
+    {
+        if (node.Editable)
+        {
+            <i id="@node.Id" data-item-type="@node.Type" data-item-extra="delete" class="fas fa-minus-circle" style="color:red"></i>
+        }
+    }
+
+    private void TreeRecursive(TreeNode node, TreeNode parentNode)
+    {
+        bool hasChildren = node.Nodes != null;
+
+
+        <li class="list-group-item" style="background:none;">
+
+            <nobr class="treeItem">
+                @if (hasChildren)
+                {
+                    <i id="@node.Id" data-item-type="@node.Type" data-item-extra="caret" class="carretIcon fas fa-caret-right"></i>
+                }
+                @switch (node.Type)
+                {
+                    case NodeType.student:
+                        <i id="@node.Id" data-item-type="@node.Type" data-item-extra="icon" class="fas fa-user" style="color:black"></i>
+                        TreeName(node, parentNode);
+                        
+
+                        break;
+                    case NodeType.teacher:
+                        <i id="@node.Id" data-item-type="@node.Type" data-item-extra="icon" class="fas fa-user-graduate" style="color:black"></i>
+                        TreeName(node, parentNode);
+                        
+                        break;
+                    case NodeType.folder:
+                        <i id="@node.Id" data-item-type="@node.Type" data-item-extra="icon" data-item-parent-type="@parentNode.Type" class="fas fa-folder" style="color:lightgoldenrodyellow"></i>
+                        TreeName(node, parentNode);
+                        TreeEditableNew(node, parentNode);
+                        break;
+                    case NodeType.course:
+                        <i id="@node.Id" data-item-type="@node.Type" data-item-extra="icon" class="fas fa-chalkboard-teacher" style="color:darkblue;"></i>
+                        TreeName(node, parentNode);
+                        
+                        break;
+                    case NodeType.module:
+                        <i id="@node.Id" data-item-type="@node.Type" data-item-extra="icon" class="fas fa-book-open" style="color:green;"></i>
+                        TreeName(node, parentNode);
+                        
+                        break;
+                    case NodeType.activity:
+                        <i id="@node.Id" data-item-type="@node.Type" data-item-extra="icon" class="fas fa-flask" style="color:dodgerblue;"></i>
+                        TreeName(node, parentNode);
+                        
+                        break;
+                    case NodeType.file:
+                        <i id="@node.Id" data-item-type="@node.Type" data-item-extra="icon" class="fas fa-file" style="color:dimgray;"></i>
+                        TreeName(node, parentNode);
+                        
+                        break;
+                    case NodeType.root:
+                        TreeName(node, parentNode);
+                        break;
+                    case NodeType.search:
+                        TreeName(node, parentNode);
+                        break;
+                }
+
+
+
+
+            </nobr>
+
+
+            @if (hasChildren)
+            {
+
+                @foreach (var item in node.Nodes)
+                {
+                    <ul class="list-group" hidden>
+                        @{
+                            TreeRecursive(item, node);
+                        }
+                    </ul>
+
+                }
+
+            }
+
+
+
+        </li>
+    }
+}
+
+
+
+
+<script>
+
+    
+
+    class TreeHandler
+    {
+        #dragElement;
+        #pressPositionX;
+        #pressPositionY;
+        #initialMove;
+        #draging;
+        #longPress;
+        #pressTimer;
+
+        constructor()
+        {
+            this.#dragElement = document.getElementById("dragText");
+            this.#pressPositionX = 0;
+            this.#pressPositionY = 0;
+            this.#initialMove = false;
+            this.#draging = false;
+            this.#longPress = false;
+
+
+            console.log("init tree");
+
+            window.addEventListener("mouseup", (event)=>this.#OnMouseUp(event));
+            window.addEventListener("mousemove", (event)=>this.#OnMouseMove(event));
+
+
+            let t = document.getElementsByClassName("treeItem");
+            for (let i = 0; i < t.length; i++)
+            {
+                t[i].addEventListener("click", (event)=>this.#OnClick(event));
+                t[i].addEventListener("mousedown", (event)=>this.#OnDown(event));
+            }
+
+        }
+
+        #OnMouseUp(event)
+        {
+            clearTimeout(this.#pressTimer);
+            this.#longPress = false;
+            this.#initialMove = false;
+            this.#draging = false;
+
+            this.#dragElement.style.top = -4096 + "px";
+
+            let e = document.elementFromPoint(event.clientX, event.clientY);
+            console.log("dragged to>>" + e.id + ": " + e.dataset.itemType);
+            console.log("belongs to parent" + e.dataset.itemParentId + ": " + e.dataset.itemParentType);
+        }
+
+        #OnMouseMove(event)
+        {
+            if (this.#longPress) {
+
+                if (!this.#initialMove) {
+                    let dist = (event.clientX - this.#pressPositionX) * (event.clientX - this.#pressPositionX) + (event.clientY - this.#pressPositionY) * (event.clientY - this.#pressPositionY);
+                    if (dist < 50) {
+                        //longpress = false;
+                        this.#draging = true;
+                    }
+                    this.#initialMove = true;
+                }
+
+                //console.log("distance:" + dist);
+
+            }
+            if (this.#draging) {
+                this.#dragElement.style.top = event.pageY + "px";
+                this.#dragElement.style.left = event.pageX + "px";
+
+                let e = document.elementFromPoint(event.clientX - 5, event.clientY - 5);
+                //console.log("mosemove-" + e.id + ": " + e.dataset.itemType);
+
+            }
+
+        }
+
+
+
+        #OnClick(event)
+        {
+
+            if (this.#longPress)
+            {
+                return;
+            }
+
+            console.log("enkel click");
+            console.log("id:" + event.target.id);
+            console.log("type:" + event.target.dataset.itemType);
+            console.log("type:" + event.target.dataset.itemExtra);
+            console.log("ypos:" + event.clientY);
+
+            if (event.target.dataset.itemExtra == "text") {
+                let children = event.target.parentNode.parentNode.childNodes;
+                children.forEach(s => { s.hidden = !s.hidden; });
+                event.target.parentNode.hidden = false;
+            }
+
+            if (event.target.dataset.itemExtra == "delete") {
+                this.#OnDelete(event);
+            }
+
+            if (event.target.dataset.itemExtra == "new") {
+                this.#OnNew(event);
+            }
+
+
+
+            // selection bar
+            let rect = event.target.parentNode.getBoundingClientRect();
+            let rect2 = event.target.parentNode.parentNode.getBoundingClientRect();
+            let mr = document.getElementById("menuDivId").getBoundingClientRect();
+
+            
+
+            document.getElementById("selectBar").style.top = (rect.top - mr.top) + "px";
+            document.getElementById("selectBar").style.height = (rect.height) + "px";
+
+            document.getElementById("selectSelection").style.top = (rect.top - mr.top) + "px";
+            document.getElementById("selectSelection").style.height = (rect2.height) + "px";
+
+        }
+
+
+
+
+
+        #OnDelete(event)
+        {
+            console.log("delete id:" + event.target.id);
+        }
+
+        #OnNew(event)
+        {
+            console.log("new entity id:" + event.target.id + "can create " + event.target.dataset.itemCreates);
+            console.log("belongs to id:" + event.target.dataset.itemParentId + " of type " + event.target.dataset.itemParentType);
+        }
+
+
+        #OnDown(event)
+        {
+            this.#pressPositionX = event.clientX;
+            this.#pressPositionY = event.clientY;
+            console.log("on down:" + event.clientY);
+
+            this.#longPress = false; //longpress is false initially
+            this.#pressTimer = window.setTimeout(()=> {
+                // your code here
+                console.log("timer");
+                this.#dragElement.innerHTML = event.target.parentNode.innerHTML;
+                this.#dragElement.id = event.target.id;
+                this.#dragElement.dataset.itemType = event.target.dataset.itemType;
+                this.#longPress = true; //if run hold function, longpress is true
+            }, 100)
+        }
+
+
+
+
+
+    }
+
+
+
+    new TreeHandler();
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //let dragElement = document.getElementById("dragText");
+
+    //let pressPositionX = 0;
+    //let pressPositionY = 0;
+    //let initialMove = false;
+    //let draging = false;
+
+    //let longpress = false;
+    //window.addEventListener('mouseup', function (event) {
+        
+    //    clearTimeout(pressTimer);
+    //    longpress = false;
+    //    initialMove = false;
+    //    draging = false;
+
+    //    dragElement.style.top = -4096+"px";
+
+    //    let e = document.elementFromPoint(event.clientX, event.clientY);
+    //    console.log("dragged to>>" + e.id + ": " + e.dataset.itemType);
+    //    console.log("belongs to parent" + e.dataset.itemParentId + ": " + e.dataset.itemParentType);
+        
+    //})
+
+    //window.addEventListener('mousemove', function (event) {
+
+    //    if (longpress) {
+
+    //        if (!initialMove) {
+    //            dist = (event.clientX - pressPositionX) * (event.clientX - pressPositionX) + (event.clientY - pressPositionY) * (event.clientY - pressPositionY);
+    //            if (dist < 50) {
+    //                //longpress = false;
+    //                draging = true;
+    //            }
+    //            initialMove = true;
+    //        }
+
+    //        //console.log("distance:" + dist);
+            
+    //    }
+    //    if (draging) {
+    //        dragElement.style.top = event.pageY+"px";
+    //        dragElement.style.left = event.pageX + "px";
+
+    //        let e = document.elementFromPoint(event.clientX - 5, event.clientY - 5);
+    //        //console.log("mosemove-" + e.id + ": " + e.dataset.itemType);
+            
+    //    }
+
+
+    //    // do logic here
+    //})
+
+
+
+    //let t = document.getElementsByClassName("treeItem");
+    //for (let i = 0; i < t.length; i++) {
+    //    t[i].addEventListener("click", OnClick);
+
+    //    t[i].addEventListener("mousedown", OnDown);
+
+    //    //t[i].addEventListener("dblclick", OnDblClick);
+    //}
+
+
+
+    function OnDblClick(event) {
+        console.log("dubbel click");
+        console.log("id:" + event.target.id);
+        console.log("type:" + event.target.dataset.itemType);
+
+
+        let children = event.target.parentNode.parentNode.childNodes;
+
+        let carret = event.target.childNodes[1];
+        if (carret.classList.contains("carretIcon")) {
+            carret.classList.toggle("fa-caret-right");
+            carret.classList.toggle("fa-caret-down");
+        }
+
+        children.forEach(s => { s.hidden = !s.hidden; });
+        //event.target.parentNode.hidden = false;
+    }
+
+
+
+
+    function OnClick(event) {
+
+        if (longpress)
+        {
+            return;
+        }
+
+        console.log("enkel click");
+        console.log("id:" + event.target.id);
+        console.log("type:" + event.target.dataset.itemType);
+        console.log("type:" + event.target.dataset.itemExtra);
+        console.log("ypos:" + event.clientY);
+
+        if (event.target.dataset.itemExtra == "text")
+        {
+            let children = event.target.parentNode.parentNode.childNodes;
+            children.forEach(s => { s.hidden = !s.hidden; });
+            event.target.parentNode.hidden = false;
+        }
+
+        if (event.target.dataset.itemExtra == "delete")
+        {
+            OnDelete(event);
+        }
+
+        if (event.target.dataset.itemExtra == "new") {
+            OnNew(event);
+        }
+
+
+
+
+        //for (i = 2; i < childnodes.length; i++) {
+        //    children[i].hidden = !children[i].hidden;
+        //    event.target.hidden = false;
+        //}
+
+        
+
+
+
+        //let rect = event.target.getBoundingClientRect();
+        //let mr = document.getElementById("menuDivId").getBoundingClientRect();
+
+        //document.getElementById("selectBar").style.top = (rect.top - mr.top) + "px";
+        //document.getElementById("selectBar").style.height = (rect.height) + "px";
+
+        //$.ajax({
+        //    type: "GET",
+        //    url: "/Home/OnTreeClick",
+        //    data: { id: event.target.id, type: event.target.dataset.itemType },
+        //    cache: false,
+        //    success: result => {
+
+        //        if (result) {
+        //            document.getElementById("contentDivId").innerHTML = result;
+        //        }
+
+        //    }
+
+        //});
+
+
+
+
+
+
+
+    }
+
+
+
+
+    function OnDelete(event)
+    {
+        console.log("delete id:" + event.target.id);
+    }
+
+    function OnNew(event)
+    {
+        console.log("new entity id:" + event.target.id + "can create " + event.target.dataset.itemCreates);
+        console.log("belongs to id:" + event.target.dataset.itemParentId + " of type " + event.target.dataset.itemParentType);
+    }
+
+
+    function OnDown(event)
+    {
+        pressPositionX = event.clientX;
+        pressPositionY = event.clientY;
+        console.log("on down:" + event.clientY);
+
+        longpress = false; //longpress is false initially
+        pressTimer = window.setTimeout(function () {
+            // your code here
+            console.log("timer");
+            dragElement.innerHTML = event.target.parentNode.innerHTML;
+            dragElement.id = event.target.id;
+            dragElement.dataset.itemType = event.target.dataset.itemType;
+            longpress = true; //if run hold function, longpress is true
+        }, 100)
+    }
+
+    
+
+
+
+</script>
