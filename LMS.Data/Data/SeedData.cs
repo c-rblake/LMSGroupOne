@@ -25,19 +25,21 @@ namespace LMS.Data.Data
                 fake = new Faker("sv");
 
                 //FAKER FIRST
-
-
-
+                
                 //if (await db.Persons.AnyAsync()) return;
 
-                const string roleName = "Student";
+                //const string roleName = "Student";
 
-                var userManager = services.GetRequiredService<UserManager<User>>();
+                userManager = services.GetRequiredService<UserManager<User>>();
 
-                var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+                roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
 
-                var role = new IdentityRole { Name = roleName };
-                var addRoleResult = await roleManager.CreateAsync(role);
+                var roleNames = new[] { "Teacher", "Student" };
+
+                await AddRolesAsync(roleNames);
+
+                //var role = new IdentityRole { Name = roleName };
+                //var addRoleResult = await roleManager.CreateAsync(role);
 
                 var courseNames = new List<string> { "Net21Best","Net21Average"};
                 var courses = GetCourses(courseNames); // Course => Collection<modules>
@@ -46,9 +48,11 @@ namespace LMS.Data.Data
                 db.Courses.AddRange(courses);
                 await db.SaveChangesAsync();
 
+                var teachers = GetTeachers(2);
+                db.Persons.AddRange(teachers);
 
-                var persons = GetPerson();
-                db.Persons.AddRange(persons);
+                var students = GetStudents(20);
+                db.Persons.AddRange(students);
                 //await db.SaveChangesAsync();
 
                 //var modules = GetModules(); //Add from course
@@ -58,18 +62,37 @@ namespace LMS.Data.Data
                 db.ActivityTypes.AddRange(activitityTypes);
                 await db.SaveChangesAsync();
 
-
                 var activities = GetActivities(activitityTypes, modules);
                 db.Activities.AddRange(activities);
 
                 await db.SaveChangesAsync();
 
 
-
-
-
             }
 
+        }
+
+        private static List<User> GetTeachers(int amount)
+        {
+            var teachers = new List<User>();
+
+            for (int i = 0; i < amount; i++)
+            {
+                var firstName = fake.Name.FirstName();
+                var lastName = fake.Name.LastName();
+
+                var user = new User
+                {
+                    FirstName = firstName,
+                    LastName = lastName,
+                    Documents = GetDocuments(),
+                    UserName = fake.Internet.Email($"{firstName} {lastName}"),
+                    //Password = fake.Internet.Password(8),
+                };
+                teachers.Add(user);
+            }
+
+            return teachers;
         }
 
         private static List<ActivityType> GetActivityType()
@@ -163,23 +186,40 @@ namespace LMS.Data.Data
 
         }
 
-        private static List<User> GetPerson()
+        private static List<User> GetStudents(int amount)
         {
             var users = new List<User>();
 
-            for (int i = 0; i < 20; i++)
+            for (int i = 0; i < amount; i++)
             {
+                var firstName = fake.Name.FirstName();
+                var lastName = fake.Name.LastName();
+
                 var user = new User
                 {
-                    FirstName = fake.Name.FirstName(),
-                    LastName = fake.Name.LastName(),
-                    Documents = GetDocuments()
+                    FirstName = firstName,
+                    LastName = lastName,
+                    Documents = GetDocuments(),
+                    UserName = fake.Internet.Email($"{firstName} {lastName}"),
+                    //Password = fake.Internet.Password(8),
                 };
                 users.Add(user);
             }
 
             return users;
 
+        }
+
+        private static async Task AddRolesAsync(string[] roleNames)
+        {
+            foreach (var roleName in roleNames)
+            {
+                if (await roleManager.RoleExistsAsync(roleName)) continue;
+                var role = new IdentityRole { Name = roleName };
+                var result = await roleManager.CreateAsync(role);
+
+                if (!result.Succeeded) throw new Exception(string.Join("\n", result.Errors));
+            }
         }
     }
 }
