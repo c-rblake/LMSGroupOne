@@ -11,9 +11,16 @@ $('[contenteditable]').on('paste', function (event) {
     }, 0);
 }).on('keypress', function (event) {
     console.log(event.target.id);
-    event.target.contentEditable = false;
+    if (event.which == 13)
+    {
+        event.target.contentEditable = false;
+    }    
     return event.which != 13;
-}).on("blur", function (event) { console.log("lost focus") });
+}).on("blur", function (event)
+{
+    console.log("lost focus");
+    event.target.contentEditable = false;
+});
 
 
 
