@@ -22,22 +22,23 @@ namespace LMSGroupOne.Controllers
             this.mapper = mapper;
         }
 
-        public async Task<IActionResult> Index()
+       /* public async Task<IActionResult> Index()
         {
             return null;
-        }
+        }*/
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateCourse(CreateCourseViewModel course)
+        [Route("/teacher/course")]
+        //[ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateCourse([FromBody]CreateCourseViewModel course)
         {
             if (ModelState.IsValid)
             {
-                uow.TeacherRepository.AddCourse(mapper.Map<Course>(course));
-                await uow.CompleteAsync();
-            }
+               uow.TeacherRepository.AddCourse(mapper.Map<Course>(course));
+               await  uow.CompleteAsync();
+           }
 
-            return null;
+            return RedirectToAction(nameof(Index),"Home");
         }
     }
 }

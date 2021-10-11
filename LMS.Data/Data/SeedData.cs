@@ -28,7 +28,7 @@ namespace LMS.Data.Data
 
 
 
-                //if (await db.Persons.AnyAsync()) return;
+                if (await db.Persons.AnyAsync()) return;
 
                 const string roleName = "Student";
 
