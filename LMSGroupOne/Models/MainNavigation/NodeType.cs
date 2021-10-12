@@ -16,7 +16,8 @@ namespace LMSGroupOne.Models.MainNavigation
         activity,
         file,
         search,
-        none
+        none,
+        trash,
 
     }
 }

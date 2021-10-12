@@ -1,7 +1,9 @@
 ﻿using LMSGroupOne.Models.MainNavigation;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -51,7 +53,7 @@ namespace LMSGroupOne.Controllers
                 Id = "202",
                 Name = "Teachers",
                 Type = NodeType.folder,
-                CanCreate = NodeType.none,
+                CanCreate = NodeType.teacher,
                 Editable = true,
                 Nodes = new TreeNode[]
                 {
@@ -95,7 +97,7 @@ namespace LMSGroupOne.Controllers
                 Id="101",
                 Name="Students",
                 Type=NodeType.folder,
-                CanCreate = NodeType.none,
+                CanCreate = NodeType.student,
                 Editable = true,
                 Nodes =new TreeNode[] 
                 { 
@@ -156,7 +158,7 @@ namespace LMSGroupOne.Controllers
                 Id = "51",
                 Name = "Courses",
                 Type = NodeType.folder,
-                CanCreate = NodeType.none,
+                CanCreate = NodeType.course,
                 Editable = true,
                 Nodes = new TreeNode[]
                 {
@@ -217,7 +219,7 @@ namespace LMSGroupOne.Controllers
                 Id = "41",
                 Name = "modules",
                 Type = NodeType.folder,
-                CanCreate = NodeType.none,
+                CanCreate = NodeType.module,
                 Editable = true,
                 Nodes = new TreeNode[]
                 {
@@ -275,7 +277,7 @@ namespace LMSGroupOne.Controllers
                 Id = "11",
                 Name = "Activities",
                 Type = NodeType.folder,
-                CanCreate = NodeType.none,
+                CanCreate = NodeType.activity,
                 Editable = true,
                 Nodes = new TreeNode[]
                 { 
@@ -330,7 +332,7 @@ namespace LMSGroupOne.Controllers
                 Id="98",
                 Name="Documents",
                 Type=NodeType.folder,
-                CanCreate = NodeType.none,
+                CanCreate = NodeType.file,
                 Editable = true,
                 Nodes =new TreeNode[]
                 {
@@ -368,5 +370,147 @@ namespace LMSGroupOne.Controllers
             
             return model;
         }
+
+
+
+        
+        public string OnDelete(string id, string type)
+        {
+            Debug.WriteLine($"from controller delete - id:{id}, type:{type}");
+
+
+            string jsonData = JsonConvert.SerializeObject(
+                new 
+                {
+                    success = true
+                });
+
+            return jsonData;
+        }
+
+
+        public string OnNew(string id, string type)
+        {
+            // todo
+            Debug.WriteLine($"from controller new - id:{id}, type:{type}");
+
+
+            string jsonData = JsonConvert.SerializeObject(
+                new
+                {
+                    success = true,
+                    id="123",
+                    name="kalle",
+                    type="20345",
+                    parentId="1231",
+                    parentType="folder"
+                });
+
+            return jsonData;
+        }
+
+        
+
+        public IActionResult OnTreeClick(string id, string type)
+        {
+            Debug.WriteLine($"from controller- id:{id}, type:{type}");
+
+            Debug.WriteLine("---------------------------------------------------");
+            switch (type)
+            {
+                case "teacher":
+                    return Teacher(id);
+                case "student":
+                    return Student(id);
+                case "activity":
+                    return Activity(id);
+                case "file":
+                    return Document(id);
+                case "module":
+                    return Module(id);
+                case "course":
+                    return Course(id);
+                case "search":
+                    return Search(id);
+
+            }
+
+            return new EmptyResult();
+        }
+
+
+
+        private IActionResult Teacher(string id)
+        {
+            var model = new PlaceholderModelView
+            {
+                Id = id
+            };
+
+            return PartialView("Teacher", model);
+        }
+
+        private IActionResult Student(string id)
+        {
+            var model = new PlaceholderModelView
+            {
+                Id = id
+            };
+
+            return PartialView("Student", model);
+        }
+
+        private IActionResult Activity(string id)
+        {
+            var model = new PlaceholderModelView
+            {
+                Id = id
+            };
+
+            return PartialView("Activity", model);
+        }
+
+        private IActionResult Document(string id)
+        {
+            var model = new PlaceholderModelView
+            {
+                Id = id
+            };
+
+            return PartialView("Document", model);
+        }
+
+        private IActionResult Course(string id)
+        {
+            var model = new PlaceholderModelView
+            {
+                Id = id
+            };
+
+            return PartialView("Course", model);
+        }
+
+        private IActionResult Module(string id)
+        {
+            var model = new PlaceholderModelView
+            {
+                Id = id
+            };
+
+            return PartialView("Module", model);
+        }
+
+        private IActionResult Search(string id)
+        {
+            var model = new PlaceholderModelView
+            {
+                Id = id
+            };
+
+            return PartialView("Search", model);
+        }
+
     }
+
+    
 }
