@@ -12,7 +12,7 @@ namespace LMS.Core.Models.Entities
         public int Id { get; set; }
 
         [Required]
-        [MaxLength(25)]
+        [MaxLength(100)]
         public string Name { get; set; }
 
         [MaxLength(300)]
