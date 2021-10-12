@@ -25,10 +25,16 @@ namespace LMSGroupOne.Controllers
             return View();
         }
 
+        public IActionResult CreateCourse()
+        {
+            return View();
+        }
+
+
         [HttpPost]
         [Route("/course/create")]
-        //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateCourse([FromBody] CreateCourseViewModel course)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateCourse( CreateCourseViewModel course)
         {
             if (ModelState.IsValid)
             {
@@ -36,7 +42,8 @@ namespace LMSGroupOne.Controllers
                 await uow.CompleteAsync();
             }
 
-            return RedirectToAction(nameof(Index), "Home");
+            return View(course);
+            //return RedirectToAction(nameof(Index), "Home");
         }
     }
 }
