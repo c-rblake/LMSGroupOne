@@ -18,13 +18,9 @@ namespace LMS.Core.Models.Entities
         [MaxLength(300)]
         public string Description { get; set; }
 
-        //[DisplayFormat(DataFormatString="{0:yyyy-MM-dd}", ApplyFormatInEditMode=true)]
-        //in viewModel
-        
+        [Required]
         public DateTime StartDate { get; set; }
 
-        //[DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-        //in viewModel
         public DateTime? EndDate { get; set; }
 
         //NAV Properties
