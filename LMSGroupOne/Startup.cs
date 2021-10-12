@@ -40,7 +40,7 @@ namespace LMSGroupOne
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             //UserManager RoleManager
             services.AddControllersWithViews();
-            services.AddScoped<IUnitOfWorks, UnitOfWorks>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddAutoMapper(typeof(MapperProfile));
         }
 

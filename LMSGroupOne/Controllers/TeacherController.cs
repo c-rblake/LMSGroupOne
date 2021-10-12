@@ -13,10 +13,10 @@ namespace LMSGroupOne.Controllers
 {
     public class TeacherController:Controller
     {
-        private readonly IUnitOfWorks uow;
+        private readonly IUnitOfWork uow;
         private readonly IMapper mapper;
 
-        public TeacherController(IUnitOfWorks uow, IMapper mapper)
+        public TeacherController(IUnitOfWork uow, IMapper mapper)
         {
             this.uow = uow;
             this.mapper = mapper;
@@ -27,18 +27,5 @@ namespace LMSGroupOne.Controllers
             return null;
         }*/
 
-        [HttpPost]
-        [Route("/teacher/course")]
-        //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateCourse([FromBody]CreateCourseViewModel course)
-        {
-            if (ModelState.IsValid)
-            {
-               uow.TeacherRepository.AddCourse(mapper.Map<Course>(course));
-               await  uow.CompleteAsync();
-           }
-
-            return RedirectToAction(nameof(Index),"Home");
-        }
     }
 }

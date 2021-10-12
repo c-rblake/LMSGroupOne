@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace LMS.Core.Repositories
 {
-    public interface IUnitOfWorks
+    public interface IUnitOfWork
     {
         ITeacherRepository TeacherRepository { get; }
+        ICourseRepository CourseRepository { get; }
         Task CompleteAsync();
     }
 }

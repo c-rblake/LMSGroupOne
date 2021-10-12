@@ -7,8 +7,8 @@ using LMS.Core.Models.Entities;
 
 namespace LMS.Core.Repositories
 {
-    public interface ITeacherRepository
-    { 
-        Task<IEnumerable<Person>> GetAsync();
+    public interface ICourseRepository
+    {
+        void AddCourse(Course course);
     }
 }

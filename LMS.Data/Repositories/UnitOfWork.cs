@@ -8,15 +8,17 @@ using LMS.Data.Data;
 
 namespace LMS.Data.Repositories
 {
-    public class UnitOfWorks : IUnitOfWorks
+    public class UnitOfWork : IUnitOfWork
     {
         private readonly ApplicationDbContext db;
         public ITeacherRepository TeacherRepository { get;}
+        public ICourseRepository CourseRepository { get; }
 
-        public UnitOfWorks(ApplicationDbContext db)
+        public UnitOfWork(ApplicationDbContext db)
         {
             this.db = db;
             TeacherRepository = new TeacherRepository(db);
+            CourseRepository = new CourseRepository(db);
         }
 
         public async Task CompleteAsync()
