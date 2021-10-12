@@ -14,6 +14,6 @@ namespace LMS.Api.Core.Dtos
         public DateTime DateOfBirth { get; set; }
 
         //Nav properties
-        public ICollection<Work> Works { get; set; } //ToDo Circular WARNING Works <=> Authors
+        public ICollection<AuthorWorkDto> WorkDtos { get; set; } //ToDo Circular WARNING Works <=> Authors
     }
 }

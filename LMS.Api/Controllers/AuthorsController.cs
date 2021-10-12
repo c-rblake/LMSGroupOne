@@ -23,13 +23,14 @@ namespace LMS.Api.Controllers
             this.uow = uow ?? throw new ArgumentNullException(nameof(uow));
             this.mapper = mapper;
         }
-
-        [HttpGet("{Id}", Name = "GetAuthor")]
-        public async Task<ActionResult<AuthorDto>> GetAuthor(int id)
+        
+        [HttpGet("{id}", Name = "GetAuthor")]
+        public async Task<ActionResult<AuthorDto>> GetAuthor(int id, bool includeWorks)
         {
-            var result = await uow.AuthorRepository.GetAuthorAsync(id); //ToDo the Query has TWO Awaits total..
+            var result = await uow.AuthorRepository.GetAuthorAsync(id, includeWorks); //ToDo the Query has TWO Awaits total..
             if (result is null) return NotFound();
-            var dtoResult = mapper.Map<AuthorDto>(result);
+            var dtoResult = mapper.Map<AuthorDto>(result); //Result has the List of Works but Circlar reference.
+            dtoResult.WorkDtos = mapper.Map<ICollection<AuthorWorkDto>>(result.Works);
             if (result is null) return StatusCode(500);
 
             return Ok(dtoResult);
@@ -38,10 +39,40 @@ namespace LMS.Api.Controllers
 
         //GET | api/authors
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<AuthorDto>>> GetAuthors(AuthorsResourceParameters authorResourceParameters)
+        public async Task<ActionResult<IEnumerable<AuthorDto>>> GetAuthors([FromQuery]AuthorsResourceParameters authorResourceParameters)
         {
+            List<AuthorDto> dtoAuthors = new List<AuthorDto>();
+            //Todo Implement. Should return AuthorDto with collection WorksDto
+            var result = await uow.AuthorRepository.GetAllAuthorsAsync(authorResourceParameters);
+            //For each result Author + Collection WorksDto
+            if (result is null) return NotFound();
+            if(authorResourceParameters.includeWorks)
+            {
+                foreach (var author in result)
+                {
+                    var dtoAuthor = mapper.Map<AuthorDto>(author);
+                    dtoAuthor.WorkDtos = mapper.Map<ICollection<AuthorWorkDto>>(author.Works);
+                    dtoAuthors.Add(dtoAuthor);
+                };
+            }
+            else
+            {
+                dtoAuthors = mapper.Map<List<AuthorDto>>(result);
+            }
+
+            return Ok(dtoAuthors);
+
+            //TUPLE ??
+            //if(authorResourceParameters.includeWorks)
+            //{
+            //    foreach (var authorResult in dtoResult)
+            //    {
+            //        authorResult.WorkDtos = mapper.Map<ICollection<AuthorWorkDto>>(authorResult.Works);
+            //    }
+            //}
+            //dtoResult.WorkDtos = mapper.Map<ICollection<AuthorWorkDto>>(result.Works);
+
             
-            return null;
         }
         //ToDo One Million API CRUDS Dont forget to USE uow
 
