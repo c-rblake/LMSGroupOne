@@ -17,9 +17,9 @@ namespace LMS.Api.Core.Repositories
         {
             this.db = db ?? throw new ArgumentNullException(nameof(db));
         }
-        public Task AddAsync(Author Author)
+        public async Task AddAsync(Author author)
         {
-            throw new NotImplementedException();
+            await db.Authors.AddAsync(author);
         }
 
         public Task<bool> AnyAsync(int? id)
@@ -56,12 +56,17 @@ namespace LMS.Api.Core.Repositories
             return await query.FirstOrDefaultAsync(a=>a.Id == id);
         }
 
-        public Task Remove(Author Author)
+        public Task<Author> GetAuthorNameAsync(string firstName, string lastName)
         {
             throw new NotImplementedException();
         }
 
-        public Task Update(Author Author)
+        public Task Remove(Author author)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task Update(Author author)
         {
             throw new NotImplementedException();
         }

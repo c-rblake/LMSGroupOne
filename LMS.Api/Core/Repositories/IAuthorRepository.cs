@@ -13,8 +13,9 @@ namespace LMS.Api.Core.Repositories
         Task<Author> GetAuthorAsync(int? id, bool includeWorks);
         Task<Author> FindAsync(int? id);
         Task<bool> AnyAsync(int? id);
-        Task AddAsync(Author Author);
-        Task Update(Author Author);
-        Task Remove(Author Author);
+        Task AddAsync(Author author);
+        Task Update(Author author);
+        Task Remove(Author author);
+        Task<Author> GetAuthorNameAsync(string firstName, string lastName);
     }
 }

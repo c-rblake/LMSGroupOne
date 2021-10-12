@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using LMS.Api.Core.Dtos;
+using LMS.Api.Core.Entities;
 using LMS.Api.Core.Repositories;
 using LMS.Api.ResourceParamaters;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -59,22 +61,37 @@ namespace LMS.Api.Controllers
             {
                 dtoAuthors = mapper.Map<List<AuthorDto>>(result);
             }
+            if (dtoAuthors is null) return StatusCode(500);
 
             return Ok(dtoAuthors);
-
-            //TUPLE ??
-            //if(authorResourceParameters.includeWorks)
-            //{
-            //    foreach (var authorResult in dtoResult)
-            //    {
-            //        authorResult.WorkDtos = mapper.Map<ICollection<AuthorWorkDto>>(authorResult.Works);
-            //    }
-            //}
-            //dtoResult.WorkDtos = mapper.Map<ICollection<AuthorWorkDto>>(result.Works);
-
             
         }
         //ToDo One Million API CRUDS Dont forget to USE uow
+
+        [HttpPost]
+        public async Task<ActionResult<Author>> CreateAuthor(AuthorCreateDto dto)
+        {
+            //TODO implment GetAuthorNameAsync Check
+            //if (await uow.AuthorRepository.GetAuthorNameAsync(dto.FirstName, dto.LastName) != null)
+            //{
+            //    ModelState.AddModelError("FirstName", "Author with this First Name and Last name is in use");
+            //    ModelState.AddModelError("LastName", "Author with this First Name and Last name is in use");
+            //    return BadRequest(ModelState);
+            //    //Todo, redirect to that author?
+            //}
+            var author = mapper.Map<Author>(dto);
+            await uow.AuthorRepository.AddAsync(author);
+
+            if(await uow.CompleteAsync())
+            {
+                var authorDto = mapper.Map<AuthorDto>(author);
+                return CreatedAtAction(nameof(GetAuthor), new { id = authorDto.Id }, author);
+            }
+            else
+            {
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
 
 
 

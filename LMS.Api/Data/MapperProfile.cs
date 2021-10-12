@@ -13,10 +13,13 @@ namespace LMS.Api.Data
         public MapperProfile()
         {
             CreateMap<Author, AuthorDto>().ReverseMap();
+            CreateMap<Author, AuthorCreateDto>().ReverseMap();
             //ToDo Make more MAPPINGS
             CreateMap<Work, AuthorWorkDto>().ReverseMap();
+            //.ForMember....BOOKING
 
             CreateMap<Work, WorkDto>().ReverseMap();
+
 
         }
 

@@ -19,9 +19,9 @@ namespace LMS.Api.Core.Repositories
             this.WorksRepository = new WorksRepository(db);
         }
 
-        public Task CompleteAsync()
+        public async Task<bool> CompleteAsync()
         {
-            throw new NotImplementedException();
+            return (await db.SaveChangesAsync()) >= 0;
         }
     }
 }

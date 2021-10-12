@@ -10,6 +10,6 @@ namespace LMS.Api.Core.Repositories
         IAuthorRepository AuthorRepository { get; }
         IWorksRepository WorksRepository { get; }
 
-        Task CompleteAsync();
+        Task<bool> CompleteAsync();
     }
 }
