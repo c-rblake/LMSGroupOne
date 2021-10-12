@@ -28,6 +28,8 @@ namespace LMS.Data.Data
 
                 //if (await db.Persons.AnyAsync()) return;
 
+                //To Do: Add documents at course, module and activity level
+
                 string teacherPw = "Hejsan123!";
 
                 roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
@@ -157,8 +159,7 @@ namespace LMS.Data.Data
                     ActivityType = actType,
                     Description = fake.Lorem.Sentence(),
                     StartDate = DateTime.Now.AddDays(fake.Random.Int(-7, 12)),
-                    EndDate = DateTime.Now.AddDays(fake.Random.Int(3, 20)),
-                    //Documents = GetDocuments(1)
+                    EndDate = DateTime.Now.AddDays(fake.Random.Int(3, 20))
                 };
                 activities.Add(activity);
             }
@@ -177,7 +178,6 @@ namespace LMS.Data.Data
                     Description = fake.Lorem.Sentence(),
                     StartDate = DateTime.Now.AddDays(fake.Random.Int(-7, -2)),
                     EndDate = DateTime.Now.AddDays(fake.Random.Int(100, 150)),
-                    //Documents = GetDocuments(1),
                     Activities = GetActivities(actTypes)
                 };
                 modules.Add(module);
@@ -197,7 +197,6 @@ namespace LMS.Data.Data
                     Description = fake.Lorem.Sentence(),
                     StartDate = DateTime.Now.AddDays(fake.Random.Int(-7, -2)),
                     EndDate = DateTime.Now.AddDays(fake.Random.Int(90, 130)),
-                    //Documents = GetDocuments(1),
                     Modules = GetModules(5, actTypes)
             };
                 courses.Add(course);
