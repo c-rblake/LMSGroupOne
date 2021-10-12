@@ -23,7 +23,7 @@ namespace LMSGroupOne
                 var services = scope.ServiceProvider;
 
                 var context = services.GetRequiredService<ApplicationDbContext>();
-
+                /*
                 context.Database.EnsureDeleted(); 
                 context.Database.Migrate();
 
@@ -37,7 +37,7 @@ namespace LMSGroupOne
                     var logger = services.GetRequiredService<ILogger<Program>>();
                     logger.LogError(e.Message, "Seed failed");
                 }
-
+                */
             }
 
 
