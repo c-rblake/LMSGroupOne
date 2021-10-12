@@ -13,6 +13,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using LMS.Api.Data;
+using LMS.Api.Core.Repositories;
 
 namespace LMS.Api
 {
@@ -39,6 +40,8 @@ namespace LMS.Api
 
             services.AddDbContext<LMSApiContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("LMSApiContext")));
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddAutoMapper(typeof(Startup));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

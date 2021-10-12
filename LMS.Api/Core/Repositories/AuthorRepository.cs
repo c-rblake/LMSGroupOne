@@ -1,5 +1,6 @@
 ﻿using LMS.Api.Core.Entities;
 using LMS.Api.Data;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,9 +36,11 @@ namespace LMS.Api.Core.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<Author> GetAuthorAsync(int? id)
+        public async Task<Author> GetAuthorAsync(int? id)
         {
-            throw new NotImplementedException();
+            var query = db.Authors.FirstOrDefaultAsync(a => a.Id == id);
+
+            return await query;
         }
 
         public Task Remove(Author Author)
