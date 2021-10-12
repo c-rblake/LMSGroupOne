@@ -11,12 +11,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LMSGroupOne.Controllers
 {
-    public class PersonController:Controller
+    public class TeacherController:Controller
     {
         private readonly IUnitOfWorks uow;
         private readonly IMapper mapper;
 
-        public PersonController(IUnitOfWorks uow, IMapper mapper)
+        public TeacherController(IUnitOfWorks uow, IMapper mapper)
         {
             this.uow = uow;
             this.mapper = mapper;
