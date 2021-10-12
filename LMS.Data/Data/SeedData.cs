@@ -43,10 +43,6 @@ namespace LMS.Data.Data
                 var teacher = await AddTeacherAsync(teacherPw);
                 await AddTeacherToRoleAsync(teacher);
 
-                var students = GetStudents(20);
-                await AddStudentsAsync(students);
-                await AddStudentsToRoleAsync(students);
-
                 var actTypeTypes = new List<string>
                 {
                     "E-learning",
@@ -71,8 +67,14 @@ namespace LMS.Data.Data
                 };
 
                 var courses = GetCourses(courseNames, actTypes);
+
+                var students = GetStudents(20, courses);
+                await AddStudentsAsync(students);
+                await AddStudentsToRoleAsync(students);
+
                 db.Courses.AddRange(courses);
                 await db.SaveChangesAsync();
+
             }
         }
 
@@ -203,7 +205,7 @@ namespace LMS.Data.Data
             return courses;
 
         }
-        private static List<User> GetStudents(int amount)
+        private static List<User> GetStudents(int amount, List<Course> courses)
         {
             var students = new List<User>();
 
@@ -211,6 +213,7 @@ namespace LMS.Data.Data
             {
                 var firstName = fake.Name.FirstName();
                 var lastName = fake.Name.LastName();
+                var random = new Random();
 
                 var user = new User
                 {
@@ -218,7 +221,8 @@ namespace LMS.Data.Data
                     LastName = lastName,
                     Documents = GetDocuments(1),
                     UserName = fake.Internet.Email($"{firstName} {lastName}"),
-                };
+                    Course = courses[random.Next(1, courses.Count)]
+            };
                 students.Add(user);
             }
             return students;
