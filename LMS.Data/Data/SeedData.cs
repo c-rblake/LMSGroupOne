@@ -50,7 +50,7 @@ namespace LMS.Data.Data
                     "E-learning",
                     "Lecture",
                     "Exercise",
-                    "Assigment",
+                    "Assignment",
                     "Group work"
                 };
 
