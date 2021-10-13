@@ -37,7 +37,7 @@ namespace LMSGroupOne
                     var logger = services.GetRequiredService<ILogger<Program>>();
                     logger.LogError(e.Message, "Seed failed");
                 }
-                */
+                
             }
 
 
