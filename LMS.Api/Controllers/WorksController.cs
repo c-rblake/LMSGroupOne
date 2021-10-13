@@ -1,10 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using AutoMapper;
+using LMS.Api.Core.Dtos;
+using LMS.Api.Core.Entities;
+using LMS.Api.Core.Repositories;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using LMS.Api.Data;
-using LMS.Api.Core.Entities;
-using Microsoft.EntityFrameworkCore;
 
 namespace LMS.Api.Controllers
 {
@@ -12,95 +15,45 @@ namespace LMS.Api.Controllers
     [ApiController]
     public class WorksController : ControllerBase
     {
-        private readonly LMSApiContext _context;
+        private readonly IUnitOfWork uow;
+        private readonly IMapper mapper;
 
-        public WorksController(LMSApiContext context)
+
+        public WorksController(IUnitOfWork uow, IMapper mapper)
         {
-            _context = context;
+            this.uow = uow;
+            this.mapper = mapper;
         }
 
-        // GET: api/Works
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Work>>> GetWork()
-        {
-            return await _context.Works.ToListAsync();
-        }
-
-        // GET: api/Works/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Work>> GetWork(int id)
-        {
-            var work = await _context.Works.FindAsync(id);
-
-            if (work == null)
-            {
-                return NotFound();
-            }
-
-            return work;
-        }
-
-        // PUT: api/Works/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutWork(int id, Work work)
-        {
-            if (id != work.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(work).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!WorkExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // POST: api/Works
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Work>> PostWork(Work work)
+        public async Task<ActionResult<Work>> CreateWork(WorkCreateDto dto)
         {
-            _context.Works.Add(work);
-            await _context.SaveChangesAsync();
+            var workResult = mapper.Map<Work>(dto);
+            await uow.WorksRepository.AddAsync(workResult);
 
-            return CreatedAtAction("GetWork", new { id = work.Id }, work);
-        }
-
-        // DELETE: api/Works/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteWork(int id)
-        {
-            var work = await _context.Works.FindAsync(id);
-            if (work == null)
+            if(await uow.CompleteAsync())
             {
-                return NotFound();
+                var workDto = mapper.Map<WorkDto>(workResult);
+                //return CreatedAtAction(nameof(GetWork), workDto);
+                return CreatedAtAction(nameof(GetWork), new { title = workDto.Title}, workDto);
             }
-
-            _context.Works.Remove(work);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            else
+            {
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
         }
 
-        private bool WorkExists(int id)
+
+        [HttpGet("{title}", Name =("GetWork"))] //ToDo change to NAME Case Senestive for Swagger.
+        public async Task<ActionResult<WorkDto>> GetWork(string title)
         {
-            return _context.Works.Any(e => e.Id == id);
+            var result = await uow.WorksRepository.GetWorkAsync(title);
+            if (result is null) return NotFound();
+            //TODO mapping etc.
+
+            return Ok(result);
         }
-    }
+
+
+}
 }

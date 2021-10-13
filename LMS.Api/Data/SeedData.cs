@@ -19,7 +19,7 @@ namespace LMS.Api.Data
             fake = new Faker("sv");
 
 
-            //if (await db.Authors.AnyAsync()) return;
+            if (await db.Authors.AnyAsync()) return;
             
 
             List<string> exsampleTypes = new List<string>
@@ -47,6 +47,7 @@ namespace LMS.Api.Data
                 var work = new Work
                 {
                     Description = fake.Lorem.Sentence(),
+                    Title = fake.Random.Word(),
                     TypeId = fake.Random.Int(1, types.Count),
                     GenreId = fake.Random.Int(1, genres.Count),
                     Level = fake.Random.Word(),

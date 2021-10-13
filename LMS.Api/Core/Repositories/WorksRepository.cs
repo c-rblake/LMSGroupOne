@@ -1,5 +1,6 @@
 ﻿using LMS.Api.Core.Entities;
 using LMS.Api.Data;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,9 +17,9 @@ namespace LMS.Api.Core.Repositories
             this.db = db ?? throw new ArgumentNullException(nameof(db));
         }
 
-        public Task AddAsync(Work work)
+        public async Task AddAsync(Work work)
         {
-            throw new NotImplementedException();
+            await db.Works.AddAsync(work);
         }
 
         public Task<bool> AnyAsync(int? id)
@@ -36,9 +37,11 @@ namespace LMS.Api.Core.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<Work> GetWorkAsync(int? id)
+        public async Task<IEnumerable<Work>> GetWorkAsync(string title)
         {
-            throw new NotImplementedException();
+            var work = await db.Works.Where(w => w.Title == title).ToListAsync();
+
+            return work;
         }
 
         public Task Remove(Work work)

@@ -1,11 +1,12 @@
-﻿using System;
+﻿using LMS.Api.Core.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace LMS.Api.Core.Entities
+namespace LMS.Api.Core.Dtos
 {
-    public class Work
+    public class WorkCreateDto
     {
         public int Id { get; set; }
         public int GenreId { get; set; }

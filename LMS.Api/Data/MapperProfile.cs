@@ -19,6 +19,7 @@ namespace LMS.Api.Data
             //.ForMember....BOOKING
 
             CreateMap<Work, WorkDto>().ReverseMap();
+            CreateMap<Work, WorkCreateDto>().ReverseMap();
 
 
         }
