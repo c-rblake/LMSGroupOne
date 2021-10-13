@@ -36,10 +36,21 @@ namespace LMS.Api.Core.Repositories
         {
             var query = db.Authors.AsQueryable();
 
-            if (authorResourceParameters.includeWorks)
+            if (authorResourceParameters.IncludeWorks)
             {
                 query = query.Include(a => a.Works); //Todo Implement WorksDto 
             };
+            if (!string.IsNullOrWhiteSpace(authorResourceParameters.FirstName))
+            {
+                var firstName = authorResourceParameters.FirstName.Trim();
+                query = query.Where(a => a.FirstName == firstName);
+            }
+            if (!string.IsNullOrWhiteSpace(authorResourceParameters.LastName))
+            {
+                var LastName = authorResourceParameters.LastName.Trim();
+                query = query.Where(a => a.LastName == LastName);
+            }
+
 
             return await query.ToListAsync();
         }

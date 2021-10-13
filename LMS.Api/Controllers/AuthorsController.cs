@@ -41,14 +41,16 @@ namespace LMS.Api.Controllers
 
         //GET | api/authors
         [HttpGet]
+        [HttpHead]
         public async Task<ActionResult<IEnumerable<AuthorDto>>> GetAuthors([FromQuery]AuthorsResourceParameters authorResourceParameters)
+            //FromQuery because it is a compley type and inferred as from body.
         {
             List<AuthorDto> dtoAuthors = new List<AuthorDto>();
             //Todo Implement. Should return AuthorDto with collection WorksDto
             var result = await uow.AuthorRepository.GetAllAuthorsAsync(authorResourceParameters);
             //For each result Author + Collection WorksDto
             if (result is null) return NotFound();
-            if(authorResourceParameters.includeWorks)
+            if(authorResourceParameters.IncludeWorks)
             {
                 foreach (var author in result)
                 {
@@ -93,7 +95,34 @@ namespace LMS.Api.Controllers
             }
         }
 
+        //[HttpPut("{id}")] Scaffolded Put Example.
+        //public async Task<IActionResult> PutWork(int id, Work work)
+        //{
+        //    if (id != work.Id)
+        //    {
+        //        return BadRequest();
+        //    }
 
+        //    _context.Entry(work).State = EntityState.Modified;
+
+        //    try
+        //    {
+        //        await _context.SaveChangesAsync();
+        //    }
+        //    catch (DbUpdateConcurrencyException)
+        //    {
+        //        if (!WorkExists(id))
+        //        {
+        //            return NotFound();
+        //        }
+        //        else
+        //        {
+        //            throw;
+        //        }
+        //    }
+
+        //    return NoContent();
+        //}
 
         [HttpPatch("{id}")]
         public async Task<ActionResult<AuthorDto>> PatchAuthor(int id, JsonPatchDocument<AuthorCreateDto> patchDocument) //ToDo PatchAuthorDto
