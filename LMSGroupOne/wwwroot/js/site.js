@@ -3,7 +3,9 @@
 
 // Write your JavaScript code.
 
+// todo maybe discard
 
+// for editable
 $('[contenteditable]').on('paste', function (event) {
     var $self = $(this);
     setTimeout(function () {
@@ -21,6 +23,12 @@ $('[contenteditable]').on('paste', function (event) {
     console.log("lost focus");
     event.target.contentEditable = false;
 });
+
+
+
+
+
+
 
 
 

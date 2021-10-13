@@ -389,6 +389,8 @@ namespace LMSGroupOne.Controllers
         }
 
 
+        
+
         public string OnNew(string id, string type)
         {
             // todo
@@ -401,8 +403,8 @@ namespace LMSGroupOne.Controllers
                     success = true,
                     id="123",
                     name="kalle",
-                    type="20345",
-                    parentId="1231",
+                    type=type,
+                    parentId=id,
                     parentType="folder"
                 });
 

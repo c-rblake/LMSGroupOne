@@ -2,6 +2,159 @@
 @model LMSGroupOne.Models.MainNavigation.TreeNode
 
 
+<style>
+    treeItem {
+    }
+
+    carretIcon {
+    }
+
+    folderIcon {
+    }
+</style>
+
+<script>
+    class TreeItemGenerator {
+        static GenerateItem(id, type, parentId, parentType, name, hasChildren) {
+            let item = document.createElement("nobr");
+            item.classList = "treeItem";
+
+            let classList = "";
+            let style = "";
+
+            switch (type) {
+                case "teacher":
+                    classList = "fas fa-user-graduate";
+                    style = "color:black;";
+                    break;
+                case "course":
+                    classList = "fas fa-chalkboard-teacher";
+                    style = "color:darkblue;";
+                    break;
+                case "module":
+                    classList = "fas fa-book-open";
+                    style = "color:green;";
+                    break;
+                case "activity":
+                    classList = "fas fa-flask";
+                    style = "color:dodgerblue;";
+                    break;
+                case "file":
+                    classList = "fas fa-file";
+                    style = "color:dimgray;";
+                    break;
+                case "student":
+                    classList = "fas fa-user";
+                    style = "color:black;";
+                    break;
+                case "folder":
+                    classList = "folderIcon fas fa-folder";
+                    style = "color:yellow;";
+                    break;
+                case "root": // todo
+                    classList = "fas fa-globe";
+                    style = "color:black;";
+                    break;
+                case "search": // todo
+                    classList = "fas fa-search";
+                    style = "color:black;";
+                    break;
+            };
+
+            console.log("hasChildren--" + hasChildren);
+            if (hasChildren=="True")
+            {
+                let caret = this.#GenerateCaret(id, type);
+                item.innerHTML += caret.outerHTML;
+            }
+            let icon = this.#GenerateIcon(id, type, classList, style);
+            item.innerHTML += icon.outerHTML;
+            let text = this.#GenerateText(id, name, type, parentId, parentType);
+            item.innerHTML += text.outerHTML;
+            let add = this.#GenerateAddIcon(id, type, parentId, parentType);
+            item.innerHTML += add.outerHTML;            
+
+            return item;
+        }
+
+
+        static GenerateItemHTML(id, type, parentId, parentType, name, hasChildren)
+        {
+            let item = this.GenerateItem(id, type, parentId, parentType, name, hasChildren);
+            document.write(item.outerHTML);
+        }
+
+        static #GenerateAddIcon(id, type, parentId, parentType)
+        {
+            let add = document.createElement("i");
+            add.id = id;
+            add.dataset.itemType = type;
+            add.dataset.itemCreates = "teacher";  // todo
+            add.dataset.itemParentId = parentId;
+            add.dataset.itemParentType = parentType;
+            add.dataset.itemExtra = "new";
+            add.classList = "fas fa-plus-circle";
+            add.style = "color:green";
+            return add;            
+        }
+
+        static #GenerateCaret(id, type)
+        {
+            let caret = document.createElement("i");
+            caret.classList = "carretIcon fas fa-caret-right";
+            caret.id = id;
+            caret.dataset.itemType = type;
+            caret.dataset.itemExtra = "caret";
+            return caret;
+        }
+
+        static #GenerateIcon(id, type, classList, style)
+        {
+            let icon = document.createElement("i");
+            icon.id = id;
+            icon.dataset.itemType = type;
+            icon.dataset.itemExtra = "icon";
+            icon.classList = classList;
+            icon.style = style;
+            return icon;
+        }
+
+        static #GenerateText(id, name, type, parentId, parentType) {
+            let text = document.createElement("span");
+            text.innerHTML = name;
+            text.id = id;
+            text.contentEditable = false;
+            text.dataset.itemType = type;
+            text.dataset.itemExtra = "text";
+            text.dataset.itemParentId = parentId;
+            text.dataset.itemParentType = parentType;
+            return text;
+        }
+
+        static Test(input)
+        {
+            document.write("hello "+input);
+        }
+
+    }
+
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
 
@@ -25,16 +178,7 @@
 
 
 
-<style>
-    treeItem {
-    }
 
-    carretIcon {
-    }
-
-    folderIcon {
-    }
-</style>
 
 @functions
 {
@@ -69,63 +213,12 @@
 
         <li class="list-group-item" style="background:none;">
 
-            <nobr class="treeItem">
-                @if (hasChildren)
-                {
-                    <i id="@node.Id" data-item-type="@node.Type" data-item-extra="caret" class="carretIcon fas fa-caret-right"></i>
-                }
-                @switch (node.Type)
-                {
-                    case NodeType.student:
-                        <i id="@node.Id" data-item-type="@node.Type" data-item-extra="icon" class="fas fa-user" style="color:black"></i>
-                        TreeName(node, parentNode);
-                        
+            
 
-                        break;
-                    case NodeType.teacher:
-                        <i id="@node.Id" data-item-type="@node.Type" data-item-extra="icon" class="fas fa-user-graduate" style="color:black"></i>
-                        TreeName(node, parentNode);
-                        
-                        break;
-                    case NodeType.folder:
-                        <i id="@node.Id" data-item-type="@node.Type" data-item-extra="icon" data-item-parent-type="@parentNode.Type" class="folderIcon fas fa-folder" style="color:lightgoldenrodyellow"></i>
-                        TreeName(node, parentNode);
-                        TreeEditableNew(node, parentNode);
-                        break;
-                    case NodeType.course:
-                        <i id="@node.Id" data-item-type="@node.Type" data-item-extra="icon" class="fas fa-chalkboard-teacher" style="color:darkblue;"></i>
-                        TreeName(node, parentNode);
-                        
-                        break;
-                    case NodeType.module:
-                        <i id="@node.Id" data-item-type="@node.Type" data-item-extra="icon" class="fas fa-book-open" style="color:green;"></i>
-                        TreeName(node, parentNode);
-                        
-                        break;
-                    case NodeType.activity:
-                        <i id="@node.Id" data-item-type="@node.Type" data-item-extra="icon" class="fas fa-flask" style="color:dodgerblue;"></i>
-                        TreeName(node, parentNode);
-                        
-                        break;
-                    case NodeType.file:
-                        <i id="@node.Id" data-item-type="@node.Type" data-item-extra="icon" class="fas fa-file" style="color:dimgray;"></i>
-                        TreeName(node, parentNode);
-                        
-                        break;
-                    case NodeType.root:
-                        TreeName(node, parentNode);
-                        break;
-                    case NodeType.search:
-                        TreeName(node, parentNode);
-                        break;
-                }
-
-
-
-
-            </nobr>
-
-
+            <script>    
+                TreeItemGenerator.GenerateItemHTML("@node.Id", "@node.Type", "@parentNode.Id", "@parentNode.Type", "@node.Name", "@hasChildren");
+            </script>
+            
             @if (hasChildren)
             {
 
@@ -136,11 +229,8 @@
                             TreeRecursive(item, node);
                         }
                     </ul>
-
                 }
-
             }
-
 
 
         </li>
@@ -152,51 +242,7 @@
 
 <script>
 
-    class TreeItemGenerator
-    {
-        static GenerateTeacher(id, type, parentId, parentType, name)
-        {
-            let item = document.createElement("nobr");
-            item.classList = "treeItem";
-
-            //let icon = '<i id="4" data-item-type="teacher" data-item-extra="icon" class="fas fa-user-graduate" style="color:black;"></i>';
-
-            let icon = document.createElement("i");
-            icon.id = id;
-            icon.dataset.itemType = type;
-            icon.dataset.itemExtra = "icon";
-            icon.classList = "fas fa-user-graduate";
-            icon.style = "color:black;";
-
-            //let text = '<span contenteditable="false" id="4" data-item-type="teacher" data-item-extra="text" data-item-parent-id="202" data-item-parent-type="folder" style="display: inline-block; page-break-inside:avoid;">björne</span>';
-
-            let text = document.createElement("span");
-            text.innerHTML = name;
-            text.id = id;
-            text.contentEditable = false;
-            text.dataset.itemType = type;
-            text.dataset.itemExtra = "text";
-            text.dataset.itemParentId = parentId;
-            text.dataset.itemParentType = parentType;
-
-
-            //item.appendChild(text);
-            item.innerHTML = icon.outerHTML + text.outerHTML;
-
-
-            return item;
-        }
-
-    }
-
-
-
-
-
-
-
-
-
+   
 
 
     class TreeHandler
@@ -615,7 +661,7 @@
                 cache: false,
                 success: result => {
                     let obj = JSON.parse(result);
-                    console.log(obj.success);
+                    console.log("result forn new "+obj.type);
                     if (obj.success)
                     {
 
@@ -638,9 +684,9 @@
             listItem.classList = "list-group-item";
             listItem.style = "background:none;";
 
-            let item = TreeItemGenerator.GenerateTeacher(id, type, parentId, parentType, name);
 
-            //GenerateTeacher(id, type, parentId, parentType, name)
+            let item = TreeItemGenerator.GenerateItem(id, type, parentId, parentType, name);
+            
 
            
             listItem.appendChild(item);
