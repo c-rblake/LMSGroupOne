@@ -24,4 +24,10 @@
     <ProjectReference Include="..\LMS.Data\LMS.Data.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="Areas\Identity\Pages\Account\ForgotPassword - Copy.cshtml.cs">
+      <DependentUpon>ForgotPassword.cshtml.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
 </Project>
