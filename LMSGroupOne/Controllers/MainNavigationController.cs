@@ -24,7 +24,7 @@ namespace LMSGroupOne.Controllers
                 Name = "LMS",
                 Type = NodeType.root,
                 CanCreate=NodeType.none,
-                Editable = true,
+                Editable = true,                
                 Nodes = new TreeNode[]
                 {
                     MakeCourseBranch(),
@@ -55,6 +55,7 @@ namespace LMSGroupOne.Controllers
                 Type = NodeType.folder,
                 CanCreate = NodeType.teacher,
                 Editable = true,
+                Open=true,
                 Nodes = new TreeNode[]
                 {
                     new TreeNode

@@ -14,8 +14,45 @@
 </style>
 
 <script>
-    class TreeItemGenerator {
-        static GenerateItem(id, type, parentId, parentType, name, hasChildren) {
+
+
+        //root = 0,    enum from c#
+        //folder = 1,
+        //student = 2,
+        //teacher = 3,
+        //course = 4,
+        //module = 5,
+        //activity = 6,
+        //file = 7,
+        //search = 8,
+        //none = 9,
+        //trash = 10,
+
+    
+
+    //let season = seasons.SPRING
+
+
+    class TreeItemGenerator
+    {
+        static NodeTypes =  
+        {
+            ROOT: 0,
+            FOLDER: 1,
+            STUDENT: 2,
+            TEACHER: 3,
+            COURSE: 4,
+            MODULE: 5,
+            ACTIVITY: 6,
+            FILE: 7,
+            SEARCH: 8,
+            NONE: 9,
+            TRASH: 10
+        }
+
+
+
+        static GenerateItem(id, type, parentId, parentType, name, hasChildren, canCreate, canEdit, isOpen) {
             let item = document.createElement("nobr");
             item.classList = "treeItem";
 
@@ -23,68 +60,89 @@
             let style = "";
 
             switch (type) {
-                case "teacher":
+                case this.NodeTypes.TEACHER:  
                     classList = "fas fa-user-graduate";
                     style = "color:black;";
                     break;
-                case "course":
+                case this.NodeTypes.COURSE: 
                     classList = "fas fa-chalkboard-teacher";
                     style = "color:darkblue;";
                     break;
-                case "module":
+                case this.NodeTypes.MODULE: 
                     classList = "fas fa-book-open";
                     style = "color:green;";
                     break;
-                case "activity":
+                case this.NodeTypes.ACTIVITY: 
                     classList = "fas fa-flask";
                     style = "color:dodgerblue;";
                     break;
-                case "file":
+                case this.NodeTypes.FILE: 
                     classList = "fas fa-file";
                     style = "color:dimgray;";
                     break;
-                case "student":
+                case this.NodeTypes.STUDENT: 
                     classList = "fas fa-user";
                     style = "color:black;";
                     break;
-                case "folder":
-                    classList = "folderIcon fas fa-folder";
-                    style = "color:yellow;";
+                case this.NodeTypes.FOLDER: 
+                    if (isOpen)
+                    {
+                        classList = "folderIcon fas fa-folder-open";
+                        style = "color:yellow;";
+                    }
+                    else
+                    {
+                        classList = "folderIcon fas fa-folder";
+                        style = "color:yellow;";
+                    }
                     break;
-                case "root": // todo
+                case this.NodeTypes.ROOT: 
                     classList = "fas fa-globe";
                     style = "color:black;";
                     break;
-                case "search": // todo
+                case this.NodeTypes.SEARCH: 
                     classList = "fas fa-search";
                     style = "color:black;";
                     break;
             };
 
-            console.log("hasChildren--" + hasChildren);
-            if (hasChildren=="True")
+            
+            if (hasChildren)
             {
-                let caret = this.#GenerateCaret(id, type);
+                let caret = this.#GenerateCaret(id, type, isOpen);
                 item.innerHTML += caret.outerHTML;
             }
-            let icon = this.#GenerateIcon(id, type, classList, style);
+            let icon = this.#GenerateIcon(id, type, classList, style, isOpen);
             item.innerHTML += icon.outerHTML;
-            let text = this.#GenerateText(id, name, type, parentId, parentType);
+            let text = this.#GenerateText(id, name, type, parentId, parentType, canEdit, isOpen);
             item.innerHTML += text.outerHTML;
-            let add = this.#GenerateAddIcon(id, type, parentId, parentType);
-            item.innerHTML += add.outerHTML;            
+
+
+            if (canCreate != this.NodeTypes.NONE)
+            {
+                let add = this.#GenerateAddIcon(id, type, parentId, parentType, isOpen);
+                item.innerHTML += add.outerHTML;
+            }
 
             return item;
         }
 
+        static GenerateTestItemHTML(node, parentNode)
+        {            
+            let hasChildren = node.Nodes != null;            
+            
 
-        static GenerateItemHTML(id, type, parentId, parentType, name, hasChildren)
-        {
-            let item = this.GenerateItem(id, type, parentId, parentType, name, hasChildren);
+            let item = this.GenerateItem(node.Id, node.Type, parentNode.Id, parentNode.Type, node.Name, hasChildren, node.CanCreate, node.Editable, node.Open);
             document.write(item.outerHTML);
         }
 
-        static #GenerateAddIcon(id, type, parentId, parentType)
+        static GenerateItemHTML(id, type, parentId, parentType, name, hasChildren, canCreate, canEdit, isOpen)
+        {
+            let item = this.GenerateItem(id, type, parentId, parentType, name, hasChildren, canCreate, canEdit, isOpen);
+            document.write(item.outerHTML);
+        }
+
+        static #GenerateAddIcon(id, type, parentId, parentType, isOpen)
         {
             let add = document.createElement("i");
             add.id = id;
@@ -93,33 +151,43 @@
             add.dataset.itemParentId = parentId;
             add.dataset.itemParentType = parentType;
             add.dataset.itemExtra = "new";
+            add.dataset.itemOpen = isOpen;
             add.classList = "fas fa-plus-circle";
             add.style = "color:green";
             return add;            
         }
 
-        static #GenerateCaret(id, type)
+        static #GenerateCaret(id, type, isOpen)
         {
             let caret = document.createElement("i");
-            caret.classList = "carretIcon fas fa-caret-right";
+            if (isOpen)
+            {
+                caret.classList = "carretIcon fas fa-caret-down";
+            }
+            else
+            {
+                caret.classList = "carretIcon fas fa-caret-right";
+            }
             caret.id = id;
             caret.dataset.itemType = type;
             caret.dataset.itemExtra = "caret";
+            caret.dataset.itemOpen = isOpen;
             return caret;
         }
 
-        static #GenerateIcon(id, type, classList, style)
+        static #GenerateIcon(id, type, classList, style, isOpen)
         {
             let icon = document.createElement("i");
             icon.id = id;
             icon.dataset.itemType = type;
             icon.dataset.itemExtra = "icon";
+            icon.dataset.itemOpen = isOpen;
             icon.classList = classList;
             icon.style = style;
             return icon;
         }
 
-        static #GenerateText(id, name, type, parentId, parentType) {
+        static #GenerateText(id, name, type, parentId, parentType, canEdit, isOpen) {
             let text = document.createElement("span");
             text.innerHTML = name;
             text.id = id;
@@ -128,12 +196,14 @@
             text.dataset.itemExtra = "text";
             text.dataset.itemParentId = parentId;
             text.dataset.itemParentType = parentType;
+            text.dataset.itemOpen = isOpen;
+            text.dataset.itemEdit = canEdit;
             return text;
         }
 
         static Test(input)
         {
-            document.write("hello "+input);
+            console.log(input.Id);
         }
 
     }
@@ -158,12 +228,21 @@
 
 <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
 
+
+<script>
+    let obj = @(Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model)));
+                TreeItemGenerator.Test(obj);
+</script>
+
+
+
 <div id="menuDivId" style="background-color:aqua;">
     <div>
         <i id="trashCanId" class="fa fa-trash-alt" data-item-type="@NodeType.trash" style ="font-size:48px;color:black; padding:4px;"></i>        
 
     </div>
     
+
 
     <ul class="list-group" style="user-select: none;">
         @{
@@ -215,8 +294,12 @@
 
             
 
-            <script>    
-                TreeItemGenerator.GenerateItemHTML("@node.Id", "@node.Type", "@parentNode.Id", "@parentNode.Type", "@node.Name", "@hasChildren");
+            <script>
+
+                //TreeItemGenerator.GenerateItemHTML("@node.Id", "@node.Type", "@parentNode.Id", "@parentNode.Type", "@node.Name", "@hasChildren", "@node.CanCreate", "@node.Editable", "False");
+
+                TreeItemGenerator.GenerateTestItemHTML(@(Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(node))), @(Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(parentNode))));
+
             </script>
             
             @if (hasChildren)
@@ -241,6 +324,10 @@
 
 
 <script>
+
+    
+
+
 
    
 
