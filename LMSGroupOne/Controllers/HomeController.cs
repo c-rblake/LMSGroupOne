@@ -15,9 +15,7 @@ namespace LMSGroupOne.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-
         private readonly UserManager<Person> _userManager;
-
         private readonly SignInManager<Person> _signInManager;
 
         public HomeController(ILogger<HomeController> logger, UserManager<Person> userManager, SignInManager<Person> signInManager)
@@ -30,7 +28,14 @@ namespace LMSGroupOne.Controllers
         [Authorize]
         public IActionResult Index()
         {
-            return View();
+
+            if (User.IsInRole("Teacher"))
+            {
+                return (View("IndexTeacher"));
+            }
+
+            return (View());
+
         }
 
         public IActionResult Privacy()

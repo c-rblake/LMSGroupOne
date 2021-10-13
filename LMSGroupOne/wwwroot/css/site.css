@@ -70,13 +70,24 @@ body {
   line-height: 60px; /* Vertically center the text there */
 }
 
-.bg {
+.divbg {
     /* The image used */
-    background-image: url("img/lms1.png");
+    background-image: url("/img/lms1.png");
     /* Full height */
     height: 100%;
     /* Center and scale the image nicely */
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
+}
+
+.nav-link3 {
+    color: #f00;
+}
+.nav-link2:hover {
+        color: #fff;
+}
+
+.img100h {
+    height: 100%;
 }
