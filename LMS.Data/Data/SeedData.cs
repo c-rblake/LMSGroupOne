@@ -31,6 +31,7 @@ namespace LMS.Data.Data
                 //To Do: Add documents at course, module and activity level
 
                 string teacherPw = "Hejsan123!";
+                string studentPw = "Hoppsan123!";
 
                 roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
                 if (roleManager is null) throw new NullReferenceException(nameof(RoleManager<IdentityRole>));
@@ -69,12 +70,12 @@ namespace LMS.Data.Data
                 };
 
                 var courses = GetCourses(courseNames, actTypes);
+                db.Courses.AddRange(courses);
 
                 var students = GetStudents(20, courses);
-                await AddStudentsAsync(students);
+                await AddStudentsAsync(students, studentPw);
                 await AddStudentsToRoleAsync(students);
 
-                db.Courses.AddRange(courses);
                 await db.SaveChangesAsync();
 
             }
@@ -97,12 +98,12 @@ namespace LMS.Data.Data
             return documents;
 
         }
-        private static async Task AddStudentsAsync(List<User> students)
+        private static async Task AddStudentsAsync(List<User> students, string studentPw)
         {
             foreach (var student in students)
             {
-                var str = fake.Random.Replace("???###!").ToLower();
-                var studentPw = char.ToUpper(str[0]) + str.Substring(1);
+                //var str = fake.Random.Replace("???###!").ToLower();
+                //var studentPw = char.ToUpper(str[0]) + str.Substring(1);
                 var result = await userManager.CreateAsync(student, studentPw);
                 if (!result.Succeeded) throw new Exception(string.Join("\n", result.Errors));
             }
@@ -220,7 +221,7 @@ namespace LMS.Data.Data
                     LastName = lastName,
                     Documents = GetDocuments(1),
                     UserName = fake.Internet.Email($"{firstName} {lastName}"),
-                    Course = courses[random.Next(1, courses.Count)]
+                    Course = courses[random.Next(0, courses.Count)]
             };
                 students.Add(user);
             }
