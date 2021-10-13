@@ -24,8 +24,8 @@ namespace LMSGroupOne
 
                 var context = services.GetRequiredService<ApplicationDbContext>();
 
-                //context.Database.EnsureDeleted(); 
-                //context.Database.Migrate();
+                context.Database.EnsureDeleted(); 
+                context.Database.Migrate();
 
                 try
                 {
@@ -37,7 +37,7 @@ namespace LMSGroupOne
                     var logger = services.GetRequiredService<ILogger<Program>>();
                     logger.LogError(e.Message, "Seed failed");
                 }
-
+                
             }
 
 

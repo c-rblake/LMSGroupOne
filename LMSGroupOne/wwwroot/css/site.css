@@ -8,8 +8,24 @@ a.navbar-brand {
 }
 
 /* Provide sufficient contrast against white background */
-a {
-  color: #0366d6;
+a.LMSGroupOne {
+  color: #DDDDDD;
+  font-weight: 800;
+  font-size: 25px;
+}
+
+a-LMSGroupOne:hover {
+    color: #FFFFFF
+}
+
+a.LMSGroupOne-s {
+    color: #DDDDDD;
+    font-weight: 500;
+    font-size: 15px;
+}
+
+a-LMSGroupOne-s:hover {
+    color: #FFFFFF
 }
 
 .btn-primary {
@@ -68,4 +84,26 @@ body {
   width: 100%;
   white-space: nowrap;
   line-height: 60px; /* Vertically center the text there */
+}
+
+.divbg {
+    /* The image used */
+    background-image: url("/img/lms1.png");
+    /* Full height */
+    height: 100%;
+    /* Center and scale the image nicely */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.nav-link3 {
+    color: #f00;
+}
+.nav-link2:hover {
+        color: #fff;
+}
+
+.img100h {
+    height: 100%;
 }
