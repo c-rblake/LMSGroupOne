@@ -26,106 +26,166 @@ namespace LMS.Data.Data
 
                 //FAKER FIRST
 
+                //if (await db.Persons.AnyAsync()) return;
 
+                //To Do: Add documents at course, module and activity level
 
-                if (await db.Persons.AnyAsync()) return;
+                string teacherPw = "Hejsan123!";
 
-                const string roleName = "Student";
+                roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+                if (roleManager is null) throw new NullReferenceException(nameof(RoleManager<IdentityRole>));
 
-                var userManager = services.GetRequiredService<UserManager<User>>();
+                userManager = services.GetRequiredService<UserManager<User>>();
+                if (userManager is null) throw new NullReferenceException(nameof(UserManager<User>));
+   
+                var roleNames = new[] { "Teacher", "Student" };
 
-                var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+                await AddRolesAsync(roleNames);
 
-                var role = new IdentityRole { Name = roleName };
-                var addRoleResult = await roleManager.CreateAsync(role);
+                var teacher = await AddTeacherAsync(teacherPw);
+                await AddTeacherToRoleAsync(teacher);
 
-                var courseNames = new List<string> { "Net21Best","Net21Average"};
-                var courses = GetCourses(courseNames); // Course => Collection<modules>
-                var modules = db.Modules.ToList();
-                
+                var actTypeTypes = new List<string>
+                {
+                    "E-learning",
+                    "Lecture",
+                    "Exercise",
+                    "Assigment",
+                    "Group work"
+                };
+
+                var actTypes = GetActivityType(actTypeTypes);
+                db.ActivityTypes.AddRange(actTypes);
+                await db.SaveChangesAsync();
+
+                var courseNames = new List<string> {
+                    ".NET, programmerare och systemutvecklare",
+                    "IT-supporttekniker",
+                    "IT-tekniker Helpdesk 1st line support",
+                    "System Developer Python, IT Security",
+                    "Frontendutvecklare",
+                    "Systemtestare",
+                    "Informations- och IT-säkerhet"
+                };
+
+                var courses = GetCourses(courseNames, actTypes);
+
+                var students = GetStudents(20, courses);
+                await AddStudentsAsync(students);
+                await AddStudentsToRoleAsync(students);
+
                 db.Courses.AddRange(courses);
                 await db.SaveChangesAsync();
 
-
-                var persons = GetPerson();
-                db.Persons.AddRange(persons);
-                //await db.SaveChangesAsync();
-
-                //var modules = GetModules(); //Add from course
-                //db.Modules.AddRange(modules);
-
-                var activitityTypes = GetActivityType();
-                db.ActivityTypes.AddRange(activitityTypes);
-                await db.SaveChangesAsync();
-
-
-                var activities = GetActivities(activitityTypes, modules);
-                db.Activities.AddRange(activities);
-
-                await db.SaveChangesAsync();
-
-
-
-
-
             }
-
         }
 
-        private static List<ActivityType> GetActivityType()
+        private static List<Document> GetDocuments(int amount)
         {
-            var activityTypes = new List<ActivityType>();
-            for (int i = 0; i < 5; i++)
+            var documents = new List<Document>();
+            for (int i = 0; i < amount; i++)
+            {
+                var document = new Document
+                {
+                    Name = fake.Company.CatchPhrase(),
+                    Description = fake.Company.CompanySuffix() + fake.Random.Word(),
+                    DocumentUrl = fake.Internet.UrlWithPath(),    //fake.Company.CatchPhrase(),
+                    TimeStamp = DateTime.Now.AddDays(fake.Random.Int(-7, -2))
+                };
+                documents.Add(document);
+            };
+            return documents;
+
+        }
+        private static async Task AddStudentsAsync(List<User> students)
+        {
+            foreach (var student in students)
+            {
+                var str = fake.Random.Replace("???###!").ToLower();
+                var studentPw = char.ToUpper(str[0]) + str.Substring(1);
+                var result = await userManager.CreateAsync(student, studentPw);
+                if (!result.Succeeded) throw new Exception(string.Join("\n", result.Errors));
+            }
+        }
+
+        private static async Task<User> AddTeacherAsync(string teacherPw)
+        {
+            var firstName = fake.Name.FirstName();
+            var lastName = fake.Name.LastName();
+            var emailFirstName = firstName.ToLower();
+            var emailLastName = lastName.ToLower();
+
+            var teacher = new User
+            {
+                FirstName = firstName,
+                LastName = lastName,
+                Documents = GetDocuments(2),
+                Email = $"{emailFirstName}.{emailLastName}@lexicon.se",
+                UserName = $"{emailFirstName}.{emailLastName}@lexicon.se"
+            };
+
+            var result = await userManager.CreateAsync(teacher, teacherPw);
+            if (!result.Succeeded) throw new Exception(string.Join("\n", result.Errors));
+
+            return teacher;
+        }
+
+        private static List<ActivityType> GetActivityType(List<string> actTypeTypes)
+        {
+            var actTypes = new List<ActivityType>();
+
+            foreach (var actType in actTypeTypes)
             {
                 var activityType = new ActivityType
                 {
-                    Name = fake.Company.CompanySuffix() + fake.Random.Word(),
+                    Name = actType,
                     Description = fake.Lorem.Sentence()
                 };
-                activityTypes.Add(activityType);
+                actTypes.Add(activityType);
             }
-            return activityTypes;
+            
+            return actTypes;
         }
 
-        private static List<Activity> GetActivities(List<ActivityType> activityTypes, List<Module> modules)
+        private static List<Activity> GetActivities(List<ActivityType> actTypes)
         {
             var activities = new List<Activity>();
-            for (int i = 0; i < 2; i++)
+
+            foreach (var actType in actTypes)
             {
                 var activity = new Activity
                 {
                     Name = fake.Company.CompanySuffix() + fake.Random.Word(),
-                    ActivityTypeId = fake.Random.Int(1, activityTypes.Count),
-                    ModuleId = fake.Random.Int(1, modules.Count),
+                    ActivityType = actType,
                     Description = fake.Lorem.Sentence(),
                     StartDate = DateTime.Now.AddDays(fake.Random.Int(-7, 12)),
-                    EndDate = DateTime.Now.AddDays(fake.Random.Int(100, 150))                    
+                    EndDate = DateTime.Now.AddDays(fake.Random.Int(3, 20))
                 };
-                activities.Add(activity); // 12421
+                activities.Add(activity);
             }
             return activities;
 
         }
 
-        private static List<Module> GetModules()
+        private static List<Module> GetModules(int amount, List<ActivityType> actTypes)
         {
             var modules = new List<Module>();
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < amount; i++)
             {
                 var module = new Module
                 {
-                    CourseId = 1, //Todo
                     Name = fake.Company.CompanySuffix() + fake.Random.Word(),
                     Description = fake.Lorem.Sentence(),
                     StartDate = DateTime.Now.AddDays(fake.Random.Int(-7, -2)),
-                    EndDate = DateTime.Now.AddDays(fake.Random.Int(100, 150))
+                    EndDate = DateTime.Now.AddDays(fake.Random.Int(100, 150)),
+                    Activities = GetActivities(actTypes)
                 };
                 modules.Add(module);
             }
             return modules;
         }
 
-        private static List<Course> GetCourses(List<string> courseNames)
+        private static List<Course> GetCourses(List<string> courseNames, List<ActivityType> actTypes)
         {
             var courses = new List<Course>();
 
@@ -136,50 +196,68 @@ namespace LMS.Data.Data
                     Name = courseName,
                     Description = fake.Lorem.Sentence(),
                     StartDate = DateTime.Now.AddDays(fake.Random.Int(-7, -2)),
-                    EndDate = DateTime.Now.AddDays(fake.Random.Int(100, 150)),
-                    Modules = GetModules()
-                };
+                    EndDate = DateTime.Now.AddDays(fake.Random.Int(90, 130)),
+                    Modules = GetModules(5, actTypes)
+            };
                 courses.Add(course);
             }
             return courses;
 
         }
-
-        private static List<Document> GetDocuments()
+        private static List<User> GetStudents(int amount, List<Course> courses)
         {
-            var documents = new List<Document>();
-            for (int i = 0; i < 2; i++)
+            var students = new List<User>();
+
+            for (int i = 0; i < amount; i++)
             {
-                var document = new Document
-                {
-                    Name = fake.Company.CatchPhrase(),
-                    Description = fake.Company.CompanySuffix() + fake.Random.Word(),
-                    DocumentUrl = fake.Company.CatchPhrase(),
-                    TimeStamp = DateTime.Now.AddDays(fake.Random.Int(-7, -2))
-                };
-                documents.Add(document);
-            };
-            return documents;
+                var firstName = fake.Name.FirstName();
+                var lastName = fake.Name.LastName();
+                var random = new Random();
 
-        }
-
-        private static List<User> GetPerson()
-        {
-            var users = new List<User>();
-
-            for (int i = 0; i < 20; i++)
-            {
                 var user = new User
                 {
-                    FirstName = fake.Name.FirstName(),
-                    LastName = fake.Name.LastName(),
-                    Documents = GetDocuments()
-                };
-                users.Add(user);
+                    FirstName = firstName,
+                    LastName = lastName,
+                    Documents = GetDocuments(1),
+                    UserName = fake.Internet.Email($"{firstName} {lastName}"),
+                    Course = courses[random.Next(1, courses.Count)]
+            };
+                students.Add(user);
             }
+            return students;
 
-            return users;
+        }
+        private static async Task AddStudentsToRoleAsync(List<User> students)
+        {
+            if (students is null) throw new NullReferenceException(nameof(students));
 
+            foreach (var student in students)
+            {
+                if (await userManager.IsInRoleAsync(student, "Student")) continue;
+                var result = await userManager.AddToRoleAsync(student, "Student");
+                if (!result.Succeeded) throw new Exception(string.Join("\n", result.Errors));
+            }
+        }
+
+        private static async Task AddTeacherToRoleAsync(User teacher)
+        {
+            if (teacher is null) throw new NullReferenceException(nameof(teacher));
+
+            if (await userManager.IsInRoleAsync(teacher, "Teacher")) return;
+            var result = await userManager.AddToRoleAsync(teacher, "Teacher");
+            if (!result.Succeeded) throw new Exception(string.Join("\n", result.Errors));
+        }
+
+        private static async Task AddRolesAsync(string[] roleNames)
+        {
+            foreach (var roleName in roleNames)
+            {
+                if (await roleManager.RoleExistsAsync(roleName)) continue;
+                var role = new IdentityRole { Name = roleName };
+                var result = await roleManager.CreateAsync(role);
+
+                if (!result.Succeeded) throw new Exception(string.Join("\n", result.Errors));
+            }
         }
     }
 }
