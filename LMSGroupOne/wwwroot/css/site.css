@@ -8,8 +8,24 @@ a.navbar-brand {
 }
 
 /* Provide sufficient contrast against white background */
-a {
-  color: #0366d6;
+a.LMSGroupOne {
+  color: #DDDDDD;
+  font-weight: 800;
+  font-size: 25px;
+}
+
+a-LMSGroupOne:hover {
+    color: #FFFFFF
+}
+
+a.LMSGroupOne-s {
+    color: #DDDDDD;
+    font-weight: 500;
+    font-size: 15px;
+}
+
+a-LMSGroupOne-s:hover {
+    color: #FFFFFF
 }
 
 .btn-primary {
