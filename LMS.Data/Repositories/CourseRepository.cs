@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using LMS.Core.Models.Entities;
 using LMS.Core.Repositories;
 using LMS.Data.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace LMS.Data.Repositories
 {
@@ -20,6 +21,16 @@ namespace LMS.Data.Repositories
         public void AddCourse(Course course)
         {
             db.AddAsync(course);
+        }
+
+        public bool CourseExist(string name)
+        {
+            return db.Courses.Any(c => c.Name == name);
+        }
+
+        public async Task<Course> GetCourse(int id)
+        {
+            return await db.Courses.FirstOrDefaultAsync(m => m.Id == id);
         }
     }
 }

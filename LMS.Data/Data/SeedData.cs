@@ -26,7 +26,7 @@ namespace LMS.Data.Data
 
                 //FAKER FIRST
 
-                //if (await db.Persons.AnyAsync()) return;
+                if (await db.Persons.AnyAsync()) return;
 
                 //To Do: Add documents at course, module and activity level
 

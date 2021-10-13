@@ -43,7 +43,16 @@ namespace LMSGroupOne.Controllers
             }
 
             return View(course);
-            //return RedirectToAction(nameof(Index), "Home");
+        }
+
+        public IActionResult VerifyCourseName(string Name)
+        {
+            bool courseExists = uow.CourseRepository.CourseExist(Name);
+            if (courseExists)
+            {
+                return Json($"A Course with name {Name} already exists.");
+            }
+            return Json(true);
         }
     }
 }

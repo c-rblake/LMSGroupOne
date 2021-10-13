@@ -71,7 +71,8 @@ namespace LMSGroupOne
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Course}/{action=CreateCourse}");
-                endpoints.MapRazorPages();
+                   // pattern: "{controller=Home}/{action=Index}");
+            endpoints.MapRazorPages();
             });
         }
     }
