@@ -35,7 +35,7 @@ namespace LMS.Api.Controllers
             {
                 var workDto = mapper.Map<WorkDto>(workResult);
                 //return CreatedAtAction(nameof(GetWork), workDto);
-                return CreatedAtAction(nameof(GetWork), new { title = workDto.Title}, workDto);
+                return CreatedAtAction(nameof(GetWork), new { id = workDto.Id}, workDto);
             }
             else
             {
@@ -44,14 +44,19 @@ namespace LMS.Api.Controllers
         }
 
 
-        [HttpGet("{title}", Name =("GetWork"))] //ToDo change to NAME Case Senestive for Swagger.
-        public async Task<ActionResult<WorkDto>> GetWork(string title)
+        [HttpGet("{id}", Name =("GetWork"))] //ToDo change to NAME Case Senestive for Swagger.
+        public async Task<ActionResult<WorkDto>> GetWork(int id)
         {
-            var result = await uow.WorksRepository.GetWorkAsync(title);
-            if (result is null) return NotFound();
+            var workResult = await uow.WorksRepository.GetWorkAsync(id);
+            if (workResult is null) return NotFound();
             //TODO mapping etc.
 
-            return Ok(result);
+            var workDto = mapper.Map<WorkDto>(workResult);
+            if(workDto is null)
+            {
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+            return Ok(workDto);
         }
 
 

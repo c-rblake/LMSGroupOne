@@ -1,5 +1,6 @@
 ﻿using LMS.Api.Core.Entities;
 using System;
+using System.Collections.Generic;
 
 namespace LMS.Api.Core.Dtos
 {
@@ -16,7 +17,7 @@ namespace LMS.Api.Core.Dtos
 
         public DateTime PublicationDate { get; set; }
 
-        //public ICollection<Author> Authors { get; set; }
+        public ICollection<WorkAuthorDto> Authors { get; set; }
         public Genre Genre { get; set; }
 
         public Entities.Type Type { get; set; }

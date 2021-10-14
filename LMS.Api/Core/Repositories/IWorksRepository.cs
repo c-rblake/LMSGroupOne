@@ -11,7 +11,7 @@ namespace LMS.Api.Core.Repositories
         //Async => Task en typ av async
         //Go do something else. Egentligen. Add, Uppdate och Remove är nog oftast INTE async//Task
         Task<IEnumerable<Work>> GetAllWorksAsync();
-        Task<IEnumerable<Work>> GetWorkAsync(string title);
+        Task<Work> GetWorkAsync(int id);
         Task<Work> FindAsync(int? id);
         Task<bool> AnyAsync(int? id);
         Task AddAsync(Work work); 

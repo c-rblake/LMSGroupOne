@@ -37,9 +37,13 @@ namespace LMS.Api.Core.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<Work>> GetWorkAsync(string title)
+        public async Task<Work> GetWorkAsync(int id)
         {
-            var work = await db.Works.Where(w => w.Title == title).ToListAsync();
+            var work = await db.Works
+                .Include(w => w.Genre)
+                .Include(w => w.Authors) //Todo. SelfReference loop.
+                .Include(w => w.Type)
+                .FirstOrDefaultAsync(w => w.Id == id);
 
             return work;
         }
