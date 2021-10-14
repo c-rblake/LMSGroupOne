@@ -1,4 +1,6 @@
-﻿using LMSGroupOne.Models.MainNavigation;
+﻿using LMS.Core.Dto;
+using LMS.Core.Repositories;
+using LMSGroupOne.Models.MainNavigation;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
@@ -11,40 +13,261 @@ namespace LMSGroupOne.Controllers
 {
     public class MainNavigationController : Controller
     {
-        public MainNavigationController()
-        { 
-        
+        private readonly IUnitOfWork uow;
+        public MainNavigationController(IUnitOfWork uow)
+        {
+            this.uow = uow;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            
             var model = new TreeNode
             {
                 Id = "1",
                 Name = "LMS",
                 Type = NodeType.root,
-                CanCreate=NodeType.none,
-                Editable = true,                
+                CanCreate = NodeType.course,
+                Editable = true,
                 Nodes = new TreeNode[]
-                {
-                    MakeCourseBranch(),
-                    MakeTeacherBranch(),
+                { 
+                    await Courses("1"),
+                    //await Teachers("1"),
                     new TreeNode
-                    {
-                        Id="1",
-                        Name="Literature Search",
+                    { 
+                        Id="2",
+                        Name="literature Search",
                         Type=NodeType.search,
-                        CanCreate=NodeType.none,
-                        Editable = true,
+                        CanCreate=NodeType.none,                        
+                        Editable=false,
+                        Open=false,
                         Nodes=null
                     }
-                }                
+                }
+                
             };
 
             return View(model);
-
            
         }
+
+        private async Task<TreeNode> Courses(string parentId)
+        {
+            List<TreeNode> courses = new List<TreeNode>();
+            foreach (var item in await uow.CourseRepository.GetTreeData())
+            {
+                courses.Add(new TreeNode
+                {
+                    Id = item.Id,
+                    Name = item.Name,
+                    Type = NodeType.course,
+                    CanCreate = NodeType.none,
+                    Editable = true,
+                    Open = false,
+                    Nodes = new TreeNode[]
+                    {
+                        Modules(item.Id, item.Nodes),
+                        Documents(item.Id, item.Documents),
+                        Students(item.Id, item.Persons)
+                    }
+                });
+            }
+
+            var model = new TreeNode
+            {
+                Id = parentId,
+                Name = "Courses",
+                Type = NodeType.folder,
+                CanCreate = NodeType.course,
+                Editable = true,
+                Nodes = courses
+            };
+
+            return model;
+        }
+
+
+        private async Task<TreeNode> Teachers(string parentId)
+        {
+            List<TreeNode> teachers = new List<TreeNode>();
+            foreach (var item in await uow.TeacherRepository.GetTreeData())
+            {
+                teachers.Add(new TreeNode
+                {
+                    Id = item.Id,
+                    Name = item.Name,
+                    Type = NodeType.teacher,
+                    CanCreate = NodeType.none,
+                    Editable = true,
+                    Open = false,
+                    Nodes = null                    
+                });
+            }
+
+            var model = new TreeNode
+            {
+                Id = parentId,
+                Name = "Teachers",
+                Type = NodeType.folder,
+                CanCreate = NodeType.teacher,
+                Editable = true,
+                Nodes = teachers
+            };
+
+            return model;
+        }
+
+
+
+
+        private TreeNode Documents(string parentId, IEnumerable<TreeDataDto> nodes)
+        {
+            List<TreeNode> nodeList = new List<TreeNode>();
+            if (nodes != null)
+            {
+                foreach (var item in nodes)
+                {
+                    nodeList.Add(new TreeNode
+                    {
+                        Id = item.Id,
+                        Name = item.Name,
+                        Type = NodeType.file,
+                        CanCreate = NodeType.none,
+                        Editable = true,
+                        Open = false,
+                        Nodes = null
+
+                    });
+                }
+            }
+            var model = new TreeNode
+            {
+                Id = parentId,
+                Name = "Documents",
+                Type = NodeType.folder,
+                CanCreate = NodeType.file,
+                Editable = true,
+                Nodes = nodeList
+
+            };
+            return model;
+        }
+
+
+        private TreeNode Students(string parentId, IEnumerable<TreeDataDto> nodes)
+        {
+            List<TreeNode> nodeList = new List<TreeNode>();
+            if (nodes != null)
+            {
+                foreach (var item in nodes)
+                {
+                    nodeList.Add(new TreeNode
+                    {
+                        Id = item.Id,
+                        Name = item.Name,
+                        Type = NodeType.student,
+                        CanCreate = NodeType.none,
+                        Editable = true,
+                        Open = false,
+                        Nodes = null
+
+                    });
+                }
+            }
+            var model = new TreeNode
+            {
+                Id = parentId,
+                Name = "Students",
+                Type = NodeType.folder,
+                CanCreate = NodeType.student,
+                Editable = true,
+                Nodes = nodeList
+            };
+            return model;
+        }
+
+
+
+
+
+        private TreeNode Modules(string parentId, IEnumerable<TreeDataDto> nodes)
+        {
+            List<TreeNode> nodeList = new List<TreeNode>();
+            foreach (var item in nodes)
+            {
+                nodeList.Add(new TreeNode
+                {
+                    Id = item.Id,
+                    Name = item.Name,
+                    Type = NodeType.module,
+                    CanCreate = NodeType.none,
+                    Editable = true,
+                    Open = false,
+                    Nodes = new TreeNode[]
+                    { 
+                        Activities(item.Id, item.Nodes),
+                        Documents(item.Id, item.Documents)
+                    }
+                                        
+                });
+            }
+            var model = new TreeNode
+            {
+                Id = parentId,
+                Name = "Modules",
+                Type = NodeType.folder,
+                CanCreate = NodeType.module,
+                Editable = true,
+                Nodes = nodeList
+
+            };
+            return model;
+        }
+
+
+        
+
+
+        private TreeNode Activities(string parentId, IEnumerable<TreeDataDto> nodes)
+        {
+            List<TreeNode> nodeList = new List<TreeNode>();
+            if (nodes != null)
+            {
+                foreach (var item in nodes)
+                {
+                    nodeList.Add(new TreeNode
+                    {
+                        Id = item.Id,
+                        Name = item.Name,
+                        Type = NodeType.activity,
+                        CanCreate = NodeType.none,
+                        Editable = true,
+                        Open = false,
+                        Nodes = new TreeNode[] 
+                        { 
+                            Documents(item.Id, item.Documents)
+                        }
+                    });
+                }
+            }
+
+            var model = new TreeNode
+            {
+                Id = parentId,
+                Name = "Activities",
+                Type = NodeType.folder,
+                CanCreate = NodeType.activity,
+                Editable = true,
+                Nodes = nodeList
+
+            };
+            return model;
+        }
+
+
+
+
+
 
         private TreeNode MakeTeacherBranch()
         {
@@ -414,26 +637,29 @@ namespace LMSGroupOne.Controllers
 
         
 
-        public IActionResult OnTreeClick(string id, string type)
+        public async Task<IActionResult> OnTreeClick(string id, string type)
         {
             Debug.WriteLine($"from controller- id:{id}, type:{type}");
 
+            NodeType result = 0;
+            NodeType.TryParse(type, out result);
+            
             Debug.WriteLine("---------------------------------------------------");
-            switch (type)
+            switch (result)
             {
-                case "teacher":
+                case NodeType.teacher:
                     return Teacher(id);
-                case "student":
+                case NodeType.student:
                     return Student(id);
-                case "activity":
+                case NodeType.activity:
                     return Activity(id);
-                case "file":
+                case NodeType.file:
                     return Document(id);
-                case "module":
+                case NodeType.module:
                     return Module(id);
-                case "course":
-                    return Course(id);
-                case "search":
+                case NodeType.course:
+                    return await Course(id);
+                case NodeType.search:
                     return Search(id);
 
             }
@@ -445,6 +671,8 @@ namespace LMSGroupOne.Controllers
 
         private IActionResult Teacher(string id)
         {
+            
+            
             var model = new PlaceholderModelView
             {
                 Id = id
@@ -483,8 +711,13 @@ namespace LMSGroupOne.Controllers
             return PartialView("Document", model);
         }
 
-        private IActionResult Course(string id)
+        private async Task<IActionResult> Course(string id)
         {
+
+            
+
+
+
             var model = new PlaceholderModelView
             {
                 Id = id
