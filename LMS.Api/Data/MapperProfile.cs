@@ -15,9 +15,11 @@ namespace LMS.Api.Data
             CreateMap<Author, AuthorDto>().ReverseMap();
             CreateMap<Author, AuthorCreateDto>().ReverseMap();
             CreateMap<Author, WorkAuthorDto>().ReverseMap();
+            CreateMap<Author, AuthorPatchDto>().ReverseMap();
             //ToDo Make more MAPPINGS
 
             CreateMap<Work, AuthorWorkDto>().ReverseMap();
+            CreateMap<Work, WorkPatchDto>().ReverseMap();
             //.ForMember....BOOKING
             CreateMap<Work, WorkPutDto>().ReverseMap();
 

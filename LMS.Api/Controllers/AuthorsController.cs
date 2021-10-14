@@ -126,12 +126,12 @@ namespace LMS.Api.Controllers
         //}
 
         [HttpPatch("{id}")]
-        public async Task<ActionResult<AuthorDto>> PatchAuthor(int id, JsonPatchDocument<AuthorCreateDto> patchDocument) //ToDo PatchAuthorDto
+        public async Task<ActionResult<AuthorDto>> PatchAuthor(int id, JsonPatchDocument<AuthorPatchDto> patchDocument) //ToDo PatchAuthorDto
         {
             var author = await uow.AuthorRepository.GetAuthorAsync(id, false);
             if (author is null) return NotFound();
 
-            var dto = mapper.Map<AuthorCreateDto>(author);
+            var dto = mapper.Map<AuthorPatchDto>(author);
             
             patchDocument.ApplyTo(dto, ModelState); //ModelState.Values
 

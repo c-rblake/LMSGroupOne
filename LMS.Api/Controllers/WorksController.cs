@@ -4,6 +4,7 @@ using LMS.Api.Core.Entities;
 using LMS.Api.Core.Repositories;
 using LMS.Api.ResourceParamaters;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -73,13 +74,18 @@ namespace LMS.Api.Controllers
             }
             return Ok(workDtos);
         }
-
+        /// <summary>
+        /// Will not be implemented there are many Foreign Keys and sublists.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="workPutDto"></param>
+        /// <returns>Db/backend Exception</returns>
         [HttpPut("{id}")]
         public async Task<ActionResult> PutWork(int id, WorkPutDto workPutDto)
         {
-            var work = await uow.WorksRepository.FindAsync(id);
-
             if (workPutDto is null) return StatusCode(404);
+
+            var work = await uow.WorksRepository.FindAsync(id);
 
             mapper.Map(workPutDto, work); //Map ONTO work. waiting in Context.
 
@@ -91,6 +97,25 @@ namespace LMS.Api.Controllers
             {
                 return StatusCode(500);
             }
+        }
+        [HttpPatch("{id}")]
+        public async Task<ActionResult> PatchWork(int id, JsonPatchDocument<WorkPatchDto> patchDocument)
+        {
+            if (patchDocument is null) return StatusCode(404);
+            var work = await uow.WorksRepository.FindAsync(id);
+
+            var dto = mapper.Map<WorkPatchDto>(work);
+
+            patchDocument.ApplyTo(dto, ModelState);
+
+            if (!TryValidateModel(dto)) return BadRequest(ModelState);
+
+            mapper.Map(dto, work);
+
+            if (await uow.CompleteAsync()) return Ok(mapper.Map<WorkDto>(work));
+            else return StatusCode(500);
+
+
         }
 
 
