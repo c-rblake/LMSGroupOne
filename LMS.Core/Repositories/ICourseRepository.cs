@@ -10,5 +10,7 @@ namespace LMS.Core.Repositories
     public interface ICourseRepository
     {
         void AddCourse(Course course);
+        Task<Course> GetCourse(int id);
+        bool CourseExist(string name);
     }
 }
