@@ -35,13 +35,49 @@ namespace LMS.Api.Core.Repositories
 
         public async Task<IEnumerable<Work>> GetAllWorksAsync(WorksResourceParameters workResourceParameters)
         {
-            var works = await db.Works
+            //var works = await db.Works
+            //    .Include(w => w.Authors)
+            //    .Include(w => w.Genre)
+            //    .Include(w => w.Type)
+            //    .ToListAsync();
+
+            var query = db.Works
                 .Include(w => w.Authors)
                 .Include(w => w.Genre)
                 .Include(w => w.Type)
-                .ToListAsync();
+                .AsQueryable();
 
-            return works;
+            if (!string.IsNullOrWhiteSpace(workResourceParameters.Title))
+            {
+                query = query.Where(q => q.Title.Contains(workResourceParameters.Title)); //== workResourceParameters.Title);
+            }
+            if (!string.IsNullOrWhiteSpace(workResourceParameters.AuthorName))
+            {
+                var author = db.Authors.Where(a => a.FirstName.Contains(workResourceParameters.AuthorName) || a.LastName.Contains(workResourceParameters.AuthorName));
+
+                query = query.Include(q => q.Authors.Where(a => author.Contains(a)));
+                //query = query.Where(q=>q.Authors)
+
+                //Returns Error
+
+                //query = query.Include(q=>q.Authors.Where(a=> a.FirstName.Contains(workResourceParameters.AuthorName) || a.LastName.Contains(workResourceParameters.AuthorName)));
+                // Returns Empty List if Not 
+
+                //var test2NotInTest1 = test2.Where(t2 => !test1.Any(t1 => t2.Contains(t1)));
+
+                //var result = lista.Where(a => listb.Any(b => b.Contains(a)));
+
+
+                //query = query.Where(q => q.Authors.Count > 0);
+                //Todo only sublists matching are included.
+            }
+            if (!string.IsNullOrWhiteSpace(workResourceParameters.GenreName))
+            {
+                query = query.Include(w => w.Genre.Name == workResourceParameters.GenreName);
+
+            }
+
+                return await query.ToListAsync();
         }
 
         public async Task<Work> GetWorkAsync(int id)
