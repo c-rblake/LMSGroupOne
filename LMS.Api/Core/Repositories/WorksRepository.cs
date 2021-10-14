@@ -1,5 +1,6 @@
 ﻿using LMS.Api.Core.Entities;
 using LMS.Api.Data;
+using LMS.Api.ResourceParamaters;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -27,14 +28,20 @@ namespace LMS.Api.Core.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<Work> FindAsync(int? id)
+        public async Task<Work> FindAsync(int? id)
         {
-            throw new NotImplementedException();
+            return await db.Works.FirstOrDefaultAsync(w => w.Id == id);
         }
 
-        public Task<IEnumerable<Work>> GetAllWorksAsync()
+        public async Task<IEnumerable<Work>> GetAllWorksAsync(WorksResourceParameters workResourceParameters)
         {
-            throw new NotImplementedException();
+            var works = await db.Works
+                .Include(w => w.Authors)
+                .Include(w => w.Genre)
+                .Include(w => w.Type)
+                .ToListAsync();
+
+            return works;
         }
 
         public async Task<Work> GetWorkAsync(int id)

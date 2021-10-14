@@ -1,4 +1,5 @@
 ﻿using LMS.Api.Core.Entities;
+using LMS.Api.ResourceParamaters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace LMS.Api.Core.Repositories
     {
         //Async => Task en typ av async
         //Go do something else. Egentligen. Add, Uppdate och Remove är nog oftast INTE async//Task
-        Task<IEnumerable<Work>> GetAllWorksAsync();
+        Task<IEnumerable<Work>> GetAllWorksAsync(WorksResourceParameters workResourceParameters);
         Task<Work> GetWorkAsync(int id);
         Task<Work> FindAsync(int? id);
         Task<bool> AnyAsync(int? id);

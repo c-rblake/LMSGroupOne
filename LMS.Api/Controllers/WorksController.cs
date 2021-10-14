@@ -2,6 +2,7 @@
 using LMS.Api.Core.Dtos;
 using LMS.Api.Core.Entities;
 using LMS.Api.Core.Repositories;
+using LMS.Api.ResourceParamaters;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -44,12 +45,11 @@ namespace LMS.Api.Controllers
         }
 
 
-        [HttpGet("{id}", Name =("GetWork"))] //ToDo change to NAME Case Senestive for Swagger.
+        [HttpGet("{id}", Name ="GetWork")] //ToDo change to NAME Case Senestive for Swagger.
         public async Task<ActionResult<WorkDto>> GetWork(int id)
         {
             var workResult = await uow.WorksRepository.GetWorkAsync(id);
             if (workResult is null) return NotFound();
-            //TODO mapping etc.
 
             var workDto = mapper.Map<WorkDto>(workResult);
             if(workDto is null)
@@ -59,6 +59,41 @@ namespace LMS.Api.Controllers
             return Ok(workDto);
         }
 
+        [HttpGet(Name = "GetWorks")]
+        //[HttpHead]
+        public async Task<ActionResult<IEnumerable<WorkDto>>> GetWorks([FromQuery]WorksResourceParameters workResourceParameters)
+        {
+            var workResults = await uow.WorksRepository.GetAllWorksAsync(workResourceParameters);
+            if (workResults is null) return NotFound();
 
-}
+            var workDtos = mapper.Map<IEnumerable<WorkDto>>(workResults);
+            if(workDtos is null)
+            {
+                return StatusCode(500);
+            }
+            return Ok(workDtos);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult> PutWork(int id, WorkPutDto workPutDto)
+        {
+            var work = await uow.WorksRepository.FindAsync(id);
+
+            if (workPutDto is null) return StatusCode(404);
+
+            mapper.Map(workPutDto, work); //Map ONTO work. waiting in Context.
+
+            if (await uow.CompleteAsync())
+            {
+                return Ok(mapper.Map<WorkDto>(work));
+            }
+            else
+            {
+                return StatusCode(500);
+            }
+        }
+
+
+
+    }
 }
