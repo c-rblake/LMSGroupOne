@@ -28,9 +28,25 @@ namespace LMS.Data.Repositories
             return db.Courses.Any(c => c.Name == name);
         }
 
+        public bool CourseExistById(int id)
+        {
+            return db.Courses.Any(e => e.Id == id);
+          
+        }
+
+        public async Task<Course> FindAsync(int? id)
+        {
+            return await db.Courses.FindAsync(id);
+        }
+
         public async Task<Course> GetCourse(int id)
         {
             return await db.Courses.FirstOrDefaultAsync(m => m.Id == id);
+        }
+
+        public void Update(Course course)
+        {
+            db.Update(course);
         }
     }
 }

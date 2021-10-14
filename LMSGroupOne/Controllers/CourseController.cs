@@ -7,6 +7,7 @@ using LMS.Core.Models.Entities;
 using LMS.Core.Models.ViewModels.Course;
 using LMS.Core.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace LMSGroupOne.Controllers
 {
@@ -25,16 +26,60 @@ namespace LMSGroupOne.Controllers
             return View();
         }
 
-        public IActionResult CreateCourse()
+        [Route("/course/edit/{id}")]
+        public async Task<IActionResult> Edit(int? id)
         {
-            return View();
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var course = mapper.Map<CourseEditViewModel>(await uow.CourseRepository.FindAsync(id));
+            if (course == null)
+            {
+                return NotFound();
+            }
+            return View(course);
+        }
+
+        [HttpPost]
+        [Route("/course/edit/{id}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, CourseEditViewModel viewModel)
+        {
+            if (id != viewModel.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var course = await uow.CourseRepository.FindAsync(id);
+                    mapper.Map(viewModel, course);
+                    await uow.CompleteAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!uow.CourseRepository.CourseExistById(viewModel.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction("Index","Home");
+            }
+            return View(viewModel);
         }
 
 
         [HttpPost]
         [Route("/course/create")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateCourse( CreateCourseViewModel course)
+        public async Task<IActionResult> Create( CreateCourseViewModel course)
         {
             if (ModelState.IsValid)
             {
@@ -43,6 +88,11 @@ namespace LMSGroupOne.Controllers
             }
 
             return View(course);
+        }
+
+        public IActionResult Create()
+        {
+            return View();
         }
 
         public IActionResult VerifyCourseName(string Name)
