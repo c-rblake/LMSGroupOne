@@ -1,16 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 
 namespace LMS.Core.Models.ViewModels.Course
 {
     public class CreateCourseViewModel
     {
         [Required]
-        [MaxLength(25)]
+        [MaxLength(100)]
+        [Remote(action: "VerifyCourseName", controller: "Course")]
         public string Name { get; set; }
 
         public string Description { get; set; }
