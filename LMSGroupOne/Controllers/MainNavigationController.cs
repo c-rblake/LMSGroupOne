@@ -8,13 +8,14 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+ 
 
 namespace LMSGroupOne.Controllers
 {
     public class MainNavigationController : Controller
     {
-        private readonly IUnitOfWork uow;
-        public MainNavigationController(IUnitOfWork uow)
+        private readonly IJTUnitOfWork uow;
+        public MainNavigationController(IJTUnitOfWork uow)
         {
             this.uow = uow;
         }
@@ -89,32 +90,33 @@ namespace LMSGroupOne.Controllers
 
         private async Task<TreeNode> Teachers(string parentId)
         {
-            List<TreeNode> teachers = new List<TreeNode>();
-            foreach (var item in await uow.TeacherRepository.GetTreeData())
-            {
-                teachers.Add(new TreeNode
-                {
-                    Id = item.Id,
-                    Name = item.Name,
-                    Type = NodeType.teacher,
-                    CanCreate = NodeType.none,
-                    Editable = true,
-                    Open = false,
-                    Nodes = null                    
-                });
-            }
+            //List<TreeNode> teachers = new List<TreeNode>();
+            //foreach (var item in await uow.TeacherRepository.GetTreeData())
+            //{
+            //    teachers.Add(new TreeNode
+            //    {
+            //        Id = item.Id,
+            //        Name = item.Name,
+            //        Type = NodeType.teacher,
+            //        CanCreate = NodeType.none,
+            //        Editable = true,
+            //        Open = false,
+            //        Nodes = null                    
+            //    });
+            //}
 
-            var model = new TreeNode
-            {
-                Id = parentId,
-                Name = "Teachers",
-                Type = NodeType.folder,
-                CanCreate = NodeType.teacher,
-                Editable = true,
-                Nodes = teachers
-            };
+            //var model = new TreeNode
+            //{
+            //    Id = parentId,
+            //    Name = "Teachers",
+            //    Type = NodeType.folder,
+            //    CanCreate = NodeType.teacher,
+            //    Editable = true,
+            //    Nodes = teachers
+            //};
 
-            return model;
+            //return model;
+            return null;
         }
 
 

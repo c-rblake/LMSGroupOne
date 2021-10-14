@@ -8,7 +8,6 @@ using LMS.Core.Dto;
 using LMS.Core.Models.Entities;
 using LMS.Core.Repositories;
 using LMS.Data.Data;
-using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 

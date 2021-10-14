@@ -49,6 +49,7 @@ namespace LMSGroupOne
             //UserManager RoleManager
             services.AddControllersWithViews();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IJTUnitOfWork, JTUnitOfWork>();            
             services.AddAutoMapper(typeof(MapperProfile));
         }
 

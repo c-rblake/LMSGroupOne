@@ -13,8 +13,7 @@ namespace LMS.Core.Repositories
     {
         void AddCourse(Course course);
 
-        Task<IEnumerable<TreeDataDto>> GetTreeData(CancellationToken cancellationToken = default);
-        Task<CourseDto> GetCourse(string id, CancellationToken cancellationToken = default);
+        
 
     }
 }
