@@ -271,332 +271,12 @@ namespace LMSGroupOne.Controllers
 
 
 
-        private TreeNode MakeTeacherBranch()
-        {
-            TreeNode model = new TreeNode
-            {
-                Id = "202",
-                Name = "Teachers",
-                Type = NodeType.folder,
-                CanCreate = NodeType.teacher,
-                Editable = true,
-                Open=true,
-                Nodes = new TreeNode[]
-                {
-                    new TreeNode
-                    {
-                        Id="1",
-                        Name="Björnbuse1",
-                        Type=NodeType.teacher,
-                        CanCreate=NodeType.none,
-                        Editable = true,
-                        Nodes=null
-                    },
-                    new TreeNode
-                    {
-                        Id="2",
-                        Name="Björnbuse2",
-                        Type=NodeType.teacher,
-                        CanCreate=NodeType.none,
-                        Editable = true,
-                        Nodes=null
-                    },
-                    new TreeNode
-                    {
-                        Id="3",
-                        Name="Björnbuse3",
-                        Type=NodeType.teacher,
-                        CanCreate=NodeType.none,
-                        Editable = true,
-                        Nodes=null
-                    }
+      
+      
 
-                }                
-            };
-            return model;
-        }
+     
 
-        private TreeNode MakeStudentBranch()
-        {
-            TreeNode model = new TreeNode
-            {
-                Id="101",
-                Name="Students",
-                Type=NodeType.folder,
-                CanCreate = NodeType.student,
-                Editable = true,
-                Nodes =new TreeNode[] 
-                { 
-                    new TreeNode
-                    { 
-                        Id="1",
-                        Name="Kalle Anka",
-                        Type=NodeType.student,
-                        CanCreate=NodeType.none,
-                        Editable = true,
-                        Nodes=null
-                    },
-                    new TreeNode
-                    {
-                        Id="2",
-                        Name="Kajsa Anka",
-                        Type=NodeType.student,
-                        CanCreate=NodeType.none,
-                        Editable = true,
-                        Nodes=null
-                    },
-                    new TreeNode
-                    {
-                        Id="3",
-                        Name="Joakim von Anka",
-                        Type=NodeType.student,
-                        CanCreate=NodeType.none,
-                        Editable = true,
-                        Nodes=null
-                    },
-                    new TreeNode
-                    {
-                        Id="4",
-                        Name="Musse Pig",
-                        Type=NodeType.student,
-                        CanCreate=NodeType.none,
-                        Editable = true,
-                        Nodes=null
-                    },
-                    new TreeNode
-                    {
-                        Id="5",
-                        Name="Magica de Hex",
-                        Type=NodeType.student,
-                        CanCreate=NodeType.none,
-                        Editable = true,
-                        Nodes=null
-                    }
-                }
-            };
-
-            return model;
-        }
-        private TreeNode MakeCourseBranch()
-        {
-            TreeNode model = new TreeNode
-            {
-                Id = "51",
-                Name = "Courses",
-                Type = NodeType.folder,
-                CanCreate = NodeType.course,
-                Editable = true,
-                Nodes = new TreeNode[]
-                {
-                    new TreeNode
-                    {
-                        Id="52",
-                        Name="Course1",
-                        Type=NodeType.course,
-                        CanCreate=NodeType.none,
-                        Editable = true,
-                        Nodes=new TreeNode[]
-                        {
-                            MakeModuleBranch(),
-                            MakeStudentBranch(),
-                            MakeFileBranch()                            
-                        }
-                    },
-                    new TreeNode
-                    {
-                        Id="53",
-                        Name="Course2",
-                        Type=NodeType.course,
-                        CanCreate=NodeType.none,
-                        Editable = true,
-                        Nodes=new TreeNode[]
-                        {
-                            MakeModuleBranch(),
-                            MakeStudentBranch(),
-                            MakeFileBranch()                            
-                        }
-                    },
-                    new TreeNode
-                    {
-                        Id="54",
-                        Name="Course3",
-                        Type=NodeType.course,
-                        CanCreate=NodeType.none,
-                        Editable = true,
-                        Nodes=new TreeNode[]
-                        {
-                            MakeModuleBranch(),
-                            MakeStudentBranch(),
-                            MakeFileBranch()                            
-                        }
-                    }
-
-                }
-            };
-
-
-            return model;
-        }
-
-        private TreeNode MakeModuleBranch()
-        {
-            TreeNode model = new TreeNode
-            {
-                Id = "41",
-                Name = "modules",
-                Type = NodeType.folder,
-                CanCreate = NodeType.module,
-                Editable = true,
-                Nodes = new TreeNode[]
-                {
-                    new TreeNode
-                    {
-                        Id="42",
-                        Name="module1",
-                        Type=NodeType.module,
-                        CanCreate=NodeType.none,
-                        Editable = true,
-                        Nodes=new TreeNode[]
-                        {
-                            MakeActivityBranch(),
-                            MakeFileBranch()
-                            
-                        }
-                    },
-                    new TreeNode
-                    {
-                        Id="43",
-                        Name="module2",
-                        Type=NodeType.module,
-                        CanCreate=NodeType.none,
-                        Editable = true,
-                        Nodes=new TreeNode[]
-                        {
-                            MakeActivityBranch(),
-                            MakeFileBranch()
-                            
-                        }
-                    },
-                    new TreeNode
-                    {
-                        Id="44",
-                        Name="module3",
-                        Type=NodeType.module,
-                        CanCreate=NodeType.none,
-                        Editable = true,
-                        Nodes=new TreeNode[]
-                        {
-                            MakeActivityBranch(),
-                            MakeFileBranch()                            
-                        }
-                    }
-                }
-            };
-
-            return model;
-        }
-
-        private TreeNode MakeActivityBranch()
-        {
-            TreeNode model = new TreeNode
-            {
-                Id = "11",
-                Name = "Activities",
-                Type = NodeType.folder,
-                CanCreate = NodeType.activity,
-                Editable = true,
-                Nodes = new TreeNode[]
-                { 
-                    new TreeNode
-                    { 
-                        Id="13",
-                        Name="Activity1",
-                        Type=NodeType.activity,
-                        CanCreate=NodeType.none,
-                        Editable = true,
-                        Nodes=new TreeNode[]
-                        {
-                            MakeFileBranch()
-                        }
-                    },
-                    new TreeNode
-                    {
-                        Id="14",
-                        Name="Activity2",
-                        Type=NodeType.activity,
-                        CanCreate=NodeType.none,
-                        Editable = true,
-                        Nodes=new TreeNode[]
-                        {
-                            MakeFileBranch()
-                        }
-                    },
-                    new TreeNode
-                    {
-                        Id="15",
-                        Name="Activity3",
-                        Type=NodeType.activity,
-                        CanCreate=NodeType.none,
-                        Editable = true,
-                        Nodes=new TreeNode[]
-                        {
-                            MakeFileBranch()
-                        }
-                    }
-
-                }
-            };
-
-            return model;
-        }
-
-        private TreeNode MakeFileBranch()
-        {
-            
-            TreeNode model=new TreeNode
-            {
-                Id="98",
-                Name="Documents",
-                Type=NodeType.folder,
-                CanCreate = NodeType.file,
-                Editable = true,
-                Nodes =new TreeNode[]
-                {
-                    new TreeNode
-                    {
-                        Id="31",
-                        Name="Index.cshtml",
-                        Type=NodeType.file,
-                        CanCreate=NodeType.none,
-                        Editable = true,
-                        Nodes=null
-                    },
-                    new TreeNode
-                    {
-                        Id="32",
-                        Name="instructions.txt",
-                        Type=NodeType.file,
-                        CanCreate=NodeType.none,
-                        Editable = true,
-                        Nodes=null
-                    },
-                    new TreeNode
-                    {
-                        Id="33",
-                        Name="flowchart.png",
-                        Type=NodeType.file,
-                        CanCreate=NodeType.none,
-                        Editable = true,
-                        Nodes=null
-                    }
-                }               
-            };
-                
-
-            
-            return model;
-        }
-
+     
 
 
         
@@ -654,11 +334,11 @@ namespace LMSGroupOne.Controllers
                 case NodeType.student:
                     return Student(id);
                 case NodeType.activity:
-                    return Activity(id);
+                    return await Activity(id);
                 case NodeType.file:
                     return Document(id);
                 case NodeType.module:
-                    return Module(id);
+                    return await Module(id);
                 case NodeType.course:
                     return await Course(id);
                 case NodeType.search:
@@ -693,11 +373,26 @@ namespace LMSGroupOne.Controllers
             return PartialView("Student", model);
         }
 
-        private IActionResult Activity(string id)
+        private async Task<IActionResult> Activity(string id)
         {
-            var model = new PlaceholderModelView
+            int aid;
+            if (int.TryParse(id, out aid))
             {
-                Id = id
+                // todo something
+            }
+            ActivityDto a = await uow.ActivityRepository.GetActivity(aid);
+
+
+            var model = new ActivityModelView
+            {
+                Id = a.Id,
+                Name=a.Name,
+                Description=a.Description,
+                StartDate=a.StartDate,
+                EndDate=a.EndDate,
+                TypeId=a.TypeId,
+                TypeName=a.TypeName,
+                TypeDescription=a.TypeDescription,
             };
 
             return PartialView("Activity", model);
@@ -715,24 +410,42 @@ namespace LMSGroupOne.Controllers
 
         private async Task<IActionResult> Course(string id)
         {
-
-            
-
-
-
-            var model = new PlaceholderModelView
+            int cid;
+            if (int.TryParse(id, out cid))
             {
-                Id = id
+                // todo something
+            }
+            var c = await uow.CourseRepository.GetCourse(cid);
+
+
+            var model = new CourseModelView
+            {
+                Id = c.Id,
+                Name =c.Name,
+                Description=c.Description,
+                StartDate=c.StartDate,
+                EndDate=c.EndDate
             };
 
             return PartialView("Course", model);
         }
 
-        private IActionResult Module(string id)
+        private async Task<IActionResult> Module(string id)
         {
-            var model = new PlaceholderModelView
+            int mid;
+            if (int.TryParse(id, out mid))
             {
-                Id = id
+                // todo something
+            }
+            var m = await uow.ModuleRepository.GetModule(mid);
+
+            var model = new ModuleModelView
+            {
+                Id = m.Id,
+                Name=m.Name,
+                Description=m.Description,
+                StartDate=m.StartDate,
+                EndDate=m.EndDate
             };
 
             return PartialView("Module", model);

@@ -1,3 +1,14 @@
 ﻿@using LMSGroupOne.Models.MainNavigation
-@model PlaceholderModelView
-placeholder view for module with id @Model.Id
+@model ModuleModelView
+
+<div class="container-fluid text-center">
+    <h2>Module:</h2>
+    <H1>@Model.Name</H1>
+    <h4>Starts: @Model.StartDate</h4>
+    <h4>Ends: @Model.EndDate</h4>
+    <p>@Model.Description</p>
+
+
+
+
+</div>

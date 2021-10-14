@@ -13,12 +13,16 @@ namespace LMS.Data.Repositories
         private readonly ApplicationDbContext db;
         
         public IJTCourseRepository CourseRepository { get; }
+        public IJTModuleRepository ModuleRepository { get; }
+        public IJTActivityRepository ActivityRepository { get; }
 
         public JTUnitOfWork(ApplicationDbContext db)
         {
             this.db = db;
             
             CourseRepository = new JTCourseRepository(db);
+            ModuleRepository = new JTModuleRepository(db);
+            ActivityRepository = new JTActivityRepository(db);
         }
 
        

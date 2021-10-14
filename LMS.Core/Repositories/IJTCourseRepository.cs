@@ -12,6 +12,6 @@ namespace LMS.Core.Repositories
     {
         
         Task<IEnumerable<TreeDataDto>> GetTreeData(CancellationToken cancellationToken = default);
-        Task<CourseDto> GetCourse(string id, CancellationToken cancellationToken = default);
+        Task<CourseDto> GetCourse(int id, CancellationToken cancellationToken = default);
     }
 }

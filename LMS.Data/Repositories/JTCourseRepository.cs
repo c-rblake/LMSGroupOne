@@ -81,13 +81,16 @@ namespace LMS.Data.Repositories
         }
 
 
-        public async Task<CourseDto> GetCourse(string id, CancellationToken cancellationToken = default)
+        public async Task<CourseDto> GetCourse(int id, CancellationToken cancellationToken = default)
         {
-            var course = await db.Courses.FindAsync(id, cancellationToken);
+            var course = await db.Courses.FindAsync(id);
             return new CourseDto
             {
                 Id = course.Id,
-                Name = course.Name
+                Name = course.Name,
+                Description=course.Description,
+                StartDate=course.StartDate,
+                EndDate=(DateTime)course.EndDate
             };
 
         }

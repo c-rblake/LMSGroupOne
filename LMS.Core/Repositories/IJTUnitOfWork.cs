@@ -9,5 +9,9 @@ namespace LMS.Core.Repositories
     public interface IJTUnitOfWork
     {        
         IJTCourseRepository CourseRepository { get; }
+        IJTModuleRepository ModuleRepository { get; }
+
+        IJTActivityRepository ActivityRepository { get; }
+
     }
 }

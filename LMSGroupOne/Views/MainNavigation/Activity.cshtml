@@ -1,4 +1,15 @@
 ﻿@using LMSGroupOne.Models.MainNavigation
-@model PlaceholderModelView
+@model ActivityModelView
 
-placeholder view for activity with id @Model.Id
+<div class="container-fluid text-center">
+    <h2>Activity:</h2>
+    <H1>@Model.Name</H1>
+    <h4>Starts: @Model.StartDate</h4>
+    <h4>Ends: @Model.EndDate</h4>
+    <p>@Model.Description</p>
+
+    <h4>@Model.TypeName</h4>
+    <p>@Model.TypeDescription</p>
+
+
+</div>
