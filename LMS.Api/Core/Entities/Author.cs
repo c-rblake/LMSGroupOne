@@ -10,7 +10,10 @@ namespace LMS.Api.Core.Entities
         public int Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public DateTime DateOfBirth { get; set; }
+
+        //Todo DateTimeOffset instead
+        public DateTimeOffset DateOfBirth { get; set; }
+        public DateTimeOffset? DateOfDeath { get; set; }
 
         //Nav properties
         public ICollection<Work> Works { get; set; }

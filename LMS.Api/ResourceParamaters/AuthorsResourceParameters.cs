@@ -9,9 +9,9 @@ namespace LMS.Api.ResourceParamaters
     {
         //Todo Input Params for [FromBody] or [FromQuery] PageSize or Query Params.
         public bool IncludeWorks { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-
+        public string Name { get; set; }
         public bool SortOnLastName { get; set; } = false;
+
+        public string OrderBy { get; set; } = "Name";
     }
 }

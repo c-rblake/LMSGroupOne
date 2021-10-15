@@ -1,6 +1,9 @@
-﻿using LMS.Api.Core.Entities;
+﻿using LMS.Api.Core.Dtos;
+using LMS.Api.Core.Entities;
 using LMS.Api.Data;
+using LMS.Api.Helpers;
 using LMS.Api.ResourceParamaters;
+using LMS.Api.Services;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -12,10 +15,12 @@ namespace LMS.Api.Core.Repositories
     public class WorksRepository : IWorksRepository
     {
         private readonly LMSApiContext db;
+        private readonly IPropertyMappingService _propertyMappingService;
 
-        public WorksRepository(LMSApiContext db)
+        public WorksRepository(LMSApiContext db, IPropertyMappingService _propertyMappingService)
         {
             this.db = db ?? throw new ArgumentNullException(nameof(db));
+            this._propertyMappingService = _propertyMappingService ?? throw new ArgumentNullException(nameof(_propertyMappingService));
         }
 
         public async Task AddAsync(Work work)
@@ -65,15 +70,17 @@ namespace LMS.Api.Core.Repositories
                 query = query.Where(q => q.Genre.Name == workResourceParameters.GenreName);
 
             }
-            if (!string.IsNullOrWhiteSpace(workResourceParameters.OrderBy)) // On title
-            {
-                if (workResourceParameters.OrderBy.ToLowerInvariant() == "title")
-                {
-                    query = query.OrderBy(q => q.Title);
-                }
-            }
+            //if (!string.IsNullOrWhiteSpace(workResourceParameters.OrderBy)) // On title
+            //{
+            //    if (workResourceParameters.OrderBy.ToLowerInvariant() == "title")
+            //    {
+            //        query = query.OrderBy(q => q.Title);
+            //    }
+            //}
 
-            // query.ApplySort(workResourceParameters.OrderBy, _mappingDictionary)
+            var workPropertyMappingDictionary = _propertyMappingService.GetPropertyMapping<WorkDto, Work>();
+
+            query.ApplySort(workResourceParameters.OrderBy, workPropertyMappingDictionary);
 
             return await query.ToListAsync();
         }

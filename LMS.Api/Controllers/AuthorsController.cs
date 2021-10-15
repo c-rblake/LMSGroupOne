@@ -3,6 +3,7 @@ using LMS.Api.Core.Dtos;
 using LMS.Api.Core.Entities;
 using LMS.Api.Core.Repositories;
 using LMS.Api.ResourceParamaters;
+using LMS.Api.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -19,11 +20,13 @@ namespace LMS.Api.Controllers
     {
         private readonly IUnitOfWork uow;
         private readonly IMapper mapper;
+        
 
         public AuthorsController(IUnitOfWork uow, IMapper mapper)
         {
             this.uow = uow ?? throw new ArgumentNullException(nameof(uow));
             this.mapper = mapper;
+           
         }
         
         [HttpGet("{id}", Name = "GetAuthor")]
