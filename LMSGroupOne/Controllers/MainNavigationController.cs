@@ -29,8 +29,9 @@ namespace LMSGroupOne.Controllers
         }
 
         public async Task<IActionResult> Index()
-        {
-            
+        {           
+
+
             var model = new TreeNode
             {
                 Id = "1",
@@ -326,7 +327,43 @@ namespace LMSGroupOne.Controllers
             return jsonData;
         }
 
-        
+
+        // the welcomepage when the page is loaded
+        public async Task<IActionResult> OnHome(string type)
+        {
+            var user=await userManager.GetUserAsync(User);
+
+            if (User.IsInRole("Teacher"))
+            {
+                
+                var model = new TeacherHomeModelView
+                {
+                    Id = user.Id,
+                    Name=$"{user.FirstName} {user.LastName}",
+                    Email=user.Email
+                };
+
+                return PartialView("TeacherHome", model);
+                
+            }
+            else if (User.IsInRole("Student"))
+            {
+                
+                var model = new StudentHomeModelView
+                {
+                    Id = user.Id,
+                    Name = $"{user.FirstName} {user.LastName}",
+                    Email = user.Email                    
+                };
+
+                return PartialView("StudentHome", model);                
+            }
+
+            
+            return new EmptyResult();
+        }
+
+
 
         public async Task<IActionResult> OnTreeClick(string id, string type)
         {
@@ -341,7 +378,7 @@ namespace LMSGroupOne.Controllers
                 case NodeType.teacher:
                     return Teacher(id);
                 case NodeType.student:
-                    return Student(id);
+                    return await Student(id);
                 case NodeType.activity:
                     return await Activity(id);
                 case NodeType.file:
@@ -372,14 +409,41 @@ namespace LMSGroupOne.Controllers
             return PartialView("Teacher", model);
         }
 
-        private IActionResult Student(string id)
+        private async Task<IActionResult> Student(string id)
         {
-            var model = new PlaceholderModelView
-            {
-                Id = id
-            };
+            var student=await userManager.FindByIdAsync(id);
+            Debug.WriteLine("student----"+student.FirstName);
 
-            return PartialView("Student", model);
+
+            
+            if (User.IsInRole("Teacher"))
+            {
+                var model = new StudentFromTeacherModelView
+                {
+                    Id = id,
+                    Name = $"{student.FirstName} {student.LastName}",
+                    Email = student.Email
+                
+                };                        
+                return PartialView("StudentTeacher", model);
+
+            }
+            else if (User.IsInRole("Student"))
+            {
+                var model = new StudentFromStudentModelView
+                {
+                    Id = id,
+                    Name = $"{student.FirstName} {student.LastName}",
+                    Email = student.Email
+
+                };
+                return PartialView("StudentStudent", model);
+
+            }
+
+
+
+            return new EmptyResult();
         }
 
         private async Task<IActionResult> Activity(string id)

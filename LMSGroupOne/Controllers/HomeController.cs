@@ -29,12 +29,14 @@ namespace LMSGroupOne.Controllers
         public IActionResult Index()
         {
 
-            if (User.IsInRole("Teacher"))
-            {
-                return (View("IndexTeacher"));
-            }
+            //if (User.IsInRole("Teacher"))
+            //{
+            //    return (View("IndexTeacher"));
+            //}
 
-            return (View());
+            //return (View());
+
+            return RedirectToAction("Index", "MainNavigation");
 
         }
 
