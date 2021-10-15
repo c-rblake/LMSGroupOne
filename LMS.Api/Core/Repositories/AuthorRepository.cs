@@ -38,7 +38,10 @@ namespace LMS.Api.Core.Repositories
 
             if (authorResourceParameters.IncludeWorks)
             {
-                query = query.Include(a => a.Works); //Todo Implement WorksDto 
+                query = query.Include(a => a.Works)
+                    .ThenInclude(w => w.Genre)
+                    .Include(a => a.Works)
+                    .ThenInclude(w => w.Type);
             };
             if (!string.IsNullOrWhiteSpace(authorResourceParameters.FirstName))
             {
@@ -47,8 +50,12 @@ namespace LMS.Api.Core.Repositories
             }
             if (!string.IsNullOrWhiteSpace(authorResourceParameters.LastName))
             {
-                var LastName = authorResourceParameters.LastName.Trim();
-                query = query.Where(a => a.LastName == LastName);
+                var lastName = authorResourceParameters.LastName.Trim();
+                query = query.Where(a => a.LastName == lastName);
+            }
+            if(authorResourceParameters.SortOnLastName)
+            {
+                query = query.OrderBy(q => q.LastName);
             }
 
 

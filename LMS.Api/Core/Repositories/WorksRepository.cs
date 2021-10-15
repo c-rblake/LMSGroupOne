@@ -53,28 +53,24 @@ namespace LMS.Api.Core.Repositories
             }
             if (!string.IsNullOrWhiteSpace(workResourceParameters.AuthorName))
             {
-                var author = db.Authors.Where(a => a.FirstName.Contains(workResourceParameters.AuthorName) || a.LastName.Contains(workResourceParameters.AuthorName));
+                var authors = db.Authors.Where(a => a.FirstName.Contains(workResourceParameters.AuthorName) || a.LastName.Contains(workResourceParameters.AuthorName));
 
-                query = query.Include(q => q.Authors.Where(a => author.Contains(a)));
-                //query = query.Where(q=>q.Authors)
-
-                //Returns Error
-
-                //query = query.Include(q=>q.Authors.Where(a=> a.FirstName.Contains(workResourceParameters.AuthorName) || a.LastName.Contains(workResourceParameters.AuthorName)));
-                // Returns Empty List if Not 
-
-                //var test2NotInTest1 = test2.Where(t2 => !test1.Any(t1 => t2.Contains(t1)));
-
+                //query = query.Include(q => q.Authors.Where(a => author.Contains(a))); //Empty Author Lists
+                query = query.Where(q => q.Authors.Any(a => authors.Contains(a)));
                 //var result = lista.Where(a => listb.Any(b => b.Contains(a)));
 
-
-                //query = query.Where(q => q.Authors.Count > 0);
-                //Todo only sublists matching are included.
             }
             if (!string.IsNullOrWhiteSpace(workResourceParameters.GenreName))
             {
-                query = query.Include(w => w.Genre.Name == workResourceParameters.GenreName);
+                query = query.Where(q => q.Genre.Name == workResourceParameters.GenreName);
 
+            }
+            if (!string.IsNullOrWhiteSpace(workResourceParameters.OrderBy)) // On title
+            {
+                if (workResourceParameters.OrderBy.ToLowerInvariant() == "title")
+                {
+                    query = query.OrderBy(q => q.Title);
+                }
             }
 
                 return await query.ToListAsync();

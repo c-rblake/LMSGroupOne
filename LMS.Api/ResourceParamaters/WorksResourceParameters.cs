@@ -20,6 +20,8 @@ namespace LMS.Api.ResourceParamaters
         public string Level { get; set; }
         public string GenreName { get; set; }
 
+        public string OrderBy { get; set; } = "Title";
+
         //public Core.Entities.Type Type { get; set; }
     }
 }

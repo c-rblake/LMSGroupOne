@@ -11,5 +11,7 @@ namespace LMS.Api.ResourceParamaters
         public bool IncludeWorks { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+
+        public bool SortOnLastName { get; set; } = false;
     }
 }
