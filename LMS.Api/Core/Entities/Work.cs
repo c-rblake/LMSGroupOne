@@ -11,7 +11,7 @@ namespace LMS.Api.Core.Entities
         public int GenreId { get; set; }
         public int TypeId { get; set; }
 
-        public string Title { get; set; }
+        public string Title { get; set; } //<string, Mappning + reverse>
 
         public string Description { get; set; }
 

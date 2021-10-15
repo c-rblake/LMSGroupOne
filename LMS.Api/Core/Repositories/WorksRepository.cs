@@ -72,6 +72,7 @@ namespace LMS.Api.Core.Repositories
                     query = query.OrderBy(q => q.Title);
                 }
             }
+
             // query.ApplySort(workResourceParameters.OrderBy, _mappingDictionary)
 
             return await query.ToListAsync();
