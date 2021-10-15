@@ -22,7 +22,7 @@ namespace LMSGroupOne.Services
                 .Select(r => new SelectListItem
                 {
                     Text = r.Name.ToString(),
-                    Value = r.Id.ToString()
+                    Value = r.Name.ToString()
                 }).ToListAsync();
         }
     }
