@@ -1,12 +1,9 @@
 ﻿using Bogus;
 using LMS.Core.Models.Entities;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using User = LMS.Core.Models.Entities.Person;
 
@@ -38,7 +35,7 @@ namespace LMS.Data.Data
 
                 userManager = services.GetRequiredService<UserManager<User>>();
                 if (userManager is null) throw new NullReferenceException(nameof(UserManager<User>));
-   
+
                 var roleNames = new[] { "Teacher", "Student" };
 
                 await AddRolesAsync(roleNames);
@@ -202,7 +199,7 @@ namespace LMS.Data.Data
                 };
                 actTypes.Add(activityType);
             }
-            
+
             return actTypes;
         }
 
@@ -257,7 +254,7 @@ namespace LMS.Data.Data
                     StartDate = DateTime.Now.AddDays(fake.Random.Int(-7, -2)),
                     EndDate = DateTime.Now.AddDays(fake.Random.Int(90, 130)),
                     Modules = GetModules(3, actTypes)
-            };
+                };
                 courses.Add(course);
             }
             return courses;
@@ -280,7 +277,7 @@ namespace LMS.Data.Data
                     Documents = GetDocuments(1),
                     UserName = fake.Internet.Email($"{firstName} {lastName}"),
                     Course = courses[random.Next(0, courses.Count)]
-            };
+                };
                 students.Add(user);
             }
             return students;
