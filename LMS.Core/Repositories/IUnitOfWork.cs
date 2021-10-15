@@ -10,6 +10,7 @@ namespace LMS.Core.Repositories
     {
         ITeacherRepository TeacherRepository { get; }
         ICourseRepository CourseRepository { get; }
+        IAccountRepository AccountRepository { get; }
         Task CompleteAsync();
     }
 }
