@@ -41,12 +41,12 @@
             </div>
             <div class="form-group">
                 <label asp-for="Role"></label>
-                <select asp-for="Role" asp-items="@await roleSelectService.GetRolesAsync()" class="form-control">
+                <select id="role" asp-for="Role" asp-items="@await roleSelectService.GetRolesAsync()" class="form-control">
                     <option value="" hidden disabled selected>Select a role</option>
                 </select>
                 <span asp-validation-for="Role" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group" id="course">
                 <label asp-for="CourseId">Add to course (not required)</label>
                 <select asp-for="CourseId" asp-items="@await courseSelectService.GetCoursesAsync()" class="form-control">
                     <option value="" hidden disabled selected>Select a course</option>
@@ -63,4 +63,16 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(function hideOnLoad() {
+            $('#course').hide();
+        });
+        $(function () {
+            $("#role").change(function () {
+                if ($(this).val() = "b17b6bd5-d706-458a-9aec-b7f7fe8a9bc1") { ('#course').show(); }
+            });
+        });
+    </script>
 }

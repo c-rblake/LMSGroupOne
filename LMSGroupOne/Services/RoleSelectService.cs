@@ -19,7 +19,6 @@ namespace LMSGroupOne.Services
         public async Task<IEnumerable<SelectListItem>> GetRolesAsync()
         {
             return await db.Roles
-                .Distinct()
                 .Select(r => new SelectListItem
                 {
                     Text = r.Name.ToString(),

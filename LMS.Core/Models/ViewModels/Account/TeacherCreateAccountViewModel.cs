@@ -8,10 +8,13 @@ namespace LMS.Core.Models.ViewModels.Account
     {
         [Required(ErrorMessage = "Please enter first name")]
         [MaxLength(40, ErrorMessage = "Max length for first name is 40 characters")]
+        [Display(Name = "First name")]
         public string FirstName { get; set; }
 
         [Required(ErrorMessage = "Please enter last name")]
         [MaxLength(50, ErrorMessage = "Max length for last name is 50 characters")]
+        [Display(Name = "Last name")]
+
         public string LastName { get; set; }
 
         [Required(ErrorMessage = "Please enter an e-mail address")]
@@ -24,6 +27,9 @@ namespace LMS.Core.Models.ViewModels.Account
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
+        [DataType(DataType.Password)]
+        [Display(Name = "Confirm password")]
+        [Compare("Password", ErrorMessage = "The password and confirmation password do not match")]
         public string ConfirmPassword { get; set; }
 
         public string ReturnUrl { get; set; }
