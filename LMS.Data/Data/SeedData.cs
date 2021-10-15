@@ -28,7 +28,7 @@ namespace LMS.Data.Data
 
                 //if (await db.Persons.AnyAsync()) return;
 
-                //To Do: Add documents at course, module and activity level
+                //To Do: Add documents at activity level
 
                 string teacherPw = "Hejsan123!";
                 string studentPw = "Hoppsan123!";
@@ -76,9 +76,67 @@ namespace LMS.Data.Data
                 await AddStudentsAsync(students, studentPw);
                 await AddStudentsToRoleAsync(students);
 
+                var documentsForCourses = GetDocumentsForCourses(students);
+                db.Documents.AddRange(documentsForCourses);
+
+                //await db.SaveChangesAsync();
+
+                var documentsForModules = GetDocumentsForModules(students);
+                db.Documents.AddRange(documentsForModules);
+
                 await db.SaveChangesAsync();
 
+                //var documentsForActivities = GetDocumentsForActivities(students);
+                //db.Documents.AddRange(documentsForActivities);
+
+                //await db.SaveChangesAsync();
+
             }
+        }
+
+        private static List<Document> GetDocumentsForModules(List<User> students)
+        {
+            var documents = new List<Document>();
+
+            foreach (var student in students)
+            {
+                var modules = student.Course.Modules;
+
+                foreach (var module in modules)
+                {
+                    var document = new Document
+                    {
+                        Name = fake.Company.CatchPhrase(),
+                        Description = fake.Company.CompanySuffix() + fake.Random.Word(),
+                        DocumentUrl = fake.Internet.UrlWithPath(),    //fake.Company.CatchPhrase(),
+                        TimeStamp = DateTime.Now.AddDays(fake.Random.Int(-7, -2)),
+                        Person = student,
+                        Module = module
+                    };
+                    documents.Add(document);
+                }
+            }
+            return documents;
+        }
+
+        private static List<Document> GetDocumentsForCourses(List<User> students)
+        {
+            var documents = new List<Document>();
+
+            foreach (var student in students)
+            {
+                var document = new Document
+                {
+                    Name = fake.Company.CatchPhrase(),
+                    Description = fake.Company.CompanySuffix() + fake.Random.Word(),
+                    DocumentUrl = fake.Internet.UrlWithPath(),    //fake.Company.CatchPhrase(),
+                    TimeStamp = DateTime.Now.AddDays(fake.Random.Int(-7, -2)),
+                    Person = student,
+                    Course = student.Course
+                };
+                documents.Add(document);
+            }
+            return documents;
         }
 
         private static List<Document> GetDocuments(int amount)
@@ -198,7 +256,7 @@ namespace LMS.Data.Data
                     Description = fake.Lorem.Sentence(),
                     StartDate = DateTime.Now.AddDays(fake.Random.Int(-7, -2)),
                     EndDate = DateTime.Now.AddDays(fake.Random.Int(90, 130)),
-                    Modules = GetModules(5, actTypes)
+                    Modules = GetModules(3, actTypes)
             };
                 courses.Add(course);
             }
