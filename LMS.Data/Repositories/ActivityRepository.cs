@@ -25,5 +25,16 @@ namespace LMS.Data.Repositories
         {
             return db.Activities.Any(c => c.Name == name);
         }
+
+        public async Task<Activity> FindAsync(int? id)
+        {
+             return await db.Activities.FindAsync(id);
+        }
+
+        public bool ActivityExistsById(int? id)
+        {
+
+            return db.Activities.Any(e => e.Id == id);
+        }
     }
 }
