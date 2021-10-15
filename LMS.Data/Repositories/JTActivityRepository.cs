@@ -8,6 +8,7 @@ using LMS.Core.Dto;
 using LMS.Core.Repositories;
 using Microsoft.EntityFrameworkCore;
 using LMS.Data.Data;
+using Microsoft.AspNetCore.Identity;
 
 namespace LMS.Data.Repositories
 {
@@ -23,6 +24,7 @@ namespace LMS.Data.Repositories
         public async Task<ActivityDto> GetActivity(int id, CancellationToken cancellationToken = default)
         {
             var activity = await db.Activities.FindAsync(id);
+
             
 
             //return new ActivityDto

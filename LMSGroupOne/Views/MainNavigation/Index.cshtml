@@ -1,22 +1,22 @@
 ﻿@model LMSGroupOne.Models.MainNavigation.TreeNode
 
 @{
-    ViewData["Title"] = "MainNavigation Page";
+    ViewData["Title"] = "LMS Group1";
 }
+<script src="~/js/WindowResizer.js" asp-append-version="true"></script>
 
-
-<div class="container-fluid">
-    <div class="row">
+<div class="container-fluid p-0 m-0" style="min-height:100%; max-height:100%;">
+    <div class="row p-0 m-0">
 
         @*the navigation tree section*@
-        <div class="col-3 overflow-hidden">
+        <div class="col-3 p-0 m-0">
 
             @await Html.PartialAsync("_TreeViewPartial")
 
         </div>
 
         @*the main content section*@
-        <div class="col-9">
+        <div class="col-9 p-0 m-0">
 
             @await Html.PartialAsync("_MainContentPartial")
 

@@ -1,6 +1,8 @@
 ﻿using LMS.Core.Dto;
+using LMS.Core.Models.Entities;
 using LMS.Core.Repositories;
 using LMSGroupOne.Models.MainNavigation;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
@@ -15,9 +17,15 @@ namespace LMSGroupOne.Controllers
     public class MainNavigationController : Controller
     {
         private readonly IJTUnitOfWork uow;
-        public MainNavigationController(IJTUnitOfWork uow)
+        private readonly UserManager<Person> userManager;
+        public MainNavigationController(IJTUnitOfWork uow, UserManager<Person> userManager)
         {
             this.uow = uow;
+
+            this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
+
+            //userManager.GetUsersInRoleAsync("RoleName");
+
         }
 
         public async Task<IActionResult> Index()
