@@ -6,9 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="10.1.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="5.0.7" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.7" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="5.0.7" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.10" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="5.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.10">
       <PrivateAssets>all</PrivateAssets>
@@ -20,6 +22,12 @@
   <ItemGroup>
     <ProjectReference Include="..\LMS.Core\LMS.Core.csproj" />
     <ProjectReference Include="..\LMS.Data\LMS.Data.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Areas\Identity\Pages\Account\ForgotPassword - Copy.cshtml.cs">
+      <DependentUpon>ForgotPassword.cshtml.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
 
 </Project>

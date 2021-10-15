@@ -2,7 +2,7 @@
 
 namespace LMS.Data.Migrations
 {
-    public partial class datetimeannotation : Migration
+    public partial class NewInit : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
