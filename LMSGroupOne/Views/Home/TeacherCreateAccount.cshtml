@@ -71,7 +71,7 @@
         $(function () {
             $("#role").change(function () {
                 if ($(this).val() == "Student") { $("#course").show(); }
-                else if ($(this).val() == "Teacher") { $("#course").empty(); $("#course").hide(); }
+                else if ($(this).val() == "Teacher") { $("#course").empty(); $("#course").hide('slow'); }
             });
         });
     </script>
