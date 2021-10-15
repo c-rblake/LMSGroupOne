@@ -1,6 +1,9 @@
-﻿using LMS.Api.Core.Entities;
+﻿using LMS.Api.Core.Dtos;
+using LMS.Api.Core.Entities;
 using LMS.Api.Data;
+using LMS.Api.Helpers;
 using LMS.Api.ResourceParamaters;
+using LMS.Api.Services;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -12,10 +15,12 @@ namespace LMS.Api.Core.Repositories
     public class AuthorRepository : IAuthorRepository
     {
         private readonly LMSApiContext db;
+        private readonly IPropertyMappingService _propertyMappingService;
 
-        public AuthorRepository(LMSApiContext db)
+        public AuthorRepository(LMSApiContext db, IPropertyMappingService propertyMappingService)
         {
             this.db = db ?? throw new ArgumentNullException(nameof(db));
+            this._propertyMappingService = propertyMappingService ?? throw new ArgumentNullException(nameof(propertyMappingService));
         }
         public async Task AddAsync(Author author)
         {
@@ -43,32 +48,42 @@ namespace LMS.Api.Core.Repositories
                     .Include(a => a.Works)
                     .ThenInclude(w => w.Type);
             };
-            if (!string.IsNullOrWhiteSpace(authorResourceParameters.FirstName))
+            if (!string.IsNullOrWhiteSpace(authorResourceParameters.Name))
             {
-                var firstName = authorResourceParameters.FirstName.Trim();
-                query = query.Where(a => a.FirstName == firstName);
+                var name = authorResourceParameters.Name.Trim();
+                query = query.Where(a => a.FirstName == name || a.LastName == name);
             }
-            if (!string.IsNullOrWhiteSpace(authorResourceParameters.LastName))
-            {
-                var lastName = authorResourceParameters.LastName.Trim();
-                query = query.Where(a => a.LastName == lastName);
-            }
-            if(authorResourceParameters.SortOnLastName)
-            {
-                query = query.OrderBy(q => q.LastName);
-            }
+            //if (!string.IsNullOrWhiteSpace(authorResourceParameters.LastName))
+            //{
+            //    var lastName = authorResourceParameters.LastName.Trim();
+            //    query = query.Where(a => a.LastName == lastName);
+            //}
+            //if(authorResourceParameters.SortOnLastName) Apply Sort Replaces this code
+            //{
+            //    query = query.OrderBy(q => q.LastName);
+            //}
+
+            var authorPropertyMappingDictionary =
+                _propertyMappingService.GetPropertyMapping<AuthorDto, Author>();
+
+
+            query = query.ApplySort(authorResourceParameters.OrderBy,
+                authorPropertyMappingDictionary);
 
 
             return await query.ToListAsync();
         }
 
-        public async Task<Author> GetAuthorAsync(int? id, bool includeworks=false)
+        public async Task<Author> GetAuthorAsync(int? id, bool includeworks=true)
         {
             var query = db.Authors.AsQueryable();
 
             if (includeworks)
             {
-                query = query.Include(a => a.Works); //Todo Implement WorksDto 
+                query = query.Include(a => a.Works)
+                    .ThenInclude(w => w.Genre)
+                    .Include(a => a.Works)
+                    .ThenInclude(w => w.Type);
             };
 
             return await query.FirstOrDefaultAsync(a=>a.Id == id);

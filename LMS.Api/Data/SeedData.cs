@@ -69,8 +69,12 @@ namespace LMS.Api.Data
                 {
                     FirstName = fake.Name.FirstName(),
                     LastName = fake.Name.LastName(),                  
-                    DateOfBirth = DateTime.Now.AddYears(fake.Random.Int(-65, -25))
+                    DateOfBirth = DateTime.Now.AddYears(fake.Random.Int(-65, -25)), 
                 };
+                if(fake.Random.Int(1, 100) > 75)
+                {
+                    author.DateOfDeath = DateTime.Now.AddYears(fake.Random.Int(-10, -2));
+                }
                 authors.Add(author);
             }
             return authors;

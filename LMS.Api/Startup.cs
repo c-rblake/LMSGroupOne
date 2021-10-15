@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using LMS.Api.Data;
 using LMS.Api.Core.Repositories;
+using LMS.Api.Services;
 
 namespace LMS.Api
 {
@@ -41,6 +42,7 @@ namespace LMS.Api
             services.AddDbContext<LMSApiContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("LMSApiContext")));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddTransient<IPropertyMappingService, PropertyMappingService>();
             services.AddAutoMapper(typeof(Startup));
         }
 
