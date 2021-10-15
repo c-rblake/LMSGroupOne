@@ -41,7 +41,7 @@ namespace LMSGroupOne.Controllers
                 Nodes = new TreeNode[]
                 { 
                     await Courses("1"),
-                    //await Teachers("1"),
+                    await Teachers("1"),
                     new TreeNode
                     { 
                         Id="2",
@@ -98,33 +98,34 @@ namespace LMSGroupOne.Controllers
 
         private async Task<TreeNode> Teachers(string parentId)
         {
-            //List<TreeNode> teachers = new List<TreeNode>();
-            //foreach (var item in await uow.TeacherRepository.GetTreeData())
-            //{
-            //    teachers.Add(new TreeNode
-            //    {
-            //        Id = item.Id,
-            //        Name = item.Name,
-            //        Type = NodeType.teacher,
-            //        CanCreate = NodeType.none,
-            //        Editable = true,
-            //        Open = false,
-            //        Nodes = null                    
-            //    });
-            //}
+            var persons=await userManager.GetUsersInRoleAsync("Teacher");
+            List<TreeNode> teachers = new List<TreeNode>();
+            foreach (var item in persons)
+            {
+                teachers.Add(new TreeNode
+                {
+                    Id = item.Id,
+                    Name = $"{item.FirstName} {item.LastName}",
+                    Type = NodeType.teacher,
+                    CanCreate = NodeType.none,
+                    Editable = true,
+                    Open = false,
+                    Nodes = null                    
+                });
+            }
 
-            //var model = new TreeNode
-            //{
-            //    Id = parentId,
-            //    Name = "Teachers",
-            //    Type = NodeType.folder,
-            //    CanCreate = NodeType.teacher,
-            //    Editable = true,
-            //    Nodes = teachers
-            //};
+            var model = new TreeNode
+            {
+                Id = parentId,
+                Name = "Teachers",
+                Type = NodeType.folder,
+                CanCreate = NodeType.teacher,
+                Editable = true,
+                Nodes = teachers
+            };
 
-            //return model;
-            return null;
+            return model;
+            
         }
 
 
