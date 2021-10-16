@@ -40,7 +40,6 @@ namespace LMS.Api.Helpers
 
             var orderByAfterSplit = orderBy.Split(','); 
 
-            //Todo Change to a Recursive function.
 
             foreach (var orderByClause in orderByAfterSplit)
             {
