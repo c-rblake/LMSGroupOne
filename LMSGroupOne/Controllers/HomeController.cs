@@ -54,20 +54,20 @@ namespace LMSGroupOne.Controllers
         }
 
         [Authorize(Roles = "Teacher")]
-        public async Task<IActionResult> TeacherCreateAccount(string returnUrl = null)
+        public async Task<IActionResult> CreateAccount(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
-            var teacherCreateAccountViewModel = new TeacherCreateAccountViewModel { };
+            var createAccountViewModel = new CreateAccountViewModel { };
 
-            return View(teacherCreateAccountViewModel);
+            return View(createAccountViewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Teacher")]
-        public async Task<IActionResult> TeacherCreateAccount(TeacherCreateAccountViewModel viewModel, string returnUrl = null)
+        public async Task<IActionResult> CreateAccount(CreateAccountViewModel viewModel, string returnUrl = null)
         {
             if (ModelState.IsValid)
             {

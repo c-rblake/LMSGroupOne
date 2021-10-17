@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LMS.Core.Models.ViewModels.Account
 {
-    public class TeacherCreateAccountViewModel
+    public class CreateAccountViewModel
     {
         [Required(ErrorMessage = "Please enter first name")]
         [MaxLength(40, ErrorMessage = "Max length for first name is 40 characters")]
