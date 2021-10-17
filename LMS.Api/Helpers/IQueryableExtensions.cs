@@ -11,13 +11,14 @@ namespace LMS.Api.Helpers
     public static class IQueryableExtensions
     {
         /// <summary>
-        /// Function that cleans and sorts a IQueryable.
+        /// Function that cleans and sorts an API Query string to work on an IQueryable.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="source">IQueryable</param>
-        /// <param name="orderBy">User querystring authors/?orderBy=name desc, age desc => "name desc", "age desc"</param>
-        /// <example></example>
-        /// <param name="mappingDictionary"></param>
+        /// <param name="orderBy">User query string</param>
+        /// <param name="mappingDictionary">Dictionary on how to transalate user input as some DTO are different from the entities.</param>
+        /// <example>authors/?orderBy=name desc, age desc => "name desc", "age desc" this is then translated to "FirstName descending DateOfBirth descending" 
+        /// through an accompanying mapping dictionary with a revert boolean. In this example "Age" is also reversed from DateOfBirth.</example>
         /// <returns></returns>
         public static IQueryable<T> ApplySort<T>(this IQueryable<T> source,
             string orderBy, Dictionary<string, PropertyMappingValue> mappingDictionary)

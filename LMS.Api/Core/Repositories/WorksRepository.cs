@@ -40,12 +40,6 @@ namespace LMS.Api.Core.Repositories
 
         public async Task<IEnumerable<Work>> GetAllWorksAsync(WorksResourceParameters workResourceParameters)
         {
-            //var works = await db.Works
-            //    .Include(w => w.Authors)
-            //    .Include(w => w.Genre)
-            //    .Include(w => w.Type)
-            //    .ToListAsync();
-
             var query = db.Works
                 .Include(w => w.Authors)
                 .Include(w => w.Genre)

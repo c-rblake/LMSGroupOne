@@ -60,11 +60,28 @@ namespace LMS.Api.Data
             return works;
         }
 
+        private static Author GetNeroTulip()
+        {
+            var neroTulip = new Author
+            {
+                FirstName = "Nero",
+                LastName = "Tulip",
+                DateOfBirth = new DateTime(1960, 10, 18)
+            };
+            //ToDo add Nero's works.
+            return neroTulip;
+        }
+
         private static ICollection<Author> GetAuthors()
         {
             var authors = new List<Author>();
             for (int i = 0; i < 2; i++)
             {
+                if (i == 0)
+                {
+                    var neroTulip = GetNeroTulip();
+                    authors.Add(neroTulip);
+                }
                 var author = new Author
                 {
                     FirstName = fake.Name.FirstName(),

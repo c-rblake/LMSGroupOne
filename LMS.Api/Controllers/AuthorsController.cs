@@ -34,7 +34,7 @@ namespace LMS.Api.Controllers
         {
             var result = await uow.AuthorRepository.GetAuthorAsync(id, includeWorks); //ToDo the Query has TWO Awaits total..
             if (result is null) return NotFound();
-            var dtoResult = mapper.Map<AuthorDto>(result); //Result has the List of Works but Circlar reference.
+            var dtoResult = mapper.Map<AuthorDto>(result);
             dtoResult.WorkDtos = mapper.Map<ICollection<AuthorWorkDto>>(result.Works);
             if (result is null) return StatusCode(500);
 
@@ -46,7 +46,7 @@ namespace LMS.Api.Controllers
         [HttpGet]
         [HttpHead]
         public async Task<ActionResult<IEnumerable<AuthorDto>>> GetAuthors([FromQuery]AuthorsResourceParameters authorResourceParameters)
-            //FromQuery because it is a compley type and inferred as from body.
+            //FromQuery because it is a complex type and inferred as [FromBody] by default.
         {
             List<AuthorDto> dtoAuthors = new List<AuthorDto>();
             //Todo Implement. Should return AuthorDto with collection WorksDto

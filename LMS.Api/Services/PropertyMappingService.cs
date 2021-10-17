@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace LMS.Api.Services
 {
     /// <summary>
-    /// Objects to map Fields to String for OrderBy methods via Linq Dynamic
+    /// Mapping class Fields to strings. For OrderBy resource parameter in ResourceParameters. For us in mapping to via Linq Dynamic query. See Apply Sort extension.
     /// </summary>
     public class PropertyMappingService : IPropertyMappingService
 

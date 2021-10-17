@@ -50,15 +50,31 @@ namespace LMS.Api.Core.Repositories
             };
             if (!string.IsNullOrWhiteSpace(authorResourceParameters.Name))
             {
-                var name = authorResourceParameters.Name.Trim();
-                query = query.Where(a => a.FirstName == name || a.LastName == name);
+
+
+                //Expanded search. necessary unfortunatley. Usecase "Nero Tulip"
+                var names = authorResourceParameters.Name.Trim().Split(" ");
+                if (names.Length == 1)
+                {
+                    var name = authorResourceParameters.Name.Trim();
+                    //query = query.Where(a => a.FirstName == name || a.LastName == name); Cannot search for "Nero Tulip" which would be the use case.
+                    query = query.Where(a => a.FirstName.Contains(name) || a.LastName.Contains(name));
+                }
+                else
+                {
+                    //query = query.Where(q => q.FirstName.Any(fn => listofstirngs.Any(s=> s == fn))); // DOES NOT WORK WELL HERE.
+                    query = query.Where(a => names.Contains(a.FirstName) || names.Contains(a.LastName)); // think for each row in Q as author.
+
+                    //query = query.Where(a => a.FirstName.Contains(name) || a.LastName.Contains(name));
+                }
             }
-            //if (!string.IsNullOrWhiteSpace(authorResourceParameters.LastName))
+            
+            //if (!string.IsNullOrWhiteSpace(authorResourceParameters.LastName)) Replaced by Name on Dto
             //{
             //    var lastName = authorResourceParameters.LastName.Trim();
             //    query = query.Where(a => a.LastName == lastName);
             //}
-            //if(authorResourceParameters.SortOnLastName) Apply Sort Replaces this code
+            //if(authorResourceParameters.SortOnLastName)  Replaced by Apply Sort Extension.
             //{
             //    query = query.OrderBy(q => q.LastName);
             //}
