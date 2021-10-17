@@ -75,20 +75,12 @@ namespace LMS.Data.Data
 
                 var documentsForCourses = GetDocumentsForCourses(students);
                 db.Documents.AddRange(documentsForCourses);
-
-                //await db.SaveChangesAsync();
-
+ 
                 var documentsForModules = GetDocumentsForModules(students);
                 db.Documents.AddRange(documentsForModules);
 
                 await db.SaveChangesAsync();
-
-                //var documentsForActivities = GetDocumentsForActivities(students);
-                //db.Documents.AddRange(documentsForActivities);
-
-                //await db.SaveChangesAsync();
-
-            }
+             }
         }
 
         private static List<Document> GetDocumentsForModules(List<User> students)
@@ -157,9 +149,7 @@ namespace LMS.Data.Data
         {
             foreach (var student in students)
             {
-                //var str = fake.Random.Replace("???###!").ToLower();
-                //var studentPw = char.ToUpper(str[0]) + str.Substring(1);
-                var result = await userManager.CreateAsync(student, studentPw);
+                 var result = await userManager.CreateAsync(student, studentPw);
                 if (!result.Succeeded) throw new Exception(string.Join("\n", result.Errors));
             }
         }
