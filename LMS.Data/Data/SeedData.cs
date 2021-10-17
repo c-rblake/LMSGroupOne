@@ -173,7 +173,7 @@ namespace LMS.Data.Data
 
             var teacher = new User
             {
-                FirstName = firstName,
+                FirstName = $"TEACH{firstName}",
                 LastName = lastName,
                 Documents = GetDocuments(2),
                 Email = $"{emailFirstName}.{emailLastName}@lexicon.se",
@@ -269,13 +269,15 @@ namespace LMS.Data.Data
                 var firstName = fake.Name.FirstName();
                 var lastName = fake.Name.LastName();
                 var random = new Random();
+                var emailFirstName = firstName.ToLower();
+                var emailLastName = lastName.ToLower();
 
                 var user = new User
                 {
                     FirstName = firstName,
                     LastName = lastName,
                     Documents = GetDocuments(1),
-                    UserName = fake.Internet.Email($"{firstName} {lastName}"),
+                    UserName = fake.Internet.Email($"{emailFirstName} {emailLastName}"),
                     Course = courses[random.Next(0, courses.Count)]
                 };
                 students.Add(user);
