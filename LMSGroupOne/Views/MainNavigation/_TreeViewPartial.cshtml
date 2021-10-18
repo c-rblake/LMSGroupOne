@@ -27,9 +27,7 @@
     </div>
     
     <div id="treeDivId">
-        <script>
-                TreeFactory.GenerateTree(@(Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model))), @(Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model))));
-        </script>
+        
     </div>
 
     
@@ -42,7 +40,8 @@
 
 <script>
 
-    new TreeHandler("treeDivId", "contentDivId", "thrashCanId");
+     let treeHandler=new TreeHandler("treeDivId", "contentDivId", "thrashCanId");
+     treeHandler.GenerateTree(@(Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model))));
 
 
 </script>

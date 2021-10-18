@@ -30,7 +30,7 @@ namespace LMSGroupOne.Controllers
 
         }
 
-        private string GetNextId()
+        private string GetNextId()  // använd guids iställlet?
         {
 
             return $"folder{(nextId++)}";
@@ -317,40 +317,40 @@ namespace LMSGroupOne.Controllers
 
         
 
-        public string OnNew(string id, string type)
-        {
-            // todo
-            Debug.WriteLine($"from controller new - id:{id}, type:{type}");
+        //public string OnNew(string id, string type)
+        //{
+        //    // todo
+        //    Debug.WriteLine($"from controller new - id:{id}, type:{type}");
 
-            TreeNode model = new TreeNode
-            {
+        //    TreeNode model = new TreeNode
+        //    {
                 
-                Id = "12345",
-                Type = NodeType.student,
-                Name = "hello world",
-                Open = false,
+        //        Id = "12345",
+        //        Type = NodeType.student,
+        //        Name = "hello world",
+        //        Open = false,
                 
-                CanCreate = NodeType.none,
-                Editable = false,
-                Nodes=null 
+        //        CanCreate = NodeType.none,
+        //        Editable = false,
+        //        Nodes=null 
                 
                 
-            };
+        //    };
 
-            string jsonData = JsonConvert.SerializeObject(
-                new
-                {
-                    success = true,
-                    id="123",
-                    name="kalle",
-                    type=type,
-                    parentId=id,
-                    parentType=NodeType.folder,
-                    subTree=model
-                });
+        //    string jsonData = JsonConvert.SerializeObject(
+        //        new
+        //        {
+        //            success = true,
+        //            id="123",
+        //            name="kalle",
+        //            type=type,
+        //            parentId=id,
+        //            parentType=NodeType.folder,
+        //            subTree=model
+        //        });
 
-            return jsonData;
-        }
+        //    return jsonData;
+        //}
 
 
         // the welcomepage when the page is loaded

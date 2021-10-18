@@ -32,18 +32,7 @@
 
         window.addEventListener("mouseup", (event) => this.#OnMouseUp(event));
         window.addEventListener("mousemove", (event) => this.#OnMouseMove(event));
-
-
-        let t = document.getElementsByClassName("treeItem");
-        for (let i = 0; i < t.length; i++) {
-            t[i].addEventListener("click", (event) => this.#OnClick(event));
-            t[i].addEventListener("dblclick", (event) => this.#OnDblClick(event))
-            t[i].addEventListener("mousedown", (event) => this.#OnDown(event));
-        }
-
-
-
-
+                
         this.#menuDiv = document.getElementById(menuDivId);
 
         // the selection
@@ -243,9 +232,6 @@
             caret.classList.remove("fa-caret-down");
         }
 
-
-
-
     }
 
 
@@ -367,28 +353,24 @@
 
         $.ajax({
             type: "GET",
-            url: "/MainNavigation/OnNew",
-            data: { id: event.target.dataset.itemParentId, type: event.target.dataset.itemCreates },
+            url: "/AddNavigation/OnNew",
+            data: { id: event.target.dataset.itemParentId, type: event.target.dataset.itemCreates, name: "hello dolly"},
             cache: false,
             success: result => {
                 let obj = JSON.parse(result);
                 console.log("result forn new " + obj.type);
                 if (obj.success) {
-                    //console.log("the sub tree");
+                    
                     this.AddSubTree(obj.subTree, obj.type, obj.parentId);
-                    //console.log(TreeFactory.GenerateSubTree(obj.subTree, obj.subTree));
-                    // todo add element
-                    //this.AddElement(event, obj.id, obj.type, obj.parentId, obj.parentType, obj.name);
-                }
-                //string parentId, string parentType
-
+                    
+                } 
             }
         });
     }
 
     AddSubTree(subTree, type, parentId) {
         let elmer = this.#FindListGroup(type, parentId);
-        let item = TreeFactory.GenerateSubTree(subTree, subTree, (item) => this.#AddEventListener(item));
+        let item = TreeFactory.GenerateSubTree(subTree, (item) => this.#AddEventListener(item));
 
         elmer.appendChild(item);
     }
@@ -399,32 +381,14 @@
         item.addEventListener("mousedown", (event) => this.#OnDown(event));
     }
 
-
-    AddElement(event, id, type, parentId, parentType, name) {
-
-        let elmer = this.#FindListGroup(type, parentId);
-
-        let listGroup = document.createElement("ul");
-        listGroup.classList = "list-group";
-
-        let listItem = document.createElement("li");
-        listItem.classList = "list-group-item";
-        listItem.style = "background:none;";
-
-        // todo generate subtree
-        let item = TreeFactory.GenerateItem(id, parseInt(type), parentId, parentType, name, false, TreeFactory.NodeTypes.NONE, false, false, false);
-
-        listItem.appendChild(item);
-        listGroup.appendChild(listItem);
-        elmer.appendChild(listGroup);
-
-        item.addEventListener("click", (event) => this.#OnClick(event));
-        item.addEventListener("dblclick", (event) => this.#OnDblClick(event));
-        item.addEventListener("mousedown", (event) => this.#OnDown(event));
-
-        //todo update selection 
-
+    GenerateTree(node)
+    {
+        this.#menuDiv.appendChild(TreeFactory.GenerateSubTree(node, (item) => this.#AddEventListener(item)));
+        //TreeFactory.GenerateTree(node, node);
     }
+
+
+   
 
     // finds the place to put created items in
     #FindListGroup(type, parentId) {

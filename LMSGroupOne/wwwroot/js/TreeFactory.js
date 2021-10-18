@@ -116,23 +116,23 @@ class TreeFactory {
         return item;
     }
 
-    static GenerateTree(node, parentNode) {        
-        let mainList = document.createElement("ul");
-        mainList.classList = "list-group";
-        mainList.style = "user-select:none;";
+    //static GenerateTree(node, parentNode) {        
+    //    let mainList = document.createElement("ul");
+    //    mainList.classList = "list-group";
+    //    mainList.style = "user-select:none;";
 
-        mainList.appendChild(this.Recurse(node, parentNode));
+    //    mainList.appendChild(this.Recurse(node, parentNode));
 
-        document.write(mainList.outerHTML);
-    }
+    //    document.write(mainList.outerHTML);
+    //}
 
-    static GenerateSubTree(node, parentNode, AddEventListener) {
+    static GenerateSubTree(node, AddEventListener) {
         //console.log(AddEventListener("sdf"));
         let mainList = document.createElement("ul");
         mainList.classList = "list-group";
         mainList.style = "user-select:none;";
 
-        mainList.appendChild(this.Recurse(node, parentNode, (item)=>AddEventListener(item)));
+        mainList.appendChild(this.Recurse(node, node, (item)=>AddEventListener(item)));
 
         return mainList;
     }
@@ -165,11 +165,11 @@ class TreeFactory {
         childList.hidden = !node.Open;
 
         if (hasChildren) {
-            node.Nodes.forEach(c => childList.appendChild(this.Recurse(c, node)));
+            node.Nodes.forEach(c => childList.appendChild(this.Recurse(c, node, (item) => AddEventListener(item))));
         }
         listItem.appendChild(childList);
 
-        list.appendChild(listItem);
+        list.appendChild(listItem);        
         return list;
     }
 
