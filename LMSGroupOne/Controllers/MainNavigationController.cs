@@ -322,6 +322,20 @@ namespace LMSGroupOne.Controllers
             // todo
             Debug.WriteLine($"from controller new - id:{id}, type:{type}");
 
+            TreeNode model = new TreeNode
+            {
+                
+                Id = "12345",
+                Type = NodeType.student,
+                Name = "hello world",
+                Open = false,
+                
+                CanCreate = NodeType.none,
+                Editable = false,
+                Nodes=null 
+                
+                
+            };
 
             string jsonData = JsonConvert.SerializeObject(
                 new
@@ -331,7 +345,8 @@ namespace LMSGroupOne.Controllers
                     name="kalle",
                     type=type,
                     parentId=id,
-                    parentType=NodeType.folder
+                    parentType=NodeType.folder,
+                    subTree=model
                 });
 
             return jsonData;

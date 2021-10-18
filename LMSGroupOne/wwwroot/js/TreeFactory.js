@@ -123,13 +123,25 @@ class TreeFactory {
 
         mainList.appendChild(this.Recurse(node, parentNode));
 
-
-
-
         document.write(mainList.outerHTML);
     }
 
-    static Recurse(node, parentNode) {
+    static GenerateSubTree(node, parentNode, AddEventListener) {
+        //console.log(AddEventListener("sdf"));
+        let mainList = document.createElement("ul");
+        mainList.classList = "list-group";
+        mainList.style = "user-select:none;";
+
+        mainList.appendChild(this.Recurse(node, parentNode, (item)=>AddEventListener(item)));
+
+        return mainList;
+    }
+
+
+
+
+
+    static Recurse(node, parentNode, AddEventListener) {
         let list = document.createElement("ul");
         list.classList = "list-group";
         list.hidden = false;
@@ -139,8 +151,14 @@ class TreeFactory {
         listItem.style = "background:none;";
 
         let hasChildren = node.Nodes != null;
-        let showCaret = hasChildren && node.Nodes.length == 0;        
-        listItem.appendChild(this.GenerateItem(node.Id, node.Type, parentNode.Id, parentNode.Type, node.Name, hasChildren, node.CanCreate, node.Editable, node.Open, showCaret));
+        let showCaret = hasChildren && node.Nodes.length == 0;
+        let item = this.GenerateItem(node.Id, node.Type, parentNode.Id, parentNode.Type, node.Name, hasChildren, node.CanCreate, node.Editable, node.Open, showCaret);
+        listItem.appendChild(item);
+        if (AddEventListener)
+        {
+            AddEventListener(item);
+        }
+        //console.log(AddEventListenerCallback(item));
 
         let childList = document.createElement("ul");
         childList.classList = "list-group";
