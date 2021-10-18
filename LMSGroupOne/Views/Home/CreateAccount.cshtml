@@ -70,8 +70,8 @@
         });
         $(function () {
             $("#role").change(function () {
-                if ($(this).val() == "Student") { $("#course").show(); }
-                else if ($(this).val() == "Teacher") { $("#course").empty(); $("#course").hide('slow'); }
+                if ($(this).val() == "Student") { $("#course").toggle(); }
+                else if ($(this).val() == "Teacher") { $("#course-select")[0].selectindex = -1; $("#course").hide('slow'); }
             });
         });
     </script>

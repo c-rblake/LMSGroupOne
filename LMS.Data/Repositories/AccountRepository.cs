@@ -1,22 +1,25 @@
 ﻿using LMS.Core.Models.Entities;
 using LMS.Core.Repositories;
-using LMS.Data.Data;
-using System;
+using Microsoft.AspNetCore.Identity;
 
 namespace LMS.Data.Repositories
 {
     public class AccountRepository : IAccountRepository
     {
-        private readonly ApplicationDbContext db;
+        private readonly UserManager<Person> userManager;
 
-        public AccountRepository(ApplicationDbContext db)
+        public AccountRepository(UserManager<Person> userManager)
         {
-            this.db = db ?? throw new ArgumentNullException(nameof(db));
+            //this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
+            //if (userManager is null) throw new NullReferenceException(nameof(UserManager<Person>));
         }
 
         public void AddAccount(Person person)
         {
-            db.AddAsync(person);
+            //var result1 = userManager.CreateAsync(person, Password);
+            //if (!result1.Succeeded) throw new Exception(string.Join("\n", result1.Errors));
+            //var result2 = userManager.AddToRoleAsync(person, Role);
+            //if (!result2.Succeeded) throw new Exception(string.Join("\n", result2.Errors));
         }
     }
 }

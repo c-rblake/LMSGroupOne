@@ -51,24 +51,30 @@ namespace LMSGroupOne.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Teacher")]
-        public async Task<IActionResult> CreateAccount(CreateAccountViewModel viewModel, string returnUrl = null)
+        public async Task<IActionResult> CreateAccount(CreateAccountViewModel newAccount)
         {
             if (ModelState.IsValid)
             {
-                var user = new Person
+                if (newAccount.Role == "Teacher")
                 {
-                    UserName = viewModel.Email,
-                    Email = viewModel.Email,
-                    FirstName = viewModel.FirstName,
-                    LastName = viewModel.LastName,
-                    CourseId = viewModel.CourseId
+                    newAccount.CourseId = null;
+                }
+
+                var person = new Person
+                {
+                    UserName = newAccount.Email,
+                    Email = newAccount.Email,
+                    FirstName = newAccount.FirstName,
+                    LastName = newAccount.LastName,
+                    CourseId = newAccount.CourseId,
                 };
 
-                //uow.AccountRepository.AddAccount(mapper.Map<CreateAccountViewModel>(user));
+
+                //uow.AccountRepository.AddAccount(mapper.Map<Person>(person));
                 //await uow.CompleteAsync();
 
-                var result1 = await _userManager.CreateAsync(user, viewModel.Password);
-                var result2 = await _userManager.AddToRoleAsync(user, viewModel.Role);
+                var result1 = await _userManager.CreateAsync(person, newAccount.Password);
+                var result2 = await _userManager.AddToRoleAsync(person, newAccount.Role);
 
                 if (result1.Succeeded && result2.Succeeded)
                 {
@@ -86,7 +92,7 @@ namespace LMSGroupOne.Controllers
                 }
 
             }
-            return RedirectToAction(nameof(Index), "Home");
+            return View();
         }
 
         public IActionResult Privacy()

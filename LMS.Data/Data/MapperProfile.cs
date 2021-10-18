@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using LMS.Core.Models.Entities;
-using LMS.Core.Models.ViewModels;
 using LMS.Core.Models.ViewModels.Account;
 using LMS.Core.Models.ViewModels.Course;
 
@@ -16,7 +10,12 @@ namespace LMS.Data.Data
         public MapperProfile()
         {
             CreateMap<Course, CreateCourseViewModel>().ReverseMap();
-            CreateMap<Person, CreateAccountViewModel>().ReverseMap();
+            CreateMap<Person, CreateAccountViewModel>()
+                //.ForMember(destination => destination.Role,
+                //opt => opt.MapFrom(source => source.Role.ToString()))
+                //.ForMember(destination => destination.Password,
+                //opt => opt.MapFrom(source => source.Password.ToString()))
+            .ReverseMap();
         }
     }
 }
