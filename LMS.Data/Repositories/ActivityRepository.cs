@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using LMS.Core.Models.Entities;
 using LMS.Core.Repositories;
 using LMS.Data.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace LMS.Data.Repositories
 {
@@ -35,6 +36,12 @@ namespace LMS.Data.Repositories
         {
 
             return db.Activities.Any(e => e.Id == id);
+        }
+
+        public async Task<IEnumerable<Activity>> GetActivitiesByModuleId(int moduleId)
+        {
+            return await db.Activities.Where(a => a.ModuleId == moduleId).ToListAsync();
+
         }
     }
 }

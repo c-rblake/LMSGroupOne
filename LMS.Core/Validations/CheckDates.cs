@@ -1,0 +1,41 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
+using LMS.Core.Models.ViewModels.Activity;
+
+namespace LMSGroupOne.Validations
+{
+    public class CheckDates : ValidationAttribute
+    {
+        ActivityCreateViewModel createModel;
+        ActivityEditViewModel editModel;
+        protected override ValidationResult IsValid(Object value, ValidationContext validationContext)
+        {
+            const string errorMessage = "EndDate must come after StartDate";
+            if (value is DateTime input)
+            {
+                if(validationContext.ObjectInstance is ActivityCreateViewModel)
+                    createModel = (ActivityCreateViewModel)validationContext.ObjectInstance;
+                else if(validationContext.ObjectInstance is ActivityEditViewModel)
+                    editModel = (ActivityEditViewModel)validationContext.ObjectInstance;
+                if(createModel != null)
+                {
+                    if (createModel.EndDate > createModel.StartDate)
+                        return ValidationResult.Success;
+                    else
+                        return new ValidationResult(errorMessage);
+                }
+                else if(editModel != null)
+                {
+                    if (editModel.EndDate > editModel.StartDate)
+                        return ValidationResult.Success;
+                    else
+                        return new ValidationResult(errorMessage);
+                }
+            }
+            return new ValidationResult(errorMessage);
+        }
+    }
+}
