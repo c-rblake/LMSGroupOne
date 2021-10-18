@@ -15,7 +15,7 @@ namespace LMS.Api.Core.Repositories
         //Task<IEnumerable<Work>> GetAllWorksAsync(WorksResourceParameters workResourceParameters);
 
         //Task<PagedList<Work>> GetAllWorksAsync(WorksResourceParameters worksResourceParameters);
-        PagedList<Work> GetAllWorks(WorksResourceParameters worksResourceParameters);
+        Task <PagedList<Work>> GetAllWorksAsync(WorksResourceParameters worksResourceParameters);
         //PagedList<Work> GetAllWorks(WorksResourceParameters worksResourceParameters);
         Task<Work> GetWorkAsync(int id);
         Task<Work> FindAsync(int? id);

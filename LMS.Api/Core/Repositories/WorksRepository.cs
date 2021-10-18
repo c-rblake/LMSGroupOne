@@ -38,9 +38,8 @@ namespace LMS.Api.Core.Repositories
             return await db.Works.FirstOrDefaultAsync(w => w.Id == id);
         }
 
-        //public async Task<IEnumerable<Work>> GetAllWorksAsync(WorksResourceParameters workResourceParameters)
-        //public async Task<PagedList<Work>> GetAllWorksAsync(WorksResourceParameters workResourceParameters)
-        public PagedList<Work> GetAllWorks(WorksResourceParameters workResourceParameters)
+        public async Task<PagedList<Work>> GetAllWorksAsync(WorksResourceParameters workResourceParameters)
+            //Todo Turn to ASYNC
         {
             var query = db.Works
                 .Include(w => w.Authors)
@@ -80,15 +79,18 @@ namespace LMS.Api.Core.Repositories
 
             //Paging Last.
 
-            //query = query
-            //    .Skip(workResourceParameters.PageSize * (workResourceParameters.PageNumber - 1))
-            //    .Take(workResourceParameters.PageSize);
+            //var collection = PagedList<Work>.Create(query, LACK THE ASYNC CODE.
+            //    workResourceParameters.PageNumber,
+            //    workResourceParameters.PageSize);
 
-            var collection = PagedList<Work>.Create(query,
-                workResourceParameters.PageNumber,
-                workResourceParameters.PageSize);
+            var count = query.Count();
+            var items = await query
+                .Skip(workResourceParameters.PageSize * (workResourceParameters.PageNumber - 1))
+                .Take(workResourceParameters.PageSize).ToListAsync();
 
-            return collection;
+            var pagedList = new PagedList<Work>(items, count, workResourceParameters.PageNumber, workResourceParameters.PageSize);
+
+            return pagedList;
 
         }
 

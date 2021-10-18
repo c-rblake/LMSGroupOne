@@ -65,13 +65,21 @@ namespace LMS.Api.Controllers
             return Ok(workDto);
         }
 
+        [HttpOptions]
+        public IActionResult GetWorkOptions()
+        {
+            Response.Headers.Add("Allow","GET,OPTIONS,POST,PATCH");
+            return Ok();
+        }
+
+
         [HttpGet(Name = "GetWorks")]
         //[HttpHead]
-        public ActionResult<IEnumerable<WorkDto>> GetWorks([FromQuery]WorksResourceParameters workResourceParameters)
+        public async Task<ActionResult<IEnumerable<WorkDto>>> GetWorks([FromQuery]WorksResourceParameters workResourceParameters)
             //Async is in the Paged List Object.
         {
             //var workResults = await uow.WorksRepository.GetAllWorksAsync(workResourceParameters);
-            var workResults = uow.WorksRepository.GetAllWorks(workResourceParameters);
+            var workResults = await uow.WorksRepository.GetAllWorksAsync(workResourceParameters);
             if (workResults is null) return NotFound();
 
             var workDtos = mapper.Map<IEnumerable<WorkDto>>(workResults);
