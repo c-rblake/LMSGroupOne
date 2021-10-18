@@ -3,17 +3,10 @@ using LMS.Core.Models.Entities;
 using LMS.Core.Models.ViewModels.Account;
 using LMS.Core.Repositories;
 using LMSGroupOne.Models;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 
 namespace LMSGroupOne.Controllers
@@ -23,16 +16,14 @@ namespace LMSGroupOne.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly UserManager<Person> _userManager;
         private readonly SignInManager<Person> _signInManager;
-        private readonly IEmailSender _emailSender;
         private readonly IUnitOfWork uow;
         private readonly IMapper mapper;
 
-        public HomeController(ILogger<HomeController> logger, UserManager<Person> userManager, SignInManager<Person> signInManager, IUnitOfWork uow, IMapper mapper, IEmailSender emailSender)
+        public HomeController(ILogger<HomeController> logger, UserManager<Person> userManager, SignInManager<Person> signInManager, IUnitOfWork uow, IMapper mapper)
         {
             _logger = logger;
             _userManager = userManager;
             _signInManager = signInManager;
-            _emailSender = emailSender;
             this.uow = uow;
             this.mapper = mapper;
         }
@@ -50,7 +41,7 @@ namespace LMSGroupOne.Controllers
         }
 
         [Authorize(Roles = "Teacher")]
-        public  IActionResult CreateAccount()
+        public IActionResult CreateAccount()
         {
             var createAccountViewModel = new CreateAccountViewModel { };
 
@@ -78,7 +69,7 @@ namespace LMSGroupOne.Controllers
 
                 var result1 = await _userManager.CreateAsync(user, viewModel.Password);
                 var result2 = await _userManager.AddToRoleAsync(user, viewModel.Role);
-                
+
                 if (result1.Succeeded && result2.Succeeded)
                 {
                     _logger.LogInformation("Account was created with password and role");
