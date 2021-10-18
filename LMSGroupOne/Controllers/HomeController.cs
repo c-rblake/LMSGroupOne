@@ -37,10 +37,6 @@ namespace LMSGroupOne.Controllers
             this.mapper = mapper;
         }
 
-        public IList<AuthenticationScheme> ExternalLogins { get; set; }
-
-        public string ReturnUrl { get; set; }
-
         [Authorize]
         public IActionResult Index()
         {
@@ -54,11 +50,8 @@ namespace LMSGroupOne.Controllers
         }
 
         [Authorize(Roles = "Teacher")]
-        public async Task<IActionResult> CreateAccount(string returnUrl = null)
+        public  IActionResult CreateAccount()
         {
-            ReturnUrl = returnUrl;
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-
             var createAccountViewModel = new CreateAccountViewModel { };
 
             return View(createAccountViewModel);
@@ -71,12 +64,6 @@ namespace LMSGroupOne.Controllers
         {
             if (ModelState.IsValid)
             {
-                //uow.AccountRepository.AddAccount(mapper.Map<CreateAccountViewModel>(user));
-                //await uow.CompleteAsync();
-
-                returnUrl ??= Url.Content("~/");
-                var ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-
                 var user = new Person
                 {
                     UserName = viewModel.Email,
@@ -86,35 +73,27 @@ namespace LMSGroupOne.Controllers
                     CourseId = viewModel.CourseId
                 };
 
+                //uow.AccountRepository.AddAccount(mapper.Map<CreateAccountViewModel>(user));
+                //await uow.CompleteAsync();
+
                 var result1 = await _userManager.CreateAsync(user, viewModel.Password);
                 var result2 = await _userManager.AddToRoleAsync(user, viewModel.Role);
+                
                 if (result1.Succeeded && result2.Succeeded)
                 {
                     _logger.LogInformation("Account was created with password and role");
-
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                    var callbackUrl = Url.Page(
-                        "/Account/ConfirmEmail",
-                        pageHandler: null,
-                        values: new { area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl },
-                        protocol: Request.Scheme);
-
-                    await _emailSender.SendEmailAsync(viewModel.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-
                 }
+
                 foreach (var error in result1.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
+
                 foreach (var error in result2.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
 
-                // If we got this far, something failed, redisplay form
-                // return RedirectToAction(nameof(TeacherCreateAccount), "Home");   //Page();
             }
             return RedirectToAction(nameof(Index), "Home");
         }

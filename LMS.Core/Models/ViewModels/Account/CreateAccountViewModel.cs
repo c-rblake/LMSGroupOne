@@ -32,8 +32,6 @@ namespace LMS.Core.Models.ViewModels.Account
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match")]
         public string ConfirmPassword { get; set; }
 
-        public string ReturnUrl { get; set; }
-
         public int? CourseId { get; set; }
 
         public string Role { get; set; }
