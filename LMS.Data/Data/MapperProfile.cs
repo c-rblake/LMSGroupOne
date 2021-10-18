@@ -16,7 +16,7 @@ namespace LMS.Data.Data
         public MapperProfile()
         {
             CreateMap<Course, CreateCourseViewModel>().ReverseMap();
-            //CreateMap<Person, TeacherCreateAccountViewModel>().ReverseMap();
+            CreateMap<Person, CreateAccountViewModel>().ReverseMap();
         }
     }
 }

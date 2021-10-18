@@ -71,7 +71,7 @@ namespace LMSGroupOne.Controllers
         {
             if (ModelState.IsValid)
             {
-                //uow.AccountRepository.AddAccount(mapper.Map<TeacherCreateAccountViewModel>(person));
+                //uow.AccountRepository.AddAccount(mapper.Map<CreateAccountViewModel>(user));
                 //await uow.CompleteAsync();
 
                 returnUrl ??= Url.Content("~/");
@@ -102,7 +102,6 @@ namespace LMSGroupOne.Controllers
 
                     await _emailSender.SendEmailAsync(viewModel.Email, "Confirm your email",
                         $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-
 
                 }
                 foreach (var error in result1.Errors)

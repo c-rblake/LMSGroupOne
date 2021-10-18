@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace LMS.Core.Models.ViewModels.Account
 {
@@ -23,10 +21,12 @@ namespace LMS.Core.Models.ViewModels.Account
         public string Email { get; set; }
 
         //[UIHint("stringPassword")]
+        [Required(ErrorMessage = "Please enter a password")]
         [RegularExpression(@"[^<>]*", ErrorMessage = "The password format is incorrect")]
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
+        [Required(ErrorMessage = "Please confirm password")]
         [DataType(DataType.Password)]
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match")]
