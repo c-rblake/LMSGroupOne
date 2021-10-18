@@ -38,7 +38,9 @@ namespace LMS.Api.Core.Repositories
             return await db.Works.FirstOrDefaultAsync(w => w.Id == id);
         }
 
-        public async Task<IEnumerable<Work>> GetAllWorksAsync(WorksResourceParameters workResourceParameters)
+        //public async Task<IEnumerable<Work>> GetAllWorksAsync(WorksResourceParameters workResourceParameters)
+        //public async Task<PagedList<Work>> GetAllWorksAsync(WorksResourceParameters workResourceParameters)
+        public PagedList<Work> GetAllWorks(WorksResourceParameters workResourceParameters)
         {
             var query = db.Works
                 .Include(w => w.Authors)
@@ -76,14 +78,25 @@ namespace LMS.Api.Core.Repositories
 
             query.ApplySort(workResourceParameters.OrderBy, workPropertyMappingDictionary);
 
-            return await query.ToListAsync();
+            //Paging Last.
+
+            //query = query
+            //    .Skip(workResourceParameters.PageSize * (workResourceParameters.PageNumber - 1))
+            //    .Take(workResourceParameters.PageSize);
+
+            var collection = PagedList<Work>.Create(query,
+                workResourceParameters.PageNumber,
+                workResourceParameters.PageSize);
+
+            return collection;
+
         }
 
         public async Task<Work> GetWorkAsync(int id)
         {
             var work = await db.Works
                 .Include(w => w.Genre)
-                .Include(w => w.Authors) //Todo. SelfReference loop.
+                .Include(w => w.Authors)
                 .Include(w => w.Type)
                 .FirstOrDefaultAsync(w => w.Id == id);
 

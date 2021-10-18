@@ -50,8 +50,6 @@ namespace LMS.Api.Core.Repositories
             };
             if (!string.IsNullOrWhiteSpace(authorResourceParameters.Name))
             {
-
-
                 //Expanded search. necessary unfortunatley. Usecase "Nero Tulip"
                 var names = authorResourceParameters.Name.Trim().Split(" ");
                 if (names.Length == 1)
