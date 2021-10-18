@@ -33,12 +33,8 @@ class TreeFactory {
             TRASH: 10
         }
 
-
-
-    static GenerateItem(id, type, parentId, parentType, name, hasChildren, canCreate, canEdit, isOpen) {
-        let item = document.createElement("nobr");
-        item.classList = "treeItem";
-
+    static GetIconClass(type, isOpen)
+    {
         let classList = "";
         let style = "";
 
@@ -87,9 +83,23 @@ class TreeFactory {
                 break;
         };
 
+        return { classList, style };
+    }
 
-        if (hasChildren) {
-            let caret = this.#GenerateCaret(id, type, isOpen);
+
+    static GenerateItem(id, type, parentId, parentType, name, hasChildren, canCreate, canEdit, isOpen, showCaret) {
+        let item = document.createElement("nobr");
+        item.classList = "treeItem";        
+
+        let temp = this.GetIconClass(type, isOpen);
+        
+        let classList = temp.classList;
+        let style = temp.style;
+
+
+        if (hasChildren)
+        {
+            let caret = this.#GenerateCaret(id, type, isOpen, showCaret, canCreate);
             item.innerHTML += caret.outerHTML;
         }
         let icon = this.#GenerateIcon(id, type, classList, style, isOpen);
@@ -97,16 +107,16 @@ class TreeFactory {
         let text = this.#GenerateText(id, name, type, parentId, parentType, canEdit, isOpen);
         item.innerHTML += text.outerHTML;
 
-
+        
         if (canCreate != this.NodeTypes.NONE) {
-            let add = this.#GenerateAddIcon(id, type, parentId, parentType, isOpen);
+            let add = this.#GenerateAddIcon(id, type, parentId, parentType, isOpen, canCreate);
             item.innerHTML += add.outerHTML;
         }
 
         return item;
     }
 
-    static GenerateTree(node, parentNode) {
+    static GenerateTree(node, parentNode) {        
         let mainList = document.createElement("ul");
         mainList.classList = "list-group";
         mainList.style = "user-select:none;";
@@ -129,7 +139,8 @@ class TreeFactory {
         listItem.style = "background:none;";
 
         let hasChildren = node.Nodes != null;
-        listItem.appendChild(this.GenerateItem(node.Id, node.Type, parentNode.Id, parentNode.Type, node.Name, hasChildren, node.canCreate, node.Editable, node.Open));
+        let showCaret = hasChildren && node.Nodes.length == 0;        
+        listItem.appendChild(this.GenerateItem(node.Id, node.Type, parentNode.Id, parentNode.Type, node.Name, hasChildren, node.CanCreate, node.Editable, node.Open, showCaret));
 
         let childList = document.createElement("ul");
         childList.classList = "list-group";
@@ -144,25 +155,14 @@ class TreeFactory {
         return list;
     }
 
+       
 
-    static GenerateTestItemHTML(node, parentNode) {
-        let hasChildren = node.Nodes != null;
-
-
-        let item = this.GenerateItem(node.Id, node.Type, parentNode.Id, parentNode.Type, node.Name, hasChildren, node.CanCreate, node.Editable, node.Open);
-        document.write(item.outerHTML);
-    }
-
-    static GenerateItemHTML(id, type, parentId, parentType, name, hasChildren, canCreate, canEdit, isOpen) {
-        let item = this.GenerateItem(id, type, parentId, parentType, name, hasChildren, canCreate, canEdit, isOpen);
-        document.write(item.outerHTML);
-    }
-
-    static #GenerateAddIcon(id, type, parentId, parentType, isOpen) {
+    static #GenerateAddIcon(id, type, parentId, parentType, isOpen, canCreate) {
+        
         let add = document.createElement("i");
         add.id = id;
         add.dataset.itemType = type;
-        add.dataset.itemCreates = "teacher";  // todo
+        add.dataset.itemCreates = canCreate;
         add.dataset.itemParentId = parentId;
         add.dataset.itemParentType = parentType;
         add.dataset.itemExtra = "new";
@@ -172,7 +172,7 @@ class TreeFactory {
         return add;
     }
 
-    static #GenerateCaret(id, type, isOpen) {
+    static #GenerateCaret(id, type, isOpen, showCaret, canCreate) {
         let caret = document.createElement("i");
         if (isOpen) {
             caret.classList = "carretIcon fas fa-caret-down";
@@ -184,6 +184,8 @@ class TreeFactory {
         caret.dataset.itemType = type;
         caret.dataset.itemExtra = "caret";
         caret.dataset.itemOpen = isOpen;
+        caret.dataset.itemCreates = canCreate;
+        caret.hidden = showCaret;
         return caret;
     }
 

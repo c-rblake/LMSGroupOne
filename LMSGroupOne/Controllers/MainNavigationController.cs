@@ -16,6 +16,7 @@ namespace LMSGroupOne.Controllers
 {
     public class MainNavigationController : Controller
     {
+        static int nextId;
         private readonly IJTUnitOfWork uow;
         private readonly UserManager<Person> userManager;
         public MainNavigationController(IJTUnitOfWork uow, UserManager<Person> userManager)
@@ -25,33 +26,41 @@ namespace LMSGroupOne.Controllers
             this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
 
             //userManager.GetUsersInRoleAsync("RoleName");
+            nextId = 0;
+
+        }
+
+        private string GetNextId()
+        {
+
+            return $"folder{(nextId++)}";
 
         }
 
         public async Task<IActionResult> Index()
-        {           
-
+        {
+            
 
             var model = new TreeNode
             {
-                Id = "1",
+                Id = "root",
                 Name = "LMS",
                 Type = NodeType.root,
                 CanCreate = NodeType.course,
                 Editable = true,
                 Nodes = new TreeNode[]
                 { 
-                    await Courses("1"),
-                    await Teachers("1"),
+                    await Courses("root"),
+                    await Teachers("root"),
                     new TreeNode
                     { 
-                        Id="2",
+                        Id=GetNextId(),
                         Name="literature Search",
                         Type=NodeType.search,
                         CanCreate=NodeType.none,                        
                         Editable=false,
                         Open=false,
-                        Nodes=null
+                        Nodes=null                        
                     }
                 }
                 
@@ -72,7 +81,7 @@ namespace LMSGroupOne.Controllers
                     Name = item.Name,
                     Type = NodeType.course,
                     CanCreate = NodeType.none,
-                    Editable = true,
+                    Editable = true,                    
                     Open = false,
                     Nodes = new TreeNode[]
                     {
@@ -85,7 +94,7 @@ namespace LMSGroupOne.Controllers
 
             var model = new TreeNode
             {
-                Id = parentId,
+                Id = GetNextId(),
                 Name = "Courses",
                 Type = NodeType.folder,
                 CanCreate = NodeType.course,
@@ -117,12 +126,13 @@ namespace LMSGroupOne.Controllers
 
             var model = new TreeNode
             {
-                Id = parentId,
+                Id = GetNextId(),
                 Name = "Teachers",
                 Type = NodeType.folder,
                 CanCreate = NodeType.teacher,
                 Editable = true,
-                Nodes = teachers
+                Open=false,
+                Nodes = teachers                
             };
 
             return model;
@@ -154,7 +164,7 @@ namespace LMSGroupOne.Controllers
             }
             var model = new TreeNode
             {
-                Id = parentId,
+                Id = GetNextId(),
                 Name = "Documents",
                 Type = NodeType.folder,
                 CanCreate = NodeType.file,
@@ -188,7 +198,7 @@ namespace LMSGroupOne.Controllers
             }
             var model = new TreeNode
             {
-                Id = parentId,
+                Id = GetNextId(),
                 Name = "Students",
                 Type = NodeType.folder,
                 CanCreate = NodeType.student,
@@ -225,7 +235,7 @@ namespace LMSGroupOne.Controllers
             }
             var model = new TreeNode
             {
-                Id = parentId,
+                Id = GetNextId(),
                 Name = "Modules",
                 Type = NodeType.folder,
                 CanCreate = NodeType.module,
@@ -265,7 +275,7 @@ namespace LMSGroupOne.Controllers
 
             var model = new TreeNode
             {
-                Id = parentId,
+                Id = GetNextId(),
                 Name = "Activities",
                 Type = NodeType.folder,
                 CanCreate = NodeType.activity,
@@ -321,7 +331,7 @@ namespace LMSGroupOne.Controllers
                     name="kalle",
                     type=type,
                     parentId=id,
-                    parentType="folder"
+                    parentType=NodeType.folder
                 });
 
             return jsonData;
@@ -367,16 +377,14 @@ namespace LMSGroupOne.Controllers
 
         public async Task<IActionResult> OnTreeClick(string id, string type)
         {
-            Debug.WriteLine($"from controller- id:{id}, type:{type}");
-
-            NodeType result = 0;
-            NodeType.TryParse(type, out result);
             
-            Debug.WriteLine("---------------------------------------------------");
+            NodeType result = 0;
+            NodeType.TryParse(type, out result);            
+            
             switch (result)
             {
                 case NodeType.teacher:
-                    return Teacher(id);
+                    return await Teacher(id);
                 case NodeType.student:
                     return await Student(id);
                 case NodeType.activity:
@@ -397,25 +405,44 @@ namespace LMSGroupOne.Controllers
 
 
 
-        private IActionResult Teacher(string id)
+        private async Task<IActionResult> Teacher(string id)
         {
             
-            
-            var model = new PlaceholderModelView
-            {
-                Id = id
-            };
+            var teacher = await userManager.FindByIdAsync(id);
 
-            return PartialView("Teacher", model);
+            if (User.IsInRole("Teacher"))
+            {
+                var model = new TeacherFromTeacherModelView
+                {
+                    Id = id,
+                    Name = $"{teacher.FirstName} {teacher.LastName}",
+                    Email = teacher.Email
+
+                };
+                return PartialView("TeacherTeacher", model);
+
+            }
+            else if (User.IsInRole("Student"))
+            {
+                var model = new TeacherFromStudentModelView
+                {
+                    Id = id,
+                    Name = $"{teacher.FirstName} {teacher.LastName}",
+                    Email = teacher.Email
+
+                };
+                return PartialView("TeacherStudent", model);
+
+            }
+
+            return new EmptyResult();
+
         }
 
         private async Task<IActionResult> Student(string id)
         {
             var student=await userManager.FindByIdAsync(id);
-            Debug.WriteLine("student----"+student.FirstName);
-
-
-            
+                        
             if (User.IsInRole("Teacher"))
             {
                 var model = new StudentFromTeacherModelView
@@ -440,8 +467,6 @@ namespace LMSGroupOne.Controllers
                 return PartialView("StudentStudent", model);
 
             }
-
-
 
             return new EmptyResult();
         }
