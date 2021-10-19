@@ -142,6 +142,12 @@ namespace LMS.Data.Repositories
         public async Task<CourseDto> GetCourse(int id, CancellationToken cancellationToken = default)
         {
             var course = await db.Courses.FindAsync(id);
+
+            if (course == null)
+            {
+                return null;
+            }
+
             return new CourseDto
             {
                 Id = course.Id,

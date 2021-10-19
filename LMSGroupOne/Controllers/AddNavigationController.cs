@@ -52,204 +52,110 @@ namespace LMSGroupOne.Controllers
                         return ActivityNode(path,"new activity id", name);
                     case (int)NodeType.module:
                         return ModuleNode(path, "new module id", name);
-
-
-
+                    case (int)NodeType.course:
+                        return CourseNode(path, "new course id", name);
                 }
+            }            
 
-            }
             
-
             string jsonData = JsonConvert.SerializeObject(
                 new
                 {
                     success = false                                            
                 });
 
-            return jsonData;
+            return jsonData;           
 
-          
         }
 
 
-        private string StudentNode(string path,string id, string name)
+        private TreeNode MakeNode(string id, string name, NodeType type, NodeType creates, TreeNode[] childNodes)
         {
-
-            TreeNode node = new TreeNode
+            return new TreeNode
             {
                 Id = id,
-                Type = NodeType.student,
+                Type = type,
                 Name = name,
                 Open = false,
-                CanCreate = NodeType.none,
+                CanCreate = creates,
                 Editable = false,
-                Nodes = null
+                Nodes = childNodes
             };
-            
-            string jsonData = JsonConvert.SerializeObject(
-                new
-                {
-                    success = true,                    
-                    type = NodeType.student,
-                    path = path,                    
-                    subTree = node
-                });
+        }
 
-            return jsonData;
-
+        private string StudentNode(string path,string id, string name)
+        {            
+            TreeNode node = MakeNode(id, name, NodeType.student, NodeType.none, null);            
+            return MakeJsonReturnData(true, NodeType.student, path, node);
         }
 
         private string TeacherNode(string path, string id, string name)
-        {
-
-            TreeNode node = new TreeNode
-            {
-                Id = id,
-                Type = NodeType.teacher,
-                Name = name,
-                Open = false,
-                CanCreate = NodeType.none,
-                Editable = false,
-                Nodes = null
-            };
-
-            string jsonData = JsonConvert.SerializeObject(
-                new
-                {
-                    success = true,
-                    type = NodeType.teacher,
-                    path = path,
-                    subTree = node
-                });
-
-            return jsonData;
-
+        {                        
+            TreeNode node = MakeNode(id, name, NodeType.teacher, NodeType.none, null);
+            return MakeJsonReturnData(true, NodeType.teacher, path, node);
         }
 
         private string FileNode(string path, string id, string name)
-        {
-
-            TreeNode node = new TreeNode
-            {
-                Id = id,
-                Type = NodeType.file,
-                Name = name,
-                Open = false,
-                CanCreate = NodeType.none,
-                Editable = false,
-                Nodes = null
-            };
-
-            string jsonData = JsonConvert.SerializeObject(
-                new
-                {
-                    success = true,
-                    type = NodeType.file,
-                    path = path,
-                    subTree = node
-                });
-
-            return jsonData;
-
+        {                        
+            TreeNode node = MakeNode(id, name, NodeType.file, NodeType.none, null);
+            return MakeJsonReturnData(true, NodeType.file, path, node);
         }
 
+        private string MakeChildId(string path, NodeType type, string parentId)
+        {            
+            return $"{path}|{type}={parentId}";
+        }
 
         private string ActivityNode(string path, string id, string name)
         {
 
-            TreeNode node = new TreeNode
-            {
-                Id = id,
-                Type = NodeType.activity,
-                Name = name,
-                Open = false,
-                CanCreate = NodeType.none,
-                Editable = false,
-                Nodes = new TreeNode[]
-                { 
-                    new TreeNode
-                    {
-                        Id = path+"|"+NodeType.folder+"="+id,
-                        Type = NodeType.folder,
-                        Name = "Documents",
-                        Open = false,
-                        CanCreate = NodeType.file,
-                        Editable = false,
-                        Nodes=new TreeNode[]
-                        { 
-                        
-                        }
-                    }
-                }
+            TreeNode[] childNodes = new TreeNode[]
+            {                
+                MakeNode(MakeChildId(path,NodeType.folder,id), "Documents", NodeType.folder, NodeType.file, new TreeNode[]{ })
             };
 
-            string jsonData = JsonConvert.SerializeObject(
-                new
-                {
-                    success = true,
-                    type = NodeType.activity,
-                    path = path,
-                    subTree = node
-                });
+            TreeNode node = MakeNode(id, name, NodeType.activity, NodeType.none, childNodes);
 
-            return jsonData;
+            return MakeJsonReturnData(true, NodeType.activity, path, node);
 
         }
-
-
-
-
-
-
-
 
         private string ModuleNode(string path, string id, string name)
         {
-
-            TreeNode node = new TreeNode
+            TreeNode[] childNodes = new TreeNode[]
             {
-                Id = id,
-                Type = NodeType.module,
-                Name = name,
-                Open = false,
-                CanCreate = NodeType.none,
-                Editable = false,
-                Nodes = new TreeNode[]
-                {
-                    new TreeNode
-                    {
-                        Id = path+"|"+NodeType.folder+"="+id,
-                        Type = NodeType.folder,
-                        Name = "Activities",
-                        Open = false,
-                        CanCreate = NodeType.activity,
-                        Editable = false,
-                        Nodes=new TreeNode[]
-                        {
-
-                        }
-                    },
-                    new TreeNode
-                    {
-                        Id = path+"|"+NodeType.folder+"="+id,
-                        Type = NodeType.folder,
-                        Name = "Documents",
-                        Open = false,
-                        CanCreate = NodeType.file,
-                        Editable = false,
-                        Nodes=new TreeNode[]
-                        {
-
-                        }
-                    }
-                }
+                MakeNode(MakeChildId(path,NodeType.folder,id), "Activities", NodeType.folder, NodeType.activity, new TreeNode[]{ }),
+                MakeNode(MakeChildId(path,NodeType.folder,id), "Documents", NodeType.folder, NodeType.file, new TreeNode[]{ })
             };
 
+            TreeNode node = MakeNode(id, name, NodeType.module, NodeType.none, childNodes);
+
+            return MakeJsonReturnData(true, NodeType.module, path, node);
+
+        }
+
+        private string CourseNode(string path, string id, string name)
+        {
+            TreeNode[] childNodes = new TreeNode[]
+            {
+                MakeNode(MakeChildId(path,NodeType.folder,id), "Modules", NodeType.folder, NodeType.module, new TreeNode[]{ }),
+                MakeNode(MakeChildId(path,NodeType.folder,id), "Documents", NodeType.folder, NodeType.file, new TreeNode[]{ }),
+                MakeNode(MakeChildId(path,NodeType.folder,id), "Student", NodeType.folder, NodeType.student, new TreeNode[]{ })
+            };
+
+            TreeNode node = MakeNode(id, name, NodeType.course, NodeType.none, childNodes);
+
+            return MakeJsonReturnData(true, NodeType.course, path, node);
+        }
+
+
+        private string MakeJsonReturnData(bool success, NodeType nodeType, string path, TreeNode node)
+        {
             string jsonData = JsonConvert.SerializeObject(
                 new
                 {
-                    success = true,
-                    type = NodeType.module,
+                    success = success,
+                    type = nodeType,
                     path = path,
                     subTree = node
                 });
@@ -258,6 +164,7 @@ namespace LMSGroupOne.Controllers
 
         }
 
-
     }
+
+    
 }

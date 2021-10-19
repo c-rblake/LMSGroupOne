@@ -26,16 +26,16 @@ namespace LMSGroupOne.Controllers
             this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
 
             //userManager.GetUsersInRoleAsync("RoleName");
-            nextId = 0;
+            //nextId = 0;
 
         }
 
-        private string GetNextId()  // använd guids iställlet?
-        {
+        //private string GetNextId()  // använd guids iställlet?
+        //{
 
-            return $"folder{(nextId++)}";
+        //    return $"folder{(nextId++)}";
 
-        }
+        //}
 
         public async Task<IActionResult> Index()
         {
@@ -50,7 +50,7 @@ namespace LMSGroupOne.Controllers
                     Id = "root",
                     Name = "LMS(Teacher)",
                     Type = NodeType.root,
-                    CanCreate = NodeType.course,
+                    CanCreate = NodeType.none,
                     Editable = true,
                     Nodes = new TreeNode[]
                     {
@@ -104,33 +104,7 @@ namespace LMSGroupOne.Controllers
                 };
                 return View(model);                
             }
-
-            //var model = new TreeNode
-            //{
-            //    Id = "root",
-            //    Name = "LMS",
-            //    Type = NodeType.root,
-            //    CanCreate = NodeType.course,
-            //    Editable = true,
-            //    Nodes = new TreeNode[]
-            //    { 
-            //        await Courses("root"),
-            //        await Teachers("root"),
-            //        new TreeNode
-            //        { 
-            //            Id="root",
-            //            Name="literature Search",
-            //            Type=NodeType.search,
-            //            CanCreate=NodeType.none,                        
-            //            Editable=false,
-            //            Open=false,
-            //            Nodes=null                        
-            //        }
-            //    }
-
-            //};
-
-            //return View(model);
+                        
             return null;
            
         }
@@ -509,6 +483,12 @@ namespace LMSGroupOne.Controllers
             
             var teacher = await userManager.FindByIdAsync(id);
 
+            if (teacher == null)
+            {
+                return new EmptyResult();
+            }
+
+
             if (User.IsInRole("Teacher"))
             {
                 var model = new TeacherFromTeacherModelView
@@ -541,7 +521,12 @@ namespace LMSGroupOne.Controllers
         private async Task<IActionResult> Student(string id)
         {
             var student=await userManager.FindByIdAsync(id);
-                        
+
+            if (student == null)
+            {
+                return new EmptyResult();
+            }
+            
             if (User.IsInRole("Teacher"))
             {
                 var model = new StudentFromTeacherModelView
@@ -573,7 +558,7 @@ namespace LMSGroupOne.Controllers
         private async Task<IActionResult> Activity(string id)
         {
             int aid;
-            if (int.TryParse(id, out aid))
+            if (!int.TryParse(id, out aid))
             {
                 return new EmptyResult();
             }
@@ -612,12 +597,16 @@ namespace LMSGroupOne.Controllers
         private async Task<IActionResult> Course(string id)
         {
             int cid;
-            if (int.TryParse(id, out cid))
+            if (!int.TryParse(id, out cid))
             {
                 return new EmptyResult();
             }
             var c = await uow.CourseRepository.GetCourse(cid);
 
+            if (c == null)
+            {
+                return new EmptyResult();
+            }
 
             var model = new CourseModelView
             {
@@ -634,7 +623,7 @@ namespace LMSGroupOne.Controllers
         private async Task<IActionResult> Module(string id)
         {
             int mid;
-            if (int.TryParse(id, out mid))
+            if (!int.TryParse(id, out mid))
             {
                 return new EmptyResult();
             }
