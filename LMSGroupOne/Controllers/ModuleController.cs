@@ -131,5 +131,12 @@ namespace LMSGroupOne.Controllers
             }
             return View(viewModel);
         }
+
+
+        private async Task<IEnumerable<Activity>> GetAllModulesByCourseAsync(int courseId)
+        {
+            return await uow.ModuleRepository.GetModulesByCourseId(courseId);
+        }
+
     }
 }
