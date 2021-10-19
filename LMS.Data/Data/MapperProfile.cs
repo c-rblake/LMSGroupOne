@@ -20,6 +20,7 @@ namespace LMS.Data.Data
             CreateMap<Course, CourseEditViewModel>().ReverseMap();
 
             CreateMap<Activity, ActivityCreateViewModel>().ReverseMap();
+            CreateMap<Activity, ActivityEditViewModel>().ReverseMap();
         }
     }
 }

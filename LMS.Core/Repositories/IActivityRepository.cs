@@ -11,5 +11,8 @@ namespace LMS.Core.Repositories
     {
         void AddActivity(Activity activity);
         bool ActivityExists(string name);
+        bool ActivityExistsById(int? id);
+        Task<Activity> FindAsync(int? id);
+        Task<IEnumerable<Activity>> GetActivitiesByModuleId(int moduleId);
     }
 }
