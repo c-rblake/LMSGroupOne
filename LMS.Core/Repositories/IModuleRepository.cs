@@ -15,7 +15,7 @@ namespace LMS.Core.Repositories
 
         void AddModule(Module module);
         Task<Module> GetModule(int id);
-        bool ModuleExist(string name);
+        bool ModuleExists(string name);
 
         bool ModuleExistsById(int? id);
     }

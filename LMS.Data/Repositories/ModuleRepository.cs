@@ -18,19 +18,15 @@ namespace LMS.Data.Repositories
             this.db = db ?? throw new ArgumentNullException(nameof(db));
         }
 
-        public void AddModule(Module module)
+
+        public void AddModule( Module module)
         {
             db.AddAsync(module);
         }
 
-        public bool ModuleExist(string name)
+        public bool ModuleExists(string name)
         {
             return db.Modules.Any(c => c.Name == name);
-        }
-
-        public async Task<IEnumerable<Module>> GetAsync()
-        {
-            return await db.Modules.ToListAsync();
         }
 
         public async Task<Module> FindAsync(int? id)
@@ -44,9 +40,15 @@ namespace LMS.Data.Repositories
             return db.Modules.Any(e => e.Id == id);
         }
 
+
         public async Task<Module> GetModule(int id)
         {
             return await db.Modules.FirstOrDefaultAsync(m => m.Id == id);
+        }
+
+        public async Task<IEnumerable<Module>> GetAsync()
+        {
+            return await db.Modules.ToListAsync();
         }
     }
 }

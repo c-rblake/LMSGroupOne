@@ -29,17 +29,12 @@ namespace LMSGroupOne.Controllers
 
         public async Task<IActionResult> CreateModule()
         {
-            // var courses = await uow.CourseRepository.GetAsync();
-
-            var courses = new List<String>();
-            courses.Add("Laga mat");
-            courses.Add("Dreja en kruka");
-
+            // Temporary for testing, IRL this will populate from the Course you're creating the Module from
+            var courses = await uow.CourseRepository.GetAsync();
             ViewBag.Courses = courses;
 
             return View();
         }
-
 
         [HttpPost]
         [Route("/module/create")]
@@ -58,7 +53,7 @@ namespace LMSGroupOne.Controllers
 
         public IActionResult VerifyModuleName(string Name)
         {
-            bool moduleExists = uow.ModuleRepository.ModuleExist(Name);
+            bool moduleExists = uow.ModuleRepository.ModuleExists(Name);
             if (moduleExists)
             {
                 return Json($"A Module with name {Name} already exists.");
