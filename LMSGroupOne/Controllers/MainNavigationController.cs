@@ -39,38 +39,139 @@ namespace LMSGroupOne.Controllers
 
         public async Task<IActionResult> Index()
         {
+            var user = await userManager.GetUserAsync(User);
+
             
 
-            var model = new TreeNode
+            if (User.IsInRole("Teacher"))
             {
-                Id = "root",
-                Name = "LMS",
-                Type = NodeType.root,
-                CanCreate = NodeType.course,
-                Editable = true,
-                Nodes = new TreeNode[]
-                { 
-                    await Courses("root"),
-                    await Teachers("root"),
-                    new TreeNode
-                    { 
-                        Id="root",
-                        Name="literature Search",
-                        Type=NodeType.search,
-                        CanCreate=NodeType.none,                        
-                        Editable=false,
-                        Open=false,
-                        Nodes=null                        
+                var model = new TreeNode
+                {
+                    Id = "root",
+                    Name = "LMS(Teacher)",
+                    Type = NodeType.root,
+                    CanCreate = NodeType.course,
+                    Editable = true,
+                    Nodes = new TreeNode[]
+                    {
+                        await TeacherCourses("root"),
+                        await Teachers("root"),
+                        new TreeNode
+                        {
+                            Id="root",
+                            Name="literature Search",
+                            Type=NodeType.search,
+                            CanCreate=NodeType.none,
+                            Editable=false,
+                            Open=false,
+                            Nodes=null
+                        }
                     }
-                }
-                
-            };
 
-            return View(model);
+                };
+                return View(model);
+
+
+            }
+            else if(User.IsInRole("Student")) 
+            {
+                string userId=userManager.GetUserId(User);
+                Debug.WriteLine("user id:"+userId);
+
+                var model = new TreeNode
+                {
+                    Id = "root",
+                    Name = "LMS(Student)",
+                    Type = NodeType.root,
+                    CanCreate = NodeType.none,
+                    Editable = false,
+                    Nodes = new TreeNode[]
+                    {
+                        await StudentCourses("root", userId),
+                        await Teachers("root"),
+                        new TreeNode
+                        {
+                            Id="root",
+                            Name="literature Search",
+                            Type=NodeType.search,
+                            CanCreate=NodeType.none,
+                            Editable=false,
+                            Open=false,
+                            Nodes=null
+                        }
+                    }
+
+                };
+                return View(model);                
+            }
+
+            //var model = new TreeNode
+            //{
+            //    Id = "root",
+            //    Name = "LMS",
+            //    Type = NodeType.root,
+            //    CanCreate = NodeType.course,
+            //    Editable = true,
+            //    Nodes = new TreeNode[]
+            //    { 
+            //        await Courses("root"),
+            //        await Teachers("root"),
+            //        new TreeNode
+            //        { 
+            //            Id="root",
+            //            Name="literature Search",
+            //            Type=NodeType.search,
+            //            CanCreate=NodeType.none,                        
+            //            Editable=false,
+            //            Open=false,
+            //            Nodes=null                        
+            //        }
+            //    }
+
+            //};
+
+            //return View(model);
+            return null;
            
         }
 
-        private async Task<TreeNode> Courses(string path)
+        private async Task<TreeNode> StudentCourses(string path, string studentId)
+        {
+            List<TreeNode> courses = new List<TreeNode>();
+            foreach (var item in await uow.CourseRepository.GetTreeDataForStudent(studentId))
+            {
+                courses.Add(new TreeNode
+                {
+                    Id = item.Id,
+                    Name = item.Name,
+                    Type = NodeType.course,
+                    CanCreate = NodeType.none,
+                    Editable = true,
+                    Open = false,
+                    Nodes = new TreeNode[]
+                    {
+                        Modules(item.Id, item.Nodes, path+"|"+NodeType.course+"="+item.Id),
+                        Documents(item.Id, item.Documents, path+"|"+NodeType.course+"="+item.Id, false),
+                        Students(item.Id, item.Persons, path+"|"+NodeType.course+"="+item.Id)
+                    }
+                });
+            }
+
+            var model = new TreeNode
+            {
+                Id = path,
+                Name = "Courses",
+                Type = NodeType.folder,
+                CanCreate = NodeType.none,
+                Editable = true,
+                Nodes = courses
+            };
+
+            return model;
+        }
+
+
+        private async Task<TreeNode> TeacherCourses(string path)
         {
             List<TreeNode> courses = new List<TreeNode>();
             foreach (var item in await uow.CourseRepository.GetTreeData())
@@ -86,7 +187,7 @@ namespace LMSGroupOne.Controllers
                     Nodes = new TreeNode[]
                     {
                         Modules(item.Id, item.Nodes, path+"|"+NodeType.course+"="+item.Id),
-                        Documents(item.Id, item.Documents, path+"|"+NodeType.course+"="+item.Id),
+                        Documents(item.Id, item.Documents, path+"|"+NodeType.course+"="+item.Id, true),
                         Students(item.Id, item.Persons, path+"|"+NodeType.course+"="+item.Id)
                     }
                 });
@@ -110,6 +211,9 @@ namespace LMSGroupOne.Controllers
         {
             var persons=await userManager.GetUsersInRoleAsync("Teacher");
             List<TreeNode> teachers = new List<TreeNode>();
+
+            bool isTeacher=User.IsInRole("Teacher");
+
             foreach (var item in persons)
             {
                 teachers.Add(new TreeNode
@@ -129,7 +233,7 @@ namespace LMSGroupOne.Controllers
                 Id = path,
                 Name = "Teachers",
                 Type = NodeType.folder,
-                CanCreate = NodeType.teacher,
+                CanCreate = isTeacher?NodeType.teacher:NodeType.none,
                 Editable = true,
                 Open=false,
                 Nodes = teachers                
@@ -139,10 +243,12 @@ namespace LMSGroupOne.Controllers
             
         }
 
+        
 
 
 
-        private TreeNode Documents(string parentId, IEnumerable<TreeDataDto> nodes, string path)
+
+        private TreeNode Documents(string parentId, IEnumerable<TreeDataDto> nodes, string path, bool canAdd)
         {
             List<TreeNode> nodeList = new List<TreeNode>();
             if (nodes != null)
@@ -167,7 +273,7 @@ namespace LMSGroupOne.Controllers
                 Id = path,
                 Name = "Documents",
                 Type = NodeType.folder,
-                CanCreate = NodeType.file,
+                CanCreate = canAdd?NodeType.file:NodeType.none,
                 Editable = true,
                 Nodes = nodeList
 
@@ -178,6 +284,8 @@ namespace LMSGroupOne.Controllers
 
         private TreeNode Students(string parentId, IEnumerable<TreeDataDto> nodes, string path)
         {
+            bool isTeacher = User.IsInRole("Teacher");
+
             List<TreeNode> nodeList = new List<TreeNode>();
             if (nodes != null)
             {
@@ -201,7 +309,7 @@ namespace LMSGroupOne.Controllers
                 Id = path,
                 Name = "Students",
                 Type = NodeType.folder,
-                CanCreate = NodeType.student,
+                CanCreate = isTeacher?NodeType.student:NodeType.none,
                 Editable = true,
                 Nodes = nodeList
             };
@@ -214,6 +322,8 @@ namespace LMSGroupOne.Controllers
 
         private TreeNode Modules(string parentId, IEnumerable<TreeDataDto> nodes, string path)
         {
+            bool isTeacher = User.IsInRole("Teacher");
+
             List<TreeNode> nodeList = new List<TreeNode>();
             foreach (var item in nodes)
             {
@@ -228,7 +338,7 @@ namespace LMSGroupOne.Controllers
                     Nodes = new TreeNode[]
                     { 
                         Activities(item.Id, item.Nodes, path+"|"+NodeType.module+"="+item.Id),
-                        Documents(item.Id, item.Documents, path+"|"+NodeType.module+"="+item.Id)
+                        Documents(item.Id, item.Documents, path+"|"+NodeType.module+"="+item.Id, isTeacher)
                     }
                                         
                 });
@@ -238,7 +348,7 @@ namespace LMSGroupOne.Controllers
                 Id = path,
                 Name = "Modules",
                 Type = NodeType.folder,
-                CanCreate = NodeType.module,
+                CanCreate = isTeacher?NodeType.module:NodeType.none,
                 Editable = true,
                 Nodes = nodeList
 
@@ -252,6 +362,8 @@ namespace LMSGroupOne.Controllers
 
         private TreeNode Activities(string parentId, IEnumerable<TreeDataDto> nodes, string path)
         {
+            bool isTeacher = User.IsInRole("Teacher");
+
             List<TreeNode> nodeList = new List<TreeNode>();
             if (nodes != null)
             {
@@ -267,7 +379,7 @@ namespace LMSGroupOne.Controllers
                         Open = false,
                         Nodes = new TreeNode[] 
                         { 
-                            Documents(item.Id, item.Documents, path+"|"+NodeType.activity+"="+item.Id)
+                            Documents(item.Id, item.Documents, path+"|"+NodeType.activity+"="+item.Id, true)
                         }
                     });
                 }
@@ -278,7 +390,7 @@ namespace LMSGroupOne.Controllers
                 Id = path,
                 Name = "Activities",
                 Type = NodeType.folder,
-                CanCreate = NodeType.activity,
+                CanCreate = isTeacher?NodeType.activity:NodeType.none,
                 Editable = true,
                 Nodes = nodeList
 
@@ -317,40 +429,7 @@ namespace LMSGroupOne.Controllers
 
         
 
-        //public string OnNew(string id, string type)
-        //{
-        //    // todo
-        //    Debug.WriteLine($"from controller new - id:{id}, type:{type}");
-
-        //    TreeNode model = new TreeNode
-        //    {
-                
-        //        Id = "12345",
-        //        Type = NodeType.student,
-        //        Name = "hello world",
-        //        Open = false,
-                
-        //        CanCreate = NodeType.none,
-        //        Editable = false,
-        //        Nodes=null 
-                
-                
-        //    };
-
-        //    string jsonData = JsonConvert.SerializeObject(
-        //        new
-        //        {
-        //            success = true,
-        //            id="123",
-        //            name="kalle",
-        //            type=type,
-        //            parentId=id,
-        //            parentType=NodeType.folder,
-        //            subTree=model
-        //        });
-
-        //    return jsonData;
-        //}
+       
 
 
         // the welcomepage when the page is loaded
@@ -412,6 +491,8 @@ namespace LMSGroupOne.Controllers
                     return await Course(id);
                 case NodeType.search:
                     return Search(id);
+                case NodeType.root:
+                    return await OnHome("root");
 
             }
 

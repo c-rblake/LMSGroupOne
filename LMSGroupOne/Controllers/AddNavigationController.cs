@@ -29,10 +29,10 @@ namespace LMSGroupOne.Controllers
         }
 
 
-        public string OnNew(string id, string type, string name)
+        public string OnNew(string path, string id, string type, string name)
         {
             Debug.WriteLine("--------------from add controller-----------");
-            Debug.WriteLine("id:"+id);
+            Debug.WriteLine("path:"+path);
             Debug.WriteLine("type:"+type);
             Debug.WriteLine("name:"+name);
             Debug.WriteLine("---------------------------------------------");
@@ -43,15 +43,13 @@ namespace LMSGroupOne.Controllers
                 switch (nodeType)
                 {
                     case (int)NodeType.student:
-                        return StudentNode(id, name);
+                        return StudentNode(path,"new student id", name);
                     case (int)NodeType.teacher:
-                        return TeacherNode(id, name);
+                        return TeacherNode(path,"new teacher id", name);
                     case (int)NodeType.file:
-                        return FileNode(id, name);
+                        return FileNode(path,"new file id", name);
                     case (int)NodeType.activity:
-                        return ActivityNode(id, name);
-
-                        
+                        return ActivityNode(path,"new activity id", name);                       
                     
                     
                         
@@ -72,7 +70,7 @@ namespace LMSGroupOne.Controllers
         }
 
 
-        private string StudentNode(string id, string name)
+        private string StudentNode(string path,string id, string name)
         {
 
             TreeNode node = new TreeNode
@@ -91,7 +89,7 @@ namespace LMSGroupOne.Controllers
                 {
                     success = true,                    
                     type = NodeType.student,
-                    parentId = id,                    
+                    path = path,                    
                     subTree = node
                 });
 
@@ -99,7 +97,7 @@ namespace LMSGroupOne.Controllers
 
         }
 
-        private string TeacherNode(string id, string name)
+        private string TeacherNode(string path, string id, string name)
         {
 
             TreeNode node = new TreeNode
@@ -118,7 +116,7 @@ namespace LMSGroupOne.Controllers
                 {
                     success = true,
                     type = NodeType.teacher,
-                    parentId = id,
+                    path = path,
                     subTree = node
                 });
 
@@ -126,7 +124,7 @@ namespace LMSGroupOne.Controllers
 
         }
 
-        private string FileNode(string id, string name)
+        private string FileNode(string path, string id, string name)
         {
 
             TreeNode node = new TreeNode
@@ -145,7 +143,7 @@ namespace LMSGroupOne.Controllers
                 {
                     success = true,
                     type = NodeType.file,
-                    parentId = id,
+                    path = path,
                     subTree = node
                 });
 
@@ -154,13 +152,13 @@ namespace LMSGroupOne.Controllers
         }
 
 
-        private string ActivityNode(string id, string name)
+        private string ActivityNode(string path, string id, string name)
         {
 
             TreeNode node = new TreeNode
             {
                 Id = id,
-                Type = NodeType.student,
+                Type = NodeType.activity,
                 Name = name,
                 Open = false,
                 CanCreate = NodeType.none,
@@ -172,8 +170,8 @@ namespace LMSGroupOne.Controllers
                 new
                 {
                     success = true,
-                    type = NodeType.student,
-                    parentId = id,
+                    type = NodeType.activity,
+                    path = path,
                     subTree = node
                 });
 

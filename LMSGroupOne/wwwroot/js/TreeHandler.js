@@ -76,19 +76,10 @@
             }
         }
 
-
         clearTimeout(this.#pressTimer);
         this.#longPress = false;
         this.#initialMove = false;
         this.#draging = false;
-
-
-
-
-
-
-        // dragged to
-
 
     }
 
@@ -118,8 +109,6 @@
 
     }
 
-
-
     #OnClick(event) {
 
         if (this.#longPress) {
@@ -132,27 +121,26 @@
         console.log("type:" + event.target.dataset.itemExtra);
         console.log("ypos:" + event.clientY);
 
+        if (event.target.dataset.itemType != TreeFactory.NodeTypes.FOLDER)
+        {
+            $.ajax({
+                type: "GET",
+                url: "/MainNavigation/OnTreeClick",
+                data: { id: event.target.id, type: event.target.dataset.itemType },
+                cache: false,
+                success: result => {
+                    console.log(result);
+                    //this.#contentDiv.innerHTML = result;
+                    document.getElementById("contentDivId").innerHTML = result;
+                }
+            });
 
-        // todo filtera bort folder och dubbelaktivering
-        $.ajax({
-            type: "GET",
-            url: "/MainNavigation/OnTreeClick",
-            data: { id: event.target.id, type: event.target.dataset.itemType },
-            cache: false,
-            success: result => {
-                console.log(result);
-                //this.#contentDiv.innerHTML = result;
-                document.getElementById("contentDivId").innerHTML = result;
-            }
-        });
-
-
-
+        }
+                
+        
 
 
         if (event.target.dataset.itemExtra == "caret") {
-
-            console.log("current element " + this.#currentElement.dataset.itemType);
 
             this.#ToggleExpand(event.target.parentNode);
             this.#SelectionOutline(event.target.parentNode);
@@ -164,29 +152,20 @@
             return;
         }
 
-        if (event.target.dataset.itemExtra == "new") {
-
-            console.log("adding something");
+        if (event.target.dataset.itemExtra == "new") {                        
             this.#OnNew(event);
         }
 
-
-
-
     }
-
 
     #OnDblClick(event) {
         this.#editCancel = true;
-
-        console.log("dubbeltrubbel");
-        console.log("childCount" + event.target.parentNode.parentNode.childElementCount);
+                
         if (event.target.parentNode.parentNode.childElementCount > 1) {
             this.#ToggleExpand(event.target.parentNode);
             this.#SelectionOutline(event.target.parentNode);
         }
     }
-
 
     #ToggleExpand(node) {
 
@@ -304,8 +283,6 @@
 
                     this.#removeElement(this.#movedElement);
                 }
-
-
             }
         });
 
@@ -314,73 +291,32 @@
 
     #removeElement(element) {
         let pNode = element.parentNode;
-
         element.remove();
-
-
-        //if (pNode.childElementCount <= 1)
-        //{
-        //    this.#ToggleExpand(pNode.childNodes[1])
-        //}
-
-
-
-        // selections todo refactor
-        //let rect = pNode.childNodes[1].getBoundingClientRect();
-        //let rect2 = pNode.parentNode.childNodes[1].getBoundingClientRect();
-        //let mr = this.#menuDiv.getBoundingClientRect();
-
-        //let marginal = rect.top - rect2.top;
-
-        //this.#selectBar.style.top = (rect.top - mr.top) + "px";
-        //this.#selectBar.style.height = (rect.height) + "px";
-
-        //this.#selectSelection.style.top = (rect.top - mr.top) + "px";
-        //this.#selectSelection.style.height = (rect2.height - marginal * 2) + "px";
-
-
         this.#SelectionOutline(pNode.parentNode.childNodes[0]);
 
-
     }
 
-    #GetParent(node)
-    {
-
-    }
-
-    #OnNew(event) {
-        //console.log("new---------------------------")
-        //console.log("new entity id:" + event.target.id + "can create " + event.target.dataset.itemCreates);
-        //console.log("belongs to id:" + event.target.dataset.itemParentId + " of type " + event.target.dataset.itemParentType);
-        //console.log(event.target.parentNode.parentNode.parentNode.parentNode.parentNode.firstChild);
+    
+    #OnNew(event) {        
 
         $.ajax({
             type: "GET",
             url: "/AddNavigation/OnNew",
-            data: { id: event.target.id, type: event.target.dataset.itemCreates, name: "hello dolly"},
+            data: { path: event.target.id, id: "hello_id", type: event.target.dataset.itemCreates, name: "hello world"},
             cache: false,
             success: result => {
-                let obj = JSON.parse(result);
-                console.log("result forn new " + obj.type);
-                if (obj.success) {
-
-                    console.log("--return fron controller---");
-                    console.log(obj.subTree.Id);
-                    console.log(obj.subTree.Type);
-                    this.AddSubTree(obj.subTree, obj.type, obj.parentId);
-                    
+                let obj = JSON.parse(result);                
+                if (obj.success) {                    
+                    this.AddSubTree(obj.subTree, obj.type, obj.path);                    
                 } 
             }
         });
     }
 
-    AddSubTree(subTree, type, parentId) {
+    AddSubTree(subTree, type, path) {
 
-
-        let elmer = this.#FindListGroup(subTree.Type, subTree.Id);
+        let elmer = this.#FindListGroup(subTree.Type, path);
         let item = TreeFactory.GenerateSubTree(subTree, (item) => this.#AddEventListener(item));
-
         elmer.appendChild(item);
     }
 
@@ -392,47 +328,19 @@
 
     GenerateTree(node)
     {
-        this.#menuDiv.appendChild(TreeFactory.GenerateSubTree(node, (item) => this.#AddEventListener(item)));
-        //TreeFactory.GenerateTree(node, node);
+        this.#menuDiv.appendChild(TreeFactory.GenerateSubTree(node, (item) => this.#AddEventListener(item)));        
     }
 
 
    
 
-    // finds the place to put created items in  !bug file!
+    // finds the place to put created items in  
     #FindListGroup(type, id) {
-
-        console.log("from find listgroup--");
-        console.log(id);
-
-        let element = document.getElementById(id);
-        console.log(element);
-        //let gstr = '[data-item-type="' + type + '"]';
+                        
         let gstr = "[id='"+id+"']";
-        let bstr = '[data-item-creates="' + type + '"]';
-        
-        let q = document.querySelectorAll(gstr + bstr);
-        console.log(q[0].parentNode.nextSibling);
-
-        return q[0].parentNode.nextSibling;
-
-        //console.log("----quer-----");
-        //console.log(q);
-        //console.log(parentId);
-
-        //let elmer = document.getElementById(id);
-
-        //let children = elmer.parentNode.nextSibling.childNodes;
-        //console.log("-----------------------------------------------------------");
-        //console.log(type);
-
-        //for (let i = 0; i < children.length; i++) {
-
-        //    if (children[i].firstChild.firstChild.firstChild.dataset.itemCreates == type) {
-
-        //        return children[i].firstChild.firstChild.nextSibling;
-        //    }
-        //}
+        let bstr = '[data-item-creates="' + type + '"]';        
+        let q = document.querySelectorAll(gstr + bstr);       
+        return q[0].parentNode.nextSibling;                
     }
 
 

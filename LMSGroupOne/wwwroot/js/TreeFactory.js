@@ -115,33 +115,11 @@ class TreeFactory {
 
         return item;
     }
-
-    //static GenerateTree(node, parentNode) {        
-    //    let mainList = document.createElement("ul");
-    //    mainList.classList = "list-group";
-    //    mainList.style = "user-select:none;";
-
-    //    mainList.appendChild(this.Recurse(node, parentNode));
-
-    //    document.write(mainList.outerHTML);
-    //}
-
+   
     static GenerateSubTree(node, AddEventListener) {
-        //console.log(AddEventListener("sdf"));
-        //let mainList = document.createElement("ul");
-        //mainList.classList = "list-group";
-        //mainList.style = "user-select:none;";
-
-        return this.Recurse(node, node, (item) => AddEventListener(item));
-
-        //mainList.appendChild(this.Recurse(node, node, (item)=>AddEventListener(item)));
-
-        //return mainList;
+        
+        return this.Recurse(node, node, (item) => AddEventListener(item));        
     }
-
-
-
-
 
     static Recurse(node, parentNode, AddEventListener) {
         let list = document.createElement("ul");
@@ -161,8 +139,7 @@ class TreeFactory {
         {
             AddEventListener(item);
         }
-        //console.log(AddEventListenerCallback(item));
-
+        
         let childList = document.createElement("ul");
         childList.classList = "list-group";
         childList.hidden = !node.Open;
@@ -174,9 +151,7 @@ class TreeFactory {
 
         list.appendChild(listItem);        
         return list;
-    }
-
-       
+    }       
 
     static #GenerateAddIcon(id, type, parentId, parentType, isOpen, canCreate) {
         
