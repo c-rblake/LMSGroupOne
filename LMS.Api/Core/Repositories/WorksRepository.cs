@@ -74,14 +74,16 @@ namespace LMS.Api.Core.Repositories
 
             var workPropertyMappingDictionary = _propertyMappingService.GetPropertyMapping<WorkDto, Work>();
 
-            query.ApplySort(workResourceParameters.OrderBy, workPropertyMappingDictionary);
+            query = query.ApplySort(workResourceParameters.OrderBy, workPropertyMappingDictionary); //Missing assignment... Inplace = True anyone?
 
-            //Paging Last.
+            //Paging Last. LACK THE ASYNC CODE.
 
-            //var collection = PagedList<Work>.Create(query, LACK THE ASYNC CODE.
+            //var collection = PagedList<Work>.Create(query, 
             //    workResourceParameters.PageNumber,
             //    workResourceParameters.PageSize);
 
+            //return collection;
+            //Breaks the Orderer of Items?? But is Async.
             var count = query.Count();
             var items = await query
                 .Skip(workResourceParameters.PageSize * (workResourceParameters.PageNumber - 1))

@@ -16,7 +16,7 @@ namespace LMS.Api.Core.Dtos
         public int Age { get; set; }
 
         //Nav properties
-        public ICollection<AuthorWorkDto> WorkDtos { get; set; } // Circular WARNING Works <=> Authors
+        public ICollection<AuthorWorkDto> Works { get; set; } // Circular WARNING Works <=> Authors
                                                                  // Todo Also change the Parameter Name to something presentable such as Works
     }
 }

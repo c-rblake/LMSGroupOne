@@ -68,7 +68,7 @@ namespace LMS.Api.Controllers
         [HttpOptions]
         public IActionResult GetWorkOptions()
         {
-            Response.Headers.Add("Allow","GET,OPTIONS,PATCH");
+            Response.Headers.Add("Allow","GET,OPTIONS,POST,PATCH");
             return Ok();
         }
 
@@ -171,7 +171,7 @@ namespace LMS.Api.Controllers
                     return Url.Link("GetWorks",
                         new 
                         {
-                            pageNumber = worksResourceParameters.PageNumber - 1,
+                            pageNumber = worksResourceParameters.PageNumber + 1,
                             pageSize = worksResourceParameters.PageSize,
                             orderBy = worksResourceParameters.OrderBy,
                         });

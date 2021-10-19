@@ -35,8 +35,8 @@ namespace LMS.Api.Controllers
             var result = await uow.AuthorRepository.GetAuthorAsync(id, includeWorks); //ToDo the Query has TWO Awaits total..
             if (result is null) return NotFound();
             var dtoResult = mapper.Map<AuthorDto>(result);
-            dtoResult.WorkDtos = mapper.Map<ICollection<AuthorWorkDto>>(result.Works);
-            if (result is null) return StatusCode(500);
+            if (dtoResult is null) return StatusCode(500);
+            dtoResult.Works = mapper.Map<ICollection<AuthorWorkDto>>(result.Works);
 
             return Ok(dtoResult);
         }
@@ -48,27 +48,28 @@ namespace LMS.Api.Controllers
         public async Task<ActionResult<IEnumerable<AuthorDto>>> GetAuthors([FromQuery]AuthorsResourceParameters authorResourceParameters)
             //FromQuery because it is a complex type and inferred as [FromBody] by default.
         {
-            List<AuthorDto> dtoAuthors = new List<AuthorDto>();
-            //Todo Implement. Should return AuthorDto with collection WorksDto
-            var result = await uow.AuthorRepository.GetAllAuthorsAsync(authorResourceParameters);
-            //For each result Author + Collection WorksDto
-            if (result is null) return NotFound();
-            if(authorResourceParameters.IncludeWorks)
-            {
-                foreach (var author in result)
-                {
-                    var dtoAuthor = mapper.Map<AuthorDto>(author);
-                    dtoAuthor.WorkDtos = mapper.Map<ICollection<AuthorWorkDto>>(author.Works);
-                    dtoAuthors.Add(dtoAuthor);
-                };
-            }
-            else
-            {
-                dtoAuthors = mapper.Map<List<AuthorDto>>(result);
-            }
-            if (dtoAuthors is null) return StatusCode(500);
 
-            return Ok(dtoAuthors);
+            //Todo Implement. Should return AuthorDto with collection WorksDto
+            var authors = await uow.AuthorRepository.GetAllAuthorsAsync(authorResourceParameters);
+            //For each result Author + Collection WorksDto
+            if (authors is null) return NotFound();
+            //ToDo This code is a Total Disaster...
+            //if(authorResourceParameters.IncludeWorks)
+            //{
+            //    foreach (var author in result)
+            //    {
+            //        var dtoAuthor = mapper.Map<AuthorDto>(author);
+            //        dtoAuthor.WorkDtos = mapper.Map<ICollection<AuthorWorkDto>>(author.Works);
+            //        dtoAuthors.Add(dtoAuthor);
+            //    };
+            //}
+            //else
+            //{
+            //    dtoAuthors = mapper.Map<List<AuthorDto>>(result);
+            //}
+            var authorDto = mapper.Map<IEnumerable<AuthorDto>>(authors);
+            if (authorDto is null) return StatusCode(500);
+            return Ok(authorDto);
             
         }
         //ToDo One Million API CRUDS Dont forget to USE uow
