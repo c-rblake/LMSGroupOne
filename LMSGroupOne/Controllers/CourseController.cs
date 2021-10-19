@@ -79,7 +79,6 @@ namespace LMSGroupOne.Controllers
 
         [Authorize(Roles = "Teacher")]
         [HttpPost]
-        [Route("/course/create")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create( CreateCourseViewModel course)
         {
