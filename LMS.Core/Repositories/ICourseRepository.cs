@@ -14,6 +14,7 @@ namespace LMS.Core.Repositories
         Task<Course> FindAsync(int? id);
         void Update(Course course);
         bool CourseExist(string name);
+        Task<IEnumerable<Course>> GetAsync();
         bool CourseExistById(int id);
     }
 }

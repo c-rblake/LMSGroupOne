@@ -18,6 +18,12 @@ namespace LMS.Data.Repositories
         {
             this.db = db ?? throw new ArgumentNullException(nameof(db));
         }
+
+        public async Task<IEnumerable<Course>> GetAsync()
+        {
+            return await db.Courses.ToListAsync();
+        }
+
         public void AddCourse(Course course)
         {
             db.AddAsync(course);
