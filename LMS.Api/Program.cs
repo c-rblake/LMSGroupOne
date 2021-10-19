@@ -23,8 +23,9 @@ namespace LMS.Api
             {
                 var services = scope.ServiceProvider;
                 var context = services.GetRequiredService<LMSApiContext>();
-
-                context.Database.EnsureDeleted(); //Performance Drag and Source of Errors on testing.
+                //If db exist it will be deleted
+                //context.Database.EnsureDeleted(); //Performance Drag and Source of Errors on testing.
+                context.Database.EnsureCreated(); //if db exists no action is taken
                 context.Database.Migrate();
 
                 try

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using LMS.Api.Core.Dtos;
 using LMS.Api.Core.Entities;
+using LMS.Api.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +25,7 @@ namespace LMS.Api.Data
             CreateMap<Work, WorkDto>().ReverseMap();
             CreateMap<Work, WorkCreateDto>().ReverseMap();
 
-
+            CreateMap<AuthorViewModel, AuthorDto>().ReverseMap();
         }
 
     }
