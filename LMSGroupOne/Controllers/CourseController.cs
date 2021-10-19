@@ -6,6 +6,7 @@ using AutoMapper;
 using LMS.Core.Models.Entities;
 using LMS.Core.Models.ViewModels.Course;
 using LMS.Core.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -41,6 +42,7 @@ namespace LMSGroupOne.Controllers
             return View(course);
         }
 
+        [Authorize(Roles = "Teacher")]
         [HttpPost]
         [Route("/course/edit/{id}")]
         [ValidateAntiForgeryToken]
@@ -75,7 +77,7 @@ namespace LMSGroupOne.Controllers
             return View(viewModel);
         }
 
-
+        [Authorize(Roles = "Teacher")]
         [HttpPost]
         [Route("/course/create")]
         [ValidateAntiForgeryToken]
