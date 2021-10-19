@@ -42,7 +42,9 @@ namespace LMS.Data.Data
                 await AddRolesAsync(roleNames);
 
                 var teacher = await AddTeacherAsync(teacherPw);
+                var aime = await AddTeacherAimeAsync(teacherPw);
                 await AddTeacherToRoleAsync(teacher);
+                await AddTeacherToRoleAsync(aime);
 
                 var actTypeTypes = new List<string>
                 {
@@ -165,6 +167,28 @@ namespace LMS.Data.Data
             var teacher = new User
             {
                 FirstName = $"TEACH{firstName}",
+                LastName = lastName,
+                Documents = GetDocuments(2),
+                Email = $"{emailFirstName}.{emailLastName}@lexicon.se",
+                UserName = $"{emailFirstName}.{emailLastName}@lexicon.se"
+            };
+
+            var result = await userManager.CreateAsync(teacher, teacherPw);
+            if (!result.Succeeded) throw new Exception(string.Join("\n", result.Errors));
+
+            return teacher;
+        }
+
+        private static async Task<User> AddTeacherAimeAsync(string teacherPw)
+        {
+            var firstName = "Aime";
+            var lastName = "Jescalante";
+            var emailFirstName = firstName.ToLower();
+            var emailLastName = lastName.ToLower();
+
+            var teacher = new User
+            {
+                FirstName = firstName,
                 LastName = lastName,
                 Documents = GetDocuments(2),
                 Email = $"{emailFirstName}.{emailLastName}@lexicon.se",
