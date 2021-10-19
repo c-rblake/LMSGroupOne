@@ -54,7 +54,7 @@ namespace LMSGroupOne.Controllers
                     await Teachers("root"),
                     new TreeNode
                     { 
-                        Id=GetNextId(),
+                        Id="root",
                         Name="literature Search",
                         Type=NodeType.search,
                         CanCreate=NodeType.none,                        
@@ -70,7 +70,7 @@ namespace LMSGroupOne.Controllers
            
         }
 
-        private async Task<TreeNode> Courses(string parentId)
+        private async Task<TreeNode> Courses(string path)
         {
             List<TreeNode> courses = new List<TreeNode>();
             foreach (var item in await uow.CourseRepository.GetTreeData())
@@ -85,16 +85,16 @@ namespace LMSGroupOne.Controllers
                     Open = false,
                     Nodes = new TreeNode[]
                     {
-                        Modules(item.Id, item.Nodes),
-                        Documents(item.Id, item.Documents),
-                        Students(item.Id, item.Persons)
+                        Modules(item.Id, item.Nodes, path+"|"+NodeType.course+"="+item.Id),
+                        Documents(item.Id, item.Documents, path+"|"+NodeType.course+"="+item.Id),
+                        Students(item.Id, item.Persons, path+"|"+NodeType.course+"="+item.Id)
                     }
                 });
             }
 
             var model = new TreeNode
             {
-                Id = GetNextId(),
+                Id = path,
                 Name = "Courses",
                 Type = NodeType.folder,
                 CanCreate = NodeType.course,
@@ -106,7 +106,7 @@ namespace LMSGroupOne.Controllers
         }
 
 
-        private async Task<TreeNode> Teachers(string parentId)
+        private async Task<TreeNode> Teachers(string path)
         {
             var persons=await userManager.GetUsersInRoleAsync("Teacher");
             List<TreeNode> teachers = new List<TreeNode>();
@@ -126,7 +126,7 @@ namespace LMSGroupOne.Controllers
 
             var model = new TreeNode
             {
-                Id = GetNextId(),
+                Id = path,
                 Name = "Teachers",
                 Type = NodeType.folder,
                 CanCreate = NodeType.teacher,
@@ -142,7 +142,7 @@ namespace LMSGroupOne.Controllers
 
 
 
-        private TreeNode Documents(string parentId, IEnumerable<TreeDataDto> nodes)
+        private TreeNode Documents(string parentId, IEnumerable<TreeDataDto> nodes, string path)
         {
             List<TreeNode> nodeList = new List<TreeNode>();
             if (nodes != null)
@@ -164,7 +164,7 @@ namespace LMSGroupOne.Controllers
             }
             var model = new TreeNode
             {
-                Id = GetNextId(),
+                Id = path,
                 Name = "Documents",
                 Type = NodeType.folder,
                 CanCreate = NodeType.file,
@@ -176,7 +176,7 @@ namespace LMSGroupOne.Controllers
         }
 
 
-        private TreeNode Students(string parentId, IEnumerable<TreeDataDto> nodes)
+        private TreeNode Students(string parentId, IEnumerable<TreeDataDto> nodes, string path)
         {
             List<TreeNode> nodeList = new List<TreeNode>();
             if (nodes != null)
@@ -198,7 +198,7 @@ namespace LMSGroupOne.Controllers
             }
             var model = new TreeNode
             {
-                Id = GetNextId(),
+                Id = path,
                 Name = "Students",
                 Type = NodeType.folder,
                 CanCreate = NodeType.student,
@@ -212,7 +212,7 @@ namespace LMSGroupOne.Controllers
 
 
 
-        private TreeNode Modules(string parentId, IEnumerable<TreeDataDto> nodes)
+        private TreeNode Modules(string parentId, IEnumerable<TreeDataDto> nodes, string path)
         {
             List<TreeNode> nodeList = new List<TreeNode>();
             foreach (var item in nodes)
@@ -227,15 +227,15 @@ namespace LMSGroupOne.Controllers
                     Open = false,
                     Nodes = new TreeNode[]
                     { 
-                        Activities(item.Id, item.Nodes),
-                        Documents(item.Id, item.Documents)
+                        Activities(item.Id, item.Nodes, path+"|"+NodeType.module+"="+item.Id),
+                        Documents(item.Id, item.Documents, path+"|"+NodeType.module+"="+item.Id)
                     }
                                         
                 });
             }
             var model = new TreeNode
             {
-                Id = GetNextId(),
+                Id = path,
                 Name = "Modules",
                 Type = NodeType.folder,
                 CanCreate = NodeType.module,
@@ -250,7 +250,7 @@ namespace LMSGroupOne.Controllers
         
 
 
-        private TreeNode Activities(string parentId, IEnumerable<TreeDataDto> nodes)
+        private TreeNode Activities(string parentId, IEnumerable<TreeDataDto> nodes, string path)
         {
             List<TreeNode> nodeList = new List<TreeNode>();
             if (nodes != null)
@@ -267,7 +267,7 @@ namespace LMSGroupOne.Controllers
                         Open = false,
                         Nodes = new TreeNode[] 
                         { 
-                            Documents(item.Id, item.Documents)
+                            Documents(item.Id, item.Documents, path+"|"+NodeType.activity+"="+item.Id)
                         }
                     });
                 }
@@ -275,7 +275,7 @@ namespace LMSGroupOne.Controllers
 
             var model = new TreeNode
             {
-                Id = GetNextId(),
+                Id = path,
                 Name = "Activities",
                 Type = NodeType.folder,
                 CanCreate = NodeType.activity,

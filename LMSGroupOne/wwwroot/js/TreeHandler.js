@@ -344,23 +344,30 @@
 
     }
 
+    #GetParent(node)
+    {
 
+    }
 
     #OnNew(event) {
-        console.log("new---------------------------")
-        console.log("new entity id:" + event.target.id + "can create " + event.target.dataset.itemCreates);
-        console.log("belongs to id:" + event.target.dataset.itemParentId + " of type " + event.target.dataset.itemParentType);
+        //console.log("new---------------------------")
+        //console.log("new entity id:" + event.target.id + "can create " + event.target.dataset.itemCreates);
+        //console.log("belongs to id:" + event.target.dataset.itemParentId + " of type " + event.target.dataset.itemParentType);
+        //console.log(event.target.parentNode.parentNode.parentNode.parentNode.parentNode.firstChild);
 
         $.ajax({
             type: "GET",
             url: "/AddNavigation/OnNew",
-            data: { id: event.target.dataset.itemParentId, type: event.target.dataset.itemCreates, name: "hello dolly"},
+            data: { id: event.target.id, type: event.target.dataset.itemCreates, name: "hello dolly"},
             cache: false,
             success: result => {
                 let obj = JSON.parse(result);
                 console.log("result forn new " + obj.type);
                 if (obj.success) {
-                    
+
+                    console.log("--return fron controller---");
+                    console.log(obj.subTree.Id);
+                    console.log(obj.subTree.Type);
                     this.AddSubTree(obj.subTree, obj.type, obj.parentId);
                     
                 } 
@@ -369,7 +376,9 @@
     }
 
     AddSubTree(subTree, type, parentId) {
-        let elmer = this.#FindListGroup(type, parentId);
+
+
+        let elmer = this.#FindListGroup(subTree.Type, subTree.Id);
         let item = TreeFactory.GenerateSubTree(subTree, (item) => this.#AddEventListener(item));
 
         elmer.appendChild(item);
@@ -390,18 +399,40 @@
 
    
 
-    // finds the place to put created items in
-    #FindListGroup(type, parentId) {
-        let elmer = document.getElementById(parentId);
-        let children = elmer.parentNode.nextSibling.childNodes;
+    // finds the place to put created items in  !bug file!
+    #FindListGroup(type, id) {
 
-        for (let i = 0; i < children.length; i++) {
+        console.log("from find listgroup--");
+        console.log(id);
 
-            if (children[i].firstChild.firstChild.firstChild.dataset.itemCreates == type) {
+        let element = document.getElementById(id);
+        console.log(element);
+        //let gstr = '[data-item-type="' + type + '"]';
+        let gstr = "[id='"+id+"']";
+        let bstr = '[data-item-creates="' + type + '"]';
+        
+        let q = document.querySelectorAll(gstr + bstr);
+        console.log(q[0].parentNode.nextSibling);
 
-                return children[i].firstChild.firstChild.nextSibling;
-            }
-        }
+        return q[0].parentNode.nextSibling;
+
+        //console.log("----quer-----");
+        //console.log(q);
+        //console.log(parentId);
+
+        //let elmer = document.getElementById(id);
+
+        //let children = elmer.parentNode.nextSibling.childNodes;
+        //console.log("-----------------------------------------------------------");
+        //console.log(type);
+
+        //for (let i = 0; i < children.length; i++) {
+
+        //    if (children[i].firstChild.firstChild.firstChild.dataset.itemCreates == type) {
+
+        //        return children[i].firstChild.firstChild.nextSibling;
+        //    }
+        //}
     }
 
 

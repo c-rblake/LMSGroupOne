@@ -31,7 +31,11 @@ namespace LMSGroupOne.Controllers
 
         public string OnNew(string id, string type, string name)
         {
-            
+            Debug.WriteLine("--------------from add controller-----------");
+            Debug.WriteLine("id:"+id);
+            Debug.WriteLine("type:"+type);
+            Debug.WriteLine("name:"+name);
+            Debug.WriteLine("---------------------------------------------");
 
             int nodeType;
             if (int.TryParse(type, out nodeType))
@@ -42,6 +46,11 @@ namespace LMSGroupOne.Controllers
                         return StudentNode(id, name);
                     case (int)NodeType.teacher:
                         return TeacherNode(id, name);
+                    case (int)NodeType.file:
+                        return FileNode(id, name);
+                    case (int)NodeType.activity:
+                        return ActivityNode(id, name);
+
                         
                     
                     
@@ -109,6 +118,61 @@ namespace LMSGroupOne.Controllers
                 {
                     success = true,
                     type = NodeType.teacher,
+                    parentId = id,
+                    subTree = node
+                });
+
+            return jsonData;
+
+        }
+
+        private string FileNode(string id, string name)
+        {
+
+            TreeNode node = new TreeNode
+            {
+                Id = id,
+                Type = NodeType.file,
+                Name = name,
+                Open = false,
+                CanCreate = NodeType.none,
+                Editable = false,
+                Nodes = null
+            };
+
+            string jsonData = JsonConvert.SerializeObject(
+                new
+                {
+                    success = true,
+                    type = NodeType.file,
+                    parentId = id,
+                    subTree = node
+                });
+
+            return jsonData;
+
+        }
+
+
+        private string ActivityNode(string id, string name)
+        {
+
+            TreeNode node = new TreeNode
+            {
+                Id = id,
+                Type = NodeType.student,
+                Name = name,
+                Open = false,
+                CanCreate = NodeType.none,
+                Editable = false,
+                Nodes = null
+            };
+
+            string jsonData = JsonConvert.SerializeObject(
+                new
+                {
+                    success = true,
+                    type = NodeType.student,
                     parentId = id,
                     subTree = node
                 });

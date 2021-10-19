@@ -128,13 +128,15 @@ class TreeFactory {
 
     static GenerateSubTree(node, AddEventListener) {
         //console.log(AddEventListener("sdf"));
-        let mainList = document.createElement("ul");
-        mainList.classList = "list-group";
-        mainList.style = "user-select:none;";
+        //let mainList = document.createElement("ul");
+        //mainList.classList = "list-group";
+        //mainList.style = "user-select:none;";
 
-        mainList.appendChild(this.Recurse(node, node, (item)=>AddEventListener(item)));
+        return this.Recurse(node, node, (item) => AddEventListener(item));
 
-        return mainList;
+        //mainList.appendChild(this.Recurse(node, node, (item)=>AddEventListener(item)));
+
+        //return mainList;
     }
 
 
@@ -144,6 +146,7 @@ class TreeFactory {
     static Recurse(node, parentNode, AddEventListener) {
         let list = document.createElement("ul");
         list.classList = "list-group";
+        list.style = "user-select:none;";
         list.hidden = false;
 
         let listItem = document.createElement("li");
