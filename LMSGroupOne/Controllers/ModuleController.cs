@@ -133,7 +133,7 @@ namespace LMSGroupOne.Controllers
         }
 
 
-        private async Task<IEnumerable<Activity>> GetAllModulesByCourseAsync(int courseId)
+        private async Task<IEnumerable<Module>> GetAllModulesByCourseAsync(int courseId)
         {
             return await uow.ModuleRepository.GetModulesByCourseId(courseId);
         }

@@ -18,6 +18,6 @@ namespace LMS.Core.Repositories
         bool ModuleExists(string name);
 
         bool ModuleExistsById(int? id);
-        Task<IEnumerable<Activity>> GetModulesByCourseId(int courseId);
+        Task<IEnumerable<Module>> GetModulesByCourseId(int courseId);
     }
 }
