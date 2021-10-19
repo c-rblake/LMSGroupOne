@@ -37,7 +37,6 @@ namespace LMSGroupOne.Controllers
         }
 
         [HttpPost]
-        [Route("/module/create")]
         [Authorize(Roles = "Teacher")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateModule(CreateModuleViewModel module)
@@ -47,6 +46,9 @@ namespace LMSGroupOne.Controllers
                 uow.ModuleRepository.AddModule(mapper.Map<Module>(module));
                 await uow.CompleteAsync();
             }
+
+            var courses = await uow.CourseRepository.GetAsync();
+            ViewBag.Courses = courses;
 
             return View(module);
         }
