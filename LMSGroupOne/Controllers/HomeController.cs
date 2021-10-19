@@ -47,7 +47,7 @@ namespace LMSGroupOne.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Teacher")]
-        public IActionResult CreateAccount(CreateAccountViewModel newAccount)
+        public async Task<IActionResult> CreateAccount(CreateAccountViewModel newAccount)
         {
             if (ModelState.IsValid)
             {
@@ -68,9 +68,10 @@ namespace LMSGroupOne.Controllers
                 string password = newAccount.Password;
                 string role = newAccount.Role;
 
-                uow.AccountRepository.AddAccount(mapper.Map<Person>(person), role, password);
+                await uow.AccountRepository.AddAccount(mapper.Map<Person>(person), password, role);
+                await uow.CompleteAsync();
             }
-            return View(newAccount);
+            return View();
         }
 
         public IActionResult Privacy()

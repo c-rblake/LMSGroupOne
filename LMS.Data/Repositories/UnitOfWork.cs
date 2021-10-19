@@ -25,7 +25,7 @@ namespace LMS.Data.Repositories
             this.userManager = userManager;
             TeacherRepository = new TeacherRepository(db);
             CourseRepository = new CourseRepository(db);
-            AccountRepository = new AccountRepository(userManager, db);
+            AccountRepository = new AccountRepository(userManager);
         }
 
         public async Task CompleteAsync()

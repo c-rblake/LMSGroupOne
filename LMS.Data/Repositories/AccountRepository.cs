@@ -3,23 +3,21 @@ using LMS.Core.Repositories;
 using LMS.Data.Data;
 using Microsoft.AspNetCore.Identity;
 using System;
+using System.Threading.Tasks;
 
 namespace LMS.Data.Repositories
 {
     public class AccountRepository : IAccountRepository
     {
         public UserManager<Person> userManager;
-        private readonly ApplicationDbContext db;
 
-        public AccountRepository(UserManager<Person> userManager, ApplicationDbContext db)
+        public AccountRepository(UserManager<Person> userManager)
         {
             this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
             if (userManager is null) throw new NullReferenceException(nameof(UserManager<Person>));
-
-            this.db = db;
         }
 
-        public async void AddAccount(Person person, string password, string role)
+        public async Task AddAccount(Person person, string password, string role)
         {
             var result1 = await userManager.CreateAsync(person, password);
             if (!result1.Succeeded) throw new Exception(string.Join("\n", result1.Errors));
