@@ -12,5 +12,6 @@ namespace LMS.Core.Repositories
         void AddCourse(Course course);
         Task<Course> GetCourse(int id);
         bool CourseExist(string name);
+        Task<IEnumerable<Course>> GetAsync();
     }
 }

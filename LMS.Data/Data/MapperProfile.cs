@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using LMS.Core.Models.Entities;
 using LMS.Core.Models.ViewModels;
+using LMS.Core.Models.ViewModels.Module;
 using LMS.Core.Models.ViewModels.Activity;
 using LMS.Core.Models.ViewModels.Course;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -17,6 +18,9 @@ namespace LMS.Data.Data
         public MapperProfile()
         {
             CreateMap<Course, CreateCourseViewModel>().ReverseMap();
+
+            CreateMap<Module, CreateModuleViewModel>().ReverseMap();
+            CreateMap<Module, EditModuleViewModel>().ReverseMap();
 
             CreateMap<Activity, ActivityCreateViewModel>().ReverseMap();
             CreateMap<Activity, ActivityEditViewModel>().ReverseMap();
