@@ -6,6 +6,7 @@ using AutoMapper;
 using LMS.Core.Models.Entities;
 using LMS.Core.Models.ViewModels.Module;
 using LMS.Core.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,9 +29,13 @@ namespace LMSGroupOne.Controllers
 
         public async Task<IActionResult> CreateModule()
         {
-            var courses = await uow.CourseRepository.GetAsync();
-           
-            ViewBag.Courses = courses.ToList();
+            // var courses = await uow.CourseRepository.GetAsync();
+
+            var courses = new List<String>();
+            courses.Add("Laga mat");
+            courses.Add("Dreja en kruka");
+
+            ViewBag.Courses = courses;
 
             return View();
         }
@@ -38,6 +43,7 @@ namespace LMSGroupOne.Controllers
 
         [HttpPost]
         [Route("/module/create")]
+        [Authorize(Roles = "Teacher")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateModule(CreateModuleViewModel module)
         {
@@ -63,6 +69,7 @@ namespace LMSGroupOne.Controllers
 
 
         [Route("/module/edit/{id}")]
+        [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> EditModule(int? id)
         {
             if (id == null)
