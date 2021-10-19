@@ -325,23 +325,26 @@ namespace LMSGroupOne.Controllers
             bool isTeacher = User.IsInRole("Teacher");
 
             List<TreeNode> nodeList = new List<TreeNode>();
-            foreach (var item in nodes)
+            if (nodes != null)
             {
-                nodeList.Add(new TreeNode
+                foreach (var item in nodes)
                 {
-                    Id = item.Id,
-                    Name = item.Name,
-                    Type = NodeType.module,
-                    CanCreate = NodeType.none,
-                    Editable = true,
-                    Open = false,
-                    Nodes = new TreeNode[]
-                    { 
+                    nodeList.Add(new TreeNode
+                    {
+                        Id = item.Id,
+                        Name = item.Name,
+                        Type = NodeType.module,
+                        CanCreate = NodeType.none,
+                        Editable = true,
+                        Open = false,
+                        Nodes = new TreeNode[]
+                        {
                         Activities(item.Id, item.Nodes, path+"|"+NodeType.module+"="+item.Id),
                         Documents(item.Id, item.Documents, path+"|"+NodeType.module+"="+item.Id, isTeacher)
-                    }
-                                        
-                });
+                        }
+
+                    });
+                }
             }
             var model = new TreeNode
             {
@@ -572,10 +575,14 @@ namespace LMSGroupOne.Controllers
             int aid;
             if (int.TryParse(id, out aid))
             {
-                // todo something
+                return new EmptyResult();
             }
             ActivityDto a = await uow.ActivityRepository.GetActivity(aid);
 
+            if (a == null)
+            {
+                return new EmptyResult();
+            }
 
             var model = new ActivityModelView
             {
@@ -607,7 +614,7 @@ namespace LMSGroupOne.Controllers
             int cid;
             if (int.TryParse(id, out cid))
             {
-                // todo something
+                return new EmptyResult();
             }
             var c = await uow.CourseRepository.GetCourse(cid);
 
@@ -629,9 +636,14 @@ namespace LMSGroupOne.Controllers
             int mid;
             if (int.TryParse(id, out mid))
             {
-                // todo something
+                return new EmptyResult();
             }
             var m = await uow.ModuleRepository.GetModule(mid);
+            
+            if (m == null)
+            {
+                return new EmptyResult();
+            }
 
             var model = new ModuleModelView
             {

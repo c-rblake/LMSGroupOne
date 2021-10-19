@@ -14,8 +14,6 @@
 
 
 
-//let season = seasons.SPRING
-
 
 class TreeFactory {
     static NodeTypes =

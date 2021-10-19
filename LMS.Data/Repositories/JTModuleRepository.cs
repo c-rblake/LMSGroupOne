@@ -24,6 +24,11 @@ namespace LMS.Data.Repositories
         {
 
             var module = await db.Modules.FindAsync(id);
+            if (module == null)
+            {
+                return null;
+            }
+
             return new ModuleDto
             {
                 Id=module.Id,

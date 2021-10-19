@@ -121,6 +121,17 @@
         console.log("type:" + event.target.dataset.itemExtra);
         console.log("ypos:" + event.clientY);
 
+
+
+        //let node = event.target.parentNode;
+        //if (this.#currentElement != node) {
+        //    console.log("new current------jjj-jj-jj-j");
+        //    this.#currentElement = node;
+        //}
+
+
+
+
         if (event.target.dataset.itemType != TreeFactory.NodeTypes.FOLDER)
         {
             $.ajax({

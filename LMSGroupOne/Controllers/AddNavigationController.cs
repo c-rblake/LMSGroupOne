@@ -49,10 +49,12 @@ namespace LMSGroupOne.Controllers
                     case (int)NodeType.file:
                         return FileNode(path,"new file id", name);
                     case (int)NodeType.activity:
-                        return ActivityNode(path,"new activity id", name);                       
-                    
-                    
-                        
+                        return ActivityNode(path,"new activity id", name);
+                    case (int)NodeType.module:
+                        return ModuleNode(path, "new module id", name);
+
+
+
                 }
 
             }
@@ -163,7 +165,22 @@ namespace LMSGroupOne.Controllers
                 Open = false,
                 CanCreate = NodeType.none,
                 Editable = false,
-                Nodes = null
+                Nodes = new TreeNode[]
+                { 
+                    new TreeNode
+                    {
+                        Id = path+"|"+NodeType.folder+"="+id,
+                        Type = NodeType.folder,
+                        Name = "Documents",
+                        Open = false,
+                        CanCreate = NodeType.file,
+                        Editable = false,
+                        Nodes=new TreeNode[]
+                        { 
+                        
+                        }
+                    }
+                }
             };
 
             string jsonData = JsonConvert.SerializeObject(
@@ -171,6 +188,68 @@ namespace LMSGroupOne.Controllers
                 {
                     success = true,
                     type = NodeType.activity,
+                    path = path,
+                    subTree = node
+                });
+
+            return jsonData;
+
+        }
+
+
+
+
+
+
+
+
+        private string ModuleNode(string path, string id, string name)
+        {
+
+            TreeNode node = new TreeNode
+            {
+                Id = id,
+                Type = NodeType.module,
+                Name = name,
+                Open = false,
+                CanCreate = NodeType.none,
+                Editable = false,
+                Nodes = new TreeNode[]
+                {
+                    new TreeNode
+                    {
+                        Id = path+"|"+NodeType.folder+"="+id,
+                        Type = NodeType.folder,
+                        Name = "Activities",
+                        Open = false,
+                        CanCreate = NodeType.activity,
+                        Editable = false,
+                        Nodes=new TreeNode[]
+                        {
+
+                        }
+                    },
+                    new TreeNode
+                    {
+                        Id = path+"|"+NodeType.folder+"="+id,
+                        Type = NodeType.folder,
+                        Name = "Documents",
+                        Open = false,
+                        CanCreate = NodeType.file,
+                        Editable = false,
+                        Nodes=new TreeNode[]
+                        {
+
+                        }
+                    }
+                }
+            };
+
+            string jsonData = JsonConvert.SerializeObject(
+                new
+                {
+                    success = true,
+                    type = NodeType.module,
                     path = path,
                     subTree = node
                 });
