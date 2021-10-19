@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace LMS.Core.Repositories
 {
@@ -13,6 +9,7 @@ namespace LMS.Core.Repositories
         IActivityRepository ActivityRepository { get; }
         IActivityTypeRepository ActivityTypeRepository { get; }
         IModuleRepository ModuleRepository { get; }
+        IAccountRepository AccountRepository { get; }
         Task CompleteAsync();
     }
 }

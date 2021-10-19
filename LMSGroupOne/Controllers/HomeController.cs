@@ -1,13 +1,12 @@
-﻿using LMS.Core.Models.Entities;
+﻿using AutoMapper;
+using LMS.Core.Models.Entities;
+using LMS.Core.Models.ViewModels.Account;
+using LMS.Core.Repositories;
 using LMSGroupOne.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace LMSGroupOne.Controllers
@@ -15,20 +14,19 @@ namespace LMSGroupOne.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly UserManager<Person> _userManager;
-        private readonly SignInManager<Person> _signInManager;
+        private readonly IUnitOfWork uow;
+        private readonly IMapper mapper;
 
-        public HomeController(ILogger<HomeController> logger, UserManager<Person> userManager, SignInManager<Person> signInManager)
+        public HomeController(ILogger<HomeController> logger, IUnitOfWork uow, IMapper mapper)
         {
             _logger = logger;
-            _userManager = userManager;
-            _signInManager = signInManager;
+            this.uow = uow;
+            this.mapper = mapper;
         }
 
         [Authorize]
         public IActionResult Index()
         {
-
             if (User.IsInRole("Teacher"))
             {
                 return (View("IndexTeacher"));
@@ -36,6 +34,44 @@ namespace LMSGroupOne.Controllers
 
             return (View());
 
+        }
+
+        [Authorize(Roles = "Teacher")]
+        public IActionResult CreateAccount()
+        {
+            var createAccountViewModel = new CreateAccountViewModel { };
+
+            return View(createAccountViewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Teacher")]
+        public async Task<IActionResult> CreateAccount(CreateAccountViewModel newAccount)
+        {
+            if (ModelState.IsValid)
+            {
+                if (newAccount.Role == "Teacher")
+                {
+                    newAccount.CourseId = null;
+                }
+
+                var person = new Person
+                {
+                    UserName = newAccount.Email,
+                    Email = newAccount.Email,
+                    FirstName = newAccount.FirstName,
+                    LastName = newAccount.LastName,
+                    CourseId = newAccount.CourseId,
+                };
+
+                string password = newAccount.Password;
+                string role = newAccount.Role;
+
+                await uow.AccountRepository.AddAccount(mapper.Map<Person>(person), password, role);
+                await uow.CompleteAsync();
+            }
+            return View();
         }
 
         public IActionResult Privacy()
