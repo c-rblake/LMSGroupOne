@@ -39,18 +39,31 @@ namespace LMSGroupOne.Controllers
         [HttpPost]
         [Authorize(Roles = "Teacher")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateModule(CreateModuleViewModel module)
+        public async Task<IActionResult> CreateModule(CreateModuleViewModel model)
         {
+            int courseId = model.CourseId;
+            IEnumerable<Module> modules = await GetAllModulesByCourseAsync(courseId);
+           
+            foreach (Module module in modules)
+            {
+                if (model.StartDate <= module.EndDate && model.EndDate >= module.StartDate)
+                {
+                    ModelState.AddModelError("Name", "This Module overlaps with current Modules");
+
+                    return View(model);
+                }
+            }
+
             if (ModelState.IsValid)
             {
-                uow.ModuleRepository.AddModule(mapper.Map<Module>(module));
+                uow.ModuleRepository.AddModule(mapper.Map<Module>(model));
                 await uow.CompleteAsync();
             }
 
             var courses = await uow.CourseRepository.GetAsync();
             ViewBag.Courses = courses;
 
-            return View(module);
+            return View(model);
         }
 
         public IActionResult VerifyModuleName(string Name)
