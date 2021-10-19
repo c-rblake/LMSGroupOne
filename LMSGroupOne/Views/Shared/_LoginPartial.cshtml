@@ -12,9 +12,9 @@
 
 @if (SignInManager.IsSignedIn(User))
             {
-                <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity.Name (@userRoles)</a>
+                <a class="nav-link text-light" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity.Name (@userRoles)</a>
                 <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-                    <button type="submit" class="btn btn-link btn-primary">Logout</button>
+                    <button type="submit" class="btn btn-outline-light">Logout</button>
                 </form>
             }
             else
