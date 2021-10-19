@@ -18,6 +18,66 @@
                     <partial name="_LoginPartial" />
                 </div>
             </div>
+
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav mr-auto">
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Course
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="course" asp-action="create">Create New</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="course" asp-action="edit" asp-route-id="1">Edit Id1</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#">List</a>
+                            </div>
+                        </li>
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Module
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="module" asp-action="createmodule">Create New</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="module" asp-action="editmodule" asp-route-id="1">Edit Id1</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#">List</a>
+                            </div>
+                        </li>
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Activity
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="activity" asp-action="create">Create New</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="activity" asp-action="edit" asp-route-id="1">Edit Id1</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#">List</a>
+                            </div>
+                        </li>
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Account
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="home" asp-action="createaccount">Create New</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#">List</a>
+                            </div>
+                        </li>
+                    </ul>
+                    <form class="form-inline my-2 my-lg-0">
+                        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Search</button>
+                    </form>
+                </div>
+            </nav>
+
         </div>
     </header>
     <div class="container-fluid">

@@ -5,8 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using User = LMS.Core.Models.Entities.Person;
 
@@ -28,7 +26,7 @@ namespace LMS.Data.Data
 
                 if (await db.Persons.AnyAsync()) return;
 
-                //To Do: Add documents at course, module and activity level
+                //To Do: Add documents at activity level
 
                 string teacherPw = "Hejsan123!";
                 string studentPw = "Hoppsan123!";
@@ -38,7 +36,7 @@ namespace LMS.Data.Data
 
                 userManager = services.GetRequiredService<UserManager<User>>();
                 if (userManager is null) throw new NullReferenceException(nameof(UserManager<User>));
-   
+
                 var roleNames = new[] { "Teacher", "Student" };
 
                 await AddRolesAsync(roleNames);
@@ -76,9 +74,59 @@ namespace LMS.Data.Data
                 await AddStudentsAsync(students, studentPw);
                 await AddStudentsToRoleAsync(students);
 
-                await db.SaveChangesAsync();
+                var documentsForCourses = GetDocumentsForCourses(students);
+                db.Documents.AddRange(documentsForCourses);
+ 
+                var documentsForModules = GetDocumentsForModules(students);
+                db.Documents.AddRange(documentsForModules);
 
+                await db.SaveChangesAsync();
+             }
+        }
+
+        private static List<Document> GetDocumentsForModules(List<User> students)
+        {
+            var documents = new List<Document>();
+
+            foreach (var student in students)
+            {
+                var modules = student.Course.Modules;
+
+                foreach (var module in modules)
+                {
+                    var document = new Document
+                    {
+                        Name = fake.Company.CatchPhrase(),
+                        Description = fake.Company.CompanySuffix() + fake.Random.Word(),
+                        DocumentUrl = fake.Internet.UrlWithPath(),    //fake.Company.CatchPhrase(),
+                        TimeStamp = DateTime.Now.AddDays(fake.Random.Int(-7, -2)),
+                        Person = student,
+                        Module = module
+                    };
+                    documents.Add(document);
+                }
             }
+            return documents;
+        }
+
+        private static List<Document> GetDocumentsForCourses(List<User> students)
+        {
+            var documents = new List<Document>();
+
+            foreach (var student in students)
+            {
+                var document = new Document
+                {
+                    Name = fake.Company.CatchPhrase(),
+                    Description = fake.Company.CompanySuffix() + fake.Random.Word(),
+                    DocumentUrl = fake.Internet.UrlWithPath(),    //fake.Company.CatchPhrase(),
+                    TimeStamp = DateTime.Now.AddDays(fake.Random.Int(-7, -2)),
+                    Person = student,
+                    Course = student.Course
+                };
+                documents.Add(document);
+            }
+            return documents;
         }
 
         private static List<Document> GetDocuments(int amount)
@@ -102,9 +150,7 @@ namespace LMS.Data.Data
         {
             foreach (var student in students)
             {
-                //var str = fake.Random.Replace("???###!").ToLower();
-                //var studentPw = char.ToUpper(str[0]) + str.Substring(1);
-                var result = await userManager.CreateAsync(student, studentPw);
+                 var result = await userManager.CreateAsync(student, studentPw);
                 if (!result.Succeeded) throw new Exception(string.Join("\n", result.Errors));
             }
         }
@@ -118,7 +164,7 @@ namespace LMS.Data.Data
 
             var teacher = new User
             {
-                FirstName = firstName,
+                FirstName = $"TEACH{firstName}",
                 LastName = lastName,
                 Documents = GetDocuments(2),
                 Email = $"{emailFirstName}.{emailLastName}@lexicon.se",
@@ -144,7 +190,7 @@ namespace LMS.Data.Data
                 };
                 actTypes.Add(activityType);
             }
-            
+
             return actTypes;
         }
 
@@ -198,8 +244,8 @@ namespace LMS.Data.Data
                     Description = fake.Lorem.Sentence(),
                     StartDate = DateTime.Now.AddDays(fake.Random.Int(-7, -2)),
                     EndDate = DateTime.Now.AddDays(fake.Random.Int(90, 130)),
-                    Modules = GetModules(5, actTypes)
-            };
+                    Modules = GetModules(3, actTypes)
+                };
                 courses.Add(course);
             }
             return courses;
@@ -214,15 +260,17 @@ namespace LMS.Data.Data
                 var firstName = fake.Name.FirstName();
                 var lastName = fake.Name.LastName();
                 var random = new Random();
+                var emailFirstName = firstName.ToLower();
+                var emailLastName = lastName.ToLower();
 
                 var user = new User
                 {
                     FirstName = firstName,
                     LastName = lastName,
                     Documents = GetDocuments(1),
-                    UserName = fake.Internet.Email($"{firstName} {lastName}"),
+                    UserName = fake.Internet.Email($"{emailFirstName} {emailLastName}"),
                     Course = courses[random.Next(0, courses.Count)]
-            };
+                };
                 students.Add(user);
             }
             return students;
