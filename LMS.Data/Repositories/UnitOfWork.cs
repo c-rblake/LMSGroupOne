@@ -24,7 +24,7 @@ namespace LMS.Data.Repositories
         public IActivityTypeRepository ActivityTypeRepository { get; }
         public IModuleRepository ModuleRepository { get; }
 
-        public UnitOfWork(ApplicationDbContext db)
+        //public UnitOfWork(ApplicationDbContext db) { }
         public UnitOfWork(ApplicationDbContext db, UserManager<Person> userManager)
         {
             this.db = db;
