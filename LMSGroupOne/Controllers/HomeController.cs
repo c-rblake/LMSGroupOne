@@ -14,16 +14,12 @@ namespace LMSGroupOne.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly UserManager<Person> _userManager;
-        private readonly SignInManager<Person> _signInManager;
         private readonly IUnitOfWork uow;
         private readonly IMapper mapper;
 
-        public HomeController(ILogger<HomeController> logger, UserManager<Person> userManager, SignInManager<Person> signInManager, IUnitOfWork uow, IMapper mapper)
+        public HomeController(ILogger<HomeController> logger, IUnitOfWork uow, IMapper mapper)
         {
             _logger = logger;
-            _userManager = userManager;
-            _signInManager = signInManager;
             this.uow = uow;
             this.mapper = mapper;
         }
@@ -51,7 +47,7 @@ namespace LMSGroupOne.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Teacher")]
-        public async Task<IActionResult> CreateAccount(CreateAccountViewModel newAccount)
+        public IActionResult CreateAccount(CreateAccountViewModel newAccount)
         {
             if (ModelState.IsValid)
             {
@@ -69,30 +65,12 @@ namespace LMSGroupOne.Controllers
                     CourseId = newAccount.CourseId,
                 };
 
+                string password = newAccount.Password;
+                string role = newAccount.Role;
 
-                //uow.AccountRepository.AddAccount(mapper.Map<Person>(person));
-                //await uow.CompleteAsync();
-
-                var result1 = await _userManager.CreateAsync(person, newAccount.Password);
-                var result2 = await _userManager.AddToRoleAsync(person, newAccount.Role);
-
-                if (result1.Succeeded && result2.Succeeded)
-                {
-                    _logger.LogInformation("Account was created with password and role");
-                }
-
-                foreach (var error in result1.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
-
-                foreach (var error in result2.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
-
+                uow.AccountRepository.AddAccount(mapper.Map<Person>(person), role, password);
             }
-            return View();
+            return View(newAccount);
         }
 
         public IActionResult Privacy()

@@ -10,12 +10,7 @@ namespace LMS.Data.Data
         public MapperProfile()
         {
             CreateMap<Course, CreateCourseViewModel>().ReverseMap();
-            CreateMap<Person, CreateAccountViewModel>()
-                //.ForMember(destination => destination.Role,
-                //opt => opt.MapFrom(source => source.Role.ToString()))
-                //.ForMember(destination => destination.Password,
-                //opt => opt.MapFrom(source => source.Password.ToString()))
-            .ReverseMap();
+            CreateMap<Person, CreateAccountViewModel>().ReverseMap();
         }
     }
 }

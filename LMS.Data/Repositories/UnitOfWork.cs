@@ -19,12 +19,13 @@ namespace LMS.Data.Repositories
         public ICourseRepository CourseRepository { get; }
         public IAccountRepository AccountRepository { get; }
 
-        public UnitOfWork(ApplicationDbContext db)
+        public UnitOfWork(ApplicationDbContext db, UserManager<Person> userManager)
         {
             this.db = db;
+            this.userManager = userManager;
             TeacherRepository = new TeacherRepository(db);
             CourseRepository = new CourseRepository(db);
-            AccountRepository = new AccountRepository(userManager);
+            AccountRepository = new AccountRepository(userManager, db);
         }
 
         public async Task CompleteAsync()
