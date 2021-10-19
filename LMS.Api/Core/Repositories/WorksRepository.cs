@@ -58,7 +58,6 @@ namespace LMS.Api.Core.Repositories
                 //query = query.Include(q => q.Authors.Where(a => author.Contains(a))); //Empty Author Lists
                 query = query.Where(q => q.Authors.Any(a => authors.Contains(a)));
                 //var result = lista.Where(a => listb.Any(b => b.Contains(a)));
-
             }
             if (!string.IsNullOrWhiteSpace(workResourceParameters.GenreName))
             {

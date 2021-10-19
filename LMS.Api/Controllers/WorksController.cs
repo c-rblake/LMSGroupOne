@@ -68,7 +68,7 @@ namespace LMS.Api.Controllers
         [HttpOptions]
         public IActionResult GetWorkOptions()
         {
-            Response.Headers.Add("Allow","GET,OPTIONS,POST,PATCH");
+            Response.Headers.Add("Allow","GET,OPTIONS,PATCH");
             return Ok();
         }
 
