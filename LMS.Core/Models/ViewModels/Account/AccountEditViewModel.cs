@@ -25,26 +25,12 @@ namespace LMS.Core.Models.ViewModels.Account
         [Display(Name = "Last name")]
         public string LastName { get; set; }
 
-        [Required(ErrorMessage = "Please enter an e-mail address"), EmailAddress]
-        [RegularExpression(@"^[\w+][\w\.\-]+@[\w\-]+(\.\w{2,4})+$|^\d{4}(\-)?\d{6}$|^91\-?\d{4}\-?\d{6}$", ErrorMessage = "Invalid format for e-mail address")]
+        [Required, EmailAddress]
         [Display(Name = "E-mail address (this will be the user name)")]
         public string Email { get; set; }
+        public string Role { get; set; }
 
-        //[UIHint("stringPassword")]
-        [Required(ErrorMessage = "Please enter a password")]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
-        [RegularExpression(@"[^<>]*", ErrorMessage = "The password format is incorrect")]
-        //[DataType(DataType.Password)]
-        public string Password { get; set; }
-
-        [Required(ErrorMessage = "Please confirm password")]
-        //[DataType(DataType.Password)]
-        [Display(Name = "Confirm password")]
-        [Compare("Password", ErrorMessage = "The password and confirmation password do not match")]
-        public string ConfirmPassword { get; set; }
         [Display(Name = "Course")]
         public int? CourseId { get; set; }
-
-        public string Role { get; set; }
     }
 }

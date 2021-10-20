@@ -111,7 +111,6 @@ namespace LMSGroupOne.Controllers
                 LastName = personAccount.LastName,
                 Email = personAccount.Email,
                 Role = accountRole.Name,
-                Password = userAccount.PasswordHash,
                 CourseId = personAccount.CourseId
             };
             
