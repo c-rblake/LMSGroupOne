@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace LMS.Core.Models.ViewModels.Document
 {
-    public class AddDocumentViewModel
+    public class UploadDocumentsViewModel
     {
         public int Id { get; set; }
         [Required(ErrorMessage = "Please enter document name")]
