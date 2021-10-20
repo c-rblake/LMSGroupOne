@@ -65,8 +65,14 @@ namespace LMSGroupOne.Controllers
                     CourseId = newAccount.CourseId,
                 };
 
-                string password = newAccount.Password;
                 string role = newAccount.Role;
+
+                string password = "Hoppsan123!";
+
+                if (role == "Teacher")
+                {
+                    password = "Hejsan123!";
+                }
 
                 await uow.AccountRepository.AddAccount(mapper.Map<Person>(person), password, role);
                 await uow.CompleteAsync();
