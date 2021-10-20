@@ -27,10 +27,10 @@ namespace LMSGroupOne.Controllers
         [Authorize]
         public IActionResult Index()
         {
-            if (User.IsInRole("Teacher"))
-            {
-                return (View("IndexTeacher"));
-            }
+            //if (User.IsInRole("Teacher"))
+            //{
+            //    return (View("IndexTeacher"));
+            //}
 
             return RedirectToAction("Index", "MainNavigation");
 
