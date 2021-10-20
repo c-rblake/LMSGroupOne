@@ -35,17 +35,39 @@ namespace LMS.Api.Controllers
             var workResult = mapper.Map<Work>(dto);
             await uow.WorksRepository.AddAsync(workResult);
 
-            if(await uow.CompleteAsync())
+            if (await uow.CompleteAsync())
             {
                 var workDto = mapper.Map<WorkDto>(workResult);
                 //return CreatedAtAction(nameof(GetWork), workDto);
-                return CreatedAtAction(nameof(GetWork), new { id = workDto.Id}, workDto);
+                return CreatedAtAction(nameof(GetWork), new { id = workDto.Id }, workDto);
             }
             else
             {
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
+        //Post a Work to an Author Not in use.
+        //[Route("api/works/{authorId}/works")]
+        //[HttpPost(Name = "CreateWorkAtAuthor")]
+        //public async Task<ActionResult<Work>> CreateWorkAtAuthor(int authorId, WorkCreateDto dto)
+        //{
+        //    var author = await uow.AuthorRepository.FindAsync(authorId);
+        //    if (author is null) return BadRequest();
+        //    if (dto is null) return BadRequest();
+
+        //    var work = mapper.Map<Work>(dto);
+        //    author.Works.Add(work);
+
+        //    if(await uow.CompleteAsync())
+        //    {
+        //        var workDto = mapper.Map<WorkDto>(work);
+        //        return CreatedAtAction(nameof(GetWork), new { id = workDto.Id }, workDto);
+        //    }
+        //    else
+        //    {
+        //        return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+        //    }
+        //}
 
 
         [HttpGet("{id}", Name ="GetWork")] //ToDo change to NAME Case Senestive for Swagger.

@@ -43,6 +43,7 @@ namespace LMS.Data.Data
 
                 var teacher = await AddTeacherAsync(teacherPw);
                 var aime = await AddTeacherAimeAsync(teacherPw);
+
                 await AddTeacherToRoleAsync(teacher);
                 await AddTeacherToRoleAsync(aime);
 
@@ -279,15 +280,29 @@ namespace LMS.Data.Data
         {
             var students = new List<User>();
 
-            for (int i = 0; i < amount; i++)
+            for (int i = 0; i < amount-1; i++)
             {
+
                 var firstName = fake.Name.FirstName();
                 var lastName = fake.Name.LastName();
                 var random = new Random();
                 var emailFirstName = firstName.ToLower();
                 var emailLastName = lastName.ToLower();
 
-                var user = new User
+                if (i == 0)
+                {
+                    var testStudent = new User
+                    {
+                        FirstName = "test",
+                        LastName = "student",
+                        UserName = "test.student@lexicon.se",
+                        Course = courses[random.Next(0, courses.Count)]
+                    };
+                    students.Add(testStudent);
+                };
+
+
+            var user = new User
                 {
                     FirstName = firstName,
                     LastName = lastName,

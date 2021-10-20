@@ -34,7 +34,7 @@ namespace LMS.Api.Core.Repositories
 
         public Task<Author> FindAsync(int? id)
         {
-            throw new NotImplementedException();
+            return db.Authors.FirstOrDefaultAsync(a => a.Id == id);
         }
 
         public async Task<IEnumerable<Author>> GetAllAuthorsAsync(AuthorsResourceParameters authorResourceParameters)
