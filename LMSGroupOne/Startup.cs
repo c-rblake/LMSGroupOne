@@ -2,6 +2,7 @@ using LMS.Core.Models.Entities;
 using LMS.Core.Repositories;
 using LMS.Data.Data;
 using LMS.Data.Repositories;
+using LMSGroupOne.Controllers;
 using LMSGroupOne.LibraryClientApi;
 using LMSGroupOne.Services;
 using Microsoft.AspNetCore.Builder;
@@ -58,12 +59,18 @@ namespace LMSGroupOne
             services.AddHttpClient<LibraryClient>(client => //Uses HTTPCLIENT FACTORY under the hood. AddHttpClient
             {
                 client.BaseAddress = new Uri("https://localhost:44308/");
-                client.DefaultRequestHeaders.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                //client.DefaultRequestHeaders.Clear();
+                //client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
             }).ConfigurePrimaryHttpMessageHandler(handler => new HttpClientHandler()
             {
                 AutomaticDecompression = System.Net.DecompressionMethods.GZip
             });
+            services.AddHttpClient<ILibraryClient2, LibraryClient2>()
+                .ConfigurePrimaryHttpMessageHandler(handler => new HttpClientHandler()
+                {
+                    AutomaticDecompression = System.Net.DecompressionMethods.GZip
+                });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

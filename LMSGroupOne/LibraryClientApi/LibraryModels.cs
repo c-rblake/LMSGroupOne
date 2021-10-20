@@ -59,5 +59,35 @@ namespace LMSGroupOne.LibraryClientApi
         public string Name { get; set; }
     }
 
+    public class WorkDto
+    {
+        public int Id { get; set; }
+        public int GenreId { get; set; }
+        public int TypeId { get; set; }
 
+        public string Title { get; set; }
+        public string Description { get; set; }
+
+        public string Level { get; set; }
+
+        public DateTime PublicationDate { get; set; }
+
+        public List<WorkAuthorDto> Authors { get; set; }
+        public Genre Genre { get; set; }
+
+        public Type Type { get; set; }
+    }
+
+    public class WorkAuthorDto
+    {
+        /// <summary>
+        /// A Class to Prevent Circular references. Work *-* Author
+        /// </summary>
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public int Age { get; set; }
+
+        //Nav properties
+        //public ICollection<Work> Works { get; set; }
+    }
 }
