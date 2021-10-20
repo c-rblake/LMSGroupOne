@@ -29,14 +29,7 @@ namespace LMSGroupOne.Controllers
             //nextId = 0;
 
         }
-
-        //private string GetNextId()  // använd guids iställlet?
-        //{
-
-        //    return $"folder{(nextId++)}";
-
-        //}
-
+         
         public async Task<IActionResult> Index()
         {
             var user = await userManager.GetUserAsync(User);
@@ -461,7 +454,7 @@ namespace LMSGroupOne.Controllers
                 case NodeType.activity:
                     return await Activity(id);
                 case NodeType.file:
-                    return Document(id);
+                    return await Document(id);
                 case NodeType.module:
                     return await Module(id);
                 case NodeType.course:
@@ -584,11 +577,29 @@ namespace LMSGroupOne.Controllers
             return PartialView("Activity", model);
         }
 
-        private IActionResult Document(string id)
+        private async Task<IActionResult> Document(string id)
         {
-            var model = new PlaceholderModelView
+            int did;
+            if (!int.TryParse(id, out did))
             {
-                Id = id
+                return new EmptyResult();
+            }
+            var d = await uow.DocumentRepository.GetDocument(did);
+
+            if (d == null)
+            {
+                return new EmptyResult();
+            }
+
+            var model = new DocumentModelView
+            {
+                Id = d.Id,
+                Name=d.Name,
+                Description=d.Description,
+                DocumentUrl=d.DocumentUrl,
+                TimeStamp=d.TimeStamp,
+                PersonId=d.PersonId,
+                PersonName=$"{d.PersonFirstName} {d.PersonLastName}"
             };
 
             return PartialView("Document", model);

@@ -16,6 +16,8 @@ namespace LMS.Data.Repositories
         public IJTModuleRepository ModuleRepository { get; }
         public IJTActivityRepository ActivityRepository { get; }
 
+        public IJTDocumentRepository DocumentRepository { get; }
+
         public JTUnitOfWork(ApplicationDbContext db)
         {
             this.db = db;
@@ -23,6 +25,7 @@ namespace LMS.Data.Repositories
             CourseRepository = new JTCourseRepository(db);
             ModuleRepository = new JTModuleRepository(db);
             ActivityRepository = new JTActivityRepository(db);
+            DocumentRepository = new JTDocumentRepository(db);
         }
 
        
