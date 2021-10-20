@@ -2,7 +2,7 @@
 
 namespace LMS.Core.Models.ViewModels.Account
 {
-    public class CreateAccountViewModel
+    public class AccountCreateViewModel
     {
         [Required(ErrorMessage = "Please enter first name")]
         [MaxLength(40, ErrorMessage = "Max length for first name is 40 characters")]
@@ -22,7 +22,7 @@ namespace LMS.Core.Models.ViewModels.Account
 
         //[UIHint("stringPassword")]
         [Required(ErrorMessage = "Please enter a password")]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+        [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long", MinimumLength = 6)]
         [RegularExpression(@"[^<>]*", ErrorMessage = "The password format is incorrect")]
         [DataType(DataType.Password)]
         public string Password { get; set; }
@@ -32,9 +32,12 @@ namespace LMS.Core.Models.ViewModels.Account
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match")]
         public string ConfirmPassword { get; set; }
+
+        [Required(ErrorMessage = "Please choose a role")]
+        public string Role { get; set; }
+
         [Display(Name = "Course")]
         public int? CourseId { get; set; }
 
-        public string Role { get; set; }
     }
 }
