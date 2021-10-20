@@ -12,13 +12,8 @@
         bool isTeacher = userRoles.Contains("Teacher");
         bool isStudent = userRoles.Contains("Student");
  
-    <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity.Name!</a>
-    @if (User.IsInRole("Teacher"))
-    {
-        <div>
-            <a asp-area="" asp-controller="Home" asp-action="CreateAccount" class="text-white">Create account</a>
-        </div>
-    }
+    <a class="nav-link text-light" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity.Name! (@userRoles)</a>
+   
     <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
         <button type="submit" class="btn btn-link btn-primary">Logout</button>
     </form>

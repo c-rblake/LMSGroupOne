@@ -43,7 +43,11 @@ namespace LMSGroupOne.Controllers
         {
             int courseId = model.CourseId;
             IEnumerable<Module> modules = await GetAllModulesByCourseAsync(courseId);
-           
+
+            var courses = await uow.CourseRepository.GetAsync();
+            ViewBag.Courses = courses;
+
+
             foreach (Module module in modules)
             {
                 if (model.StartDate <= module.EndDate && model.EndDate >= module.StartDate)
@@ -59,9 +63,6 @@ namespace LMSGroupOne.Controllers
                 uow.ModuleRepository.AddModule(mapper.Map<Module>(model));
                 await uow.CompleteAsync();
             }
-
-            var courses = await uow.CourseRepository.GetAsync();
-            ViewBag.Courses = courses;
 
             return View(model);
         }
