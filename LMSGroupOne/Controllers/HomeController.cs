@@ -32,52 +32,8 @@ namespace LMSGroupOne.Controllers
                 return (View("IndexTeacher"));
             }
 
-            return (View());
-
-        }
-
-        [Authorize(Roles = "Teacher")]
-        public IActionResult CreateAccount()
-        {
-            var createAccountViewModel = new CreateAccountViewModel { };
-
-            return View(createAccountViewModel);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Teacher")]
-        public async Task<IActionResult> CreateAccount(CreateAccountViewModel newAccount)
-        {
-            if (ModelState.IsValid)
-            {
-                if (newAccount.Role == "Teacher")
-                {
-                    newAccount.CourseId = null;
-                }
-
-                var person = new Person
-                {
-                    UserName = newAccount.Email,
-                    Email = newAccount.Email,
-                    FirstName = newAccount.FirstName,
-                    LastName = newAccount.LastName,
-                    CourseId = newAccount.CourseId,
-                };
-
-                string role = newAccount.Role;
-
-                string password = "Hoppsan123!";
-
-                if (role == "Teacher")
-                {
-                    password = "Hejsan123!";
-                }
-
-                await uow.AccountRepository.AddAccount(mapper.Map<Person>(person), password, role);
-                await uow.CompleteAsync();
-            }
             return View();
+
         }
 
         public IActionResult Privacy()
