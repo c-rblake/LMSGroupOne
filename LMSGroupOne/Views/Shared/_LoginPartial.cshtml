@@ -2,14 +2,28 @@
 @inject SignInManager<Person> SignInManager
 @inject UserManager<Person> UserManager
 
+
+
 @if (SignInManager.IsSignedIn(User))
-{
-        <a  class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity.Name!</a>
-        <form  class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-            <button  type="submit" class="btn btn-link btn-primary">Logout</button>
-        </form>
+{  
+        Person currentUser = await UserManager.GetUserAsync(User);
+        var userRolesList = await UserManager.GetRolesAsync(currentUser);
+        var userRoles = String.Join(", ", userRolesList);
+        bool isTeacher = userRoles.Contains("Teacher");
+        bool isStudent = userRoles.Contains("Student");
+ 
+    <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity.Name!</a>
+    @if (User.IsInRole("Teacher"))
+    {
+        <div>
+            <a asp-area="" asp-controller="Home" asp-action="CreateAccount" class="text-white">Create account</a>
+        </div>
+    }
+    <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+        <button type="submit" class="btn btn-link btn-primary">Logout</button>
+    </form>
 }
 else
 {
- 
+
 }

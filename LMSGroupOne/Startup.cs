@@ -2,6 +2,7 @@ using LMS.Core.Models.Entities;
 using LMS.Core.Repositories;
 using LMS.Data.Data;
 using LMS.Data.Repositories;
+using LMSGroupOne.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -51,8 +52,8 @@ namespace LMSGroupOne
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IJTUnitOfWork, JTUnitOfWork>();            
             services.AddAutoMapper(typeof(MapperProfile));
-
-            
+            services.AddScoped<IRoleSelectService, RoleSelectService>();
+            services.AddScoped<ICourseSelectService, CourseSelectService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
