@@ -57,17 +57,53 @@
     </div>
 </div>
 
+<div class="modal fade" id="editAccountResult" tabindex="-1" role="dialog" aria-labelledby="aModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header"><h5 class="modal-title" id="aModalLabel">@ViewBag.UserName</h5></div>
+            <div class="modal-body">Account was successfully updated</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@{
+    if (ViewBag.UserName != null)
+    {
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
+        <script type="text/javascript">
+            $(function () {
+                $("#editAccountResult").modal('show');
+            });
+        </script>
+    }
+}
+
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 
     <script type="text/javascript">
-        $(function hideOnLoad() {
-            if ((this).val() == "Teacher")) $("#course").hide();
-        });
-        $(function () {
+        $(document).ready(function () {
+            showHide();
             $("#role").change(function () {
-                if ($(this).val() == "Teacher") { $("#course-select")[0].selectedIndex = -1; $("#course").hide('slow'); }
+                showHide();
             });
         });
+
+        function showHide() {
+            if ($('#role').val() == "Student") {
+                $("#course").show();
+            } else if ($('#role').val() == "Teacher") {
+                $("#course-select")[0].selectedIndex = -1;
+                $("#course").hide();
+            }
+        }
+
+        setTimeout(function () {
+            $('#editAccountResult').modal('hide')
+        }, 4000);
     </script>
 }

@@ -13,17 +13,13 @@ namespace LMS.Data.Repositories
     public class UnitOfWork : IUnitOfWork
     {
         private readonly ApplicationDbContext db;
-
         private readonly UserManager<Person> userManager;
-
         private readonly RoleManager<IdentityRole> roleManager;
 
         public ITeacherRepository TeacherRepository { get;}
         public ICourseRepository CourseRepository { get; }
         public IAccountRepository AccountRepository { get; }
-
         public IActivityRepository ActivityRepository { get; }
-
         public IActivityTypeRepository ActivityTypeRepository { get; }
         public IModuleRepository ModuleRepository { get; }
 

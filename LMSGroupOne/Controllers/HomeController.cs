@@ -90,7 +90,7 @@ namespace LMSGroupOne.Controllers
 
         [Authorize(Roles = "Teacher")]
         [Route("/account/edit/{id}")]
-        public async Task<IActionResult> EditAccount(string id = "165284a4-82e8-47c9-902c-7afeab45c459")
+        public async Task<IActionResult> EditAccount(string id)
         {
             if (id == null)
             {
@@ -99,11 +99,21 @@ namespace LMSGroupOne.Controllers
 
             var personAccount = await uow.AccountRepository.FindByIdAsync(id);
 
+            if (personAccount == null)
+            {
+                return NotFound();
+            }
+
             var userAccount = await uow.AccountRepository.GetUserAsync(id);
+
+            if (userAccount == null)
+            {
+                return NotFound();
+            }
 
             var accountRole = await uow.AccountRepository.RoleFindAsync(id);
 
-            var viewModel = new AccountEditViewModel
+            /*var viewModel = new AccountEditViewModel
             {
                 Id = userAccount.Id,
                 UserName = userAccount.UserName,
@@ -112,41 +122,51 @@ namespace LMSGroupOne.Controllers
                 Email = personAccount.Email,
                 Role = accountRole.Name,
                 CourseId = personAccount.CourseId
-            };
-            
-            if (userAccount == null)
+            };*/
+
+            var account = mapper.Map<AccountEditViewModel>(await uow.AccountRepository.FindByIdAsync(id));
+
+            if (account == null)
             {
                 return NotFound();
             }
 
-            return View(viewModel);
+
+            return View(account);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Teacher")]
         [Route("/account/edit/{id}")]
-        public async Task<IActionResult> EditAccount(AccountCreateViewModel editAccount, string id)
+        public async Task<IActionResult> EditAccount(AccountEditViewModel editAccount)
         {
             if (ModelState.IsValid)
             {
-                var account = await uow.AccountRepository.FindByIdAsync(id);
+                var account = await uow.AccountRepository.FindByIdAsync(editAccount.Id);
 
-                if (id != account.Id)
+                if (editAccount.Id != account.Id)
                 {
                     return NotFound();
                 }
 
-                account.UserName = editAccount.Email;
+                if (editAccount.Role == "Teacher")
+                {
+                    editAccount.CourseId = null;
+                }
+
+                account.UserName = editAccount.UserName;
                 account.Email = editAccount.Email;
                 account.FirstName = editAccount.FirstName;
                 account.LastName = editAccount.LastName;
                 account.CourseId = editAccount.CourseId;
 
                 mapper.Map(editAccount, account);
+
+                await uow.AccountRepository.UpdateRangePerson(account);
                 await uow.CompleteAsync();
 
-                var oldRole = await uow.AccountRepository.RoleFindAsync(id);
+                var oldRole = await uow.AccountRepository.RoleFindAsync(editAccount.Id);
 
                 var oldRoleName = oldRole.Name;
 
@@ -157,8 +177,10 @@ namespace LMSGroupOne.Controllers
                     await uow.AccountRepository.RoleUpdateAsync(account, oldRoleName, newRoleName);
                 }
 
+                ViewBag.UserName = account.Email;
+
             }
-            return View(editAccount);
+            return View();
 
         }
 

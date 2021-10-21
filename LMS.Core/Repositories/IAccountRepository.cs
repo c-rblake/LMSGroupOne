@@ -17,5 +17,7 @@ namespace LMS.Core.Repositories
         Task<bool> EmailExists(string email);
 
         Task<IdentityUser> GetUserAsync(string id);
+
+        Task UpdateRangePerson(Person account);
     }
 }

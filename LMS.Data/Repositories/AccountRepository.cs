@@ -73,5 +73,10 @@ namespace LMS.Data.Repositories
         {
             return await db.Users.Where(u => u.Id == id).FirstOrDefaultAsync();
         }
+
+        public async Task UpdateRangePerson(Person account)
+        {
+            db.Persons.UpdateRange(account);
+        }
     }
 }
