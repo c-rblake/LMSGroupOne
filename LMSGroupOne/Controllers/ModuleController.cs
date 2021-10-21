@@ -83,6 +83,7 @@ namespace LMSGroupOne.Controllers
         [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> EditModule(int? id)
         {
+
             if (id == null)
             {
                 return NotFound();
@@ -93,9 +94,6 @@ namespace LMSGroupOne.Controllers
                 return NotFound();
             }
             
-            var modules = await uow.ModuleRepository.GetAsync();
-            ViewBag.modules = modules;
-
             return View(module);
         }
 

@@ -2,21 +2,34 @@
 @inject SignInManager<Person> SignInManager
 @inject UserManager<Person> UserManager
 
-
-
 @if (SignInManager.IsSignedIn(User))
-{  
-        Person currentUser = await UserManager.GetUserAsync(User);
+{
+    Person currentUser = await UserManager.GetUserAsync(User);
+    // If signed in user has been deleted from the ASpNetUsers table, logout to activate new login form
+    if (currentUser == null)
+    {
+        <div class="bg-warning text-danger pl-2 pr-2 mr-2">You are not logged in (Account has been deleted)</div>
+
+        <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+            <button type="submit" class="btn btn-link btn-primary">Login</button>
+        </form>
+        // Context.Response.Redirect(Url.Content("https://dn.se"));
+        //  return;
+    }
+    else
+    {
         var userRolesList = await UserManager.GetRolesAsync(currentUser);
         var userRoles = String.Join(", ", userRolesList);
         bool isTeacher = userRoles.Contains("Teacher");
         bool isStudent = userRoles.Contains("Student");
- 
-    <a class="nav-link text-light" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity.Name! (@userRoles)</a>
-   
-    <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-        <button type="submit" class="btn btn-link btn-primary">Logout</button>
-    </form>
+
+        <a class="nav-link text-light" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity.Name!</a>
+        <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+            <button type="submit" class="btn btn-link btn-primary">Logout</button>
+        </form>
+
+    }
+
 }
 else
 {

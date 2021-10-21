@@ -18,9 +18,10 @@ namespace LMS.Core.Models.ViewModels.Module
         public int CourseId { get; set; }
 
         [Required]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        [DataType(DataType.Date)]
         public DateTime StartDate { get; set; }
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+
+        [DataType(DataType.Date)]
         public DateTime EndDate { get; set; }
 
     }
