@@ -17,7 +17,6 @@ namespace LMSGroupOne.Controllers
 
         private readonly IUnitOfWork uow;
         private readonly IMapper mapper;
-
         public ActivityController(IUnitOfWork uow, IMapper mapper)
         {
             this.uow = uow;
@@ -80,8 +79,10 @@ namespace LMSGroupOne.Controllers
                 return NotFound();
             }
 
-            var course = mapper.Map<ActivityEditViewModel>(await uow.ActivityRepository.FindAsync(id));
-            if (course == null)
+            var activity = await uow.ActivityRepository.FindAsync(id);
+            ViewBag.activityName = activity.Name;
+            var model = mapper.Map<ActivityEditViewModel>(activity);
+            if (model == null)
             {
                 return NotFound();
             }
@@ -89,7 +90,7 @@ namespace LMSGroupOne.Controllers
             var modules = await GetModules();
             ViewBag.activityTypes = activityTypes;
             ViewBag.modules = modules;
-            return View(course);
+            return View(model);
         }
 
         [HttpPost]
@@ -118,8 +119,9 @@ namespace LMSGroupOne.Controllers
             {
                 if (viewModel.StartDate <= activity.EndDate && viewModel.EndDate >= activity.StartDate)
                 {
-                    ModelState.AddModelError("Name", "this activity overlaps with current activities");
-                   
+                    ModelState.AddModelError("Description", "this activity overlaps with current activities");
+                    var entity = await uow.ActivityRepository.FindAsync(id);
+                    ViewBag.activityName = entity.Name;
                     return View(viewModel);
                 }
             }
@@ -128,8 +130,9 @@ namespace LMSGroupOne.Controllers
             {
                 try
                 {
-                    var course = await uow.ActivityRepository.FindAsync(id);
-                    mapper.Map(viewModel, course);
+                    var activity = await uow.ActivityRepository.FindAsync(id);
+                    ViewBag.activityName = activity.Name;
+                    mapper.Map(viewModel, activity);
                     await uow.CompleteAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -145,6 +148,7 @@ namespace LMSGroupOne.Controllers
                 }
                 return RedirectToAction("Index", "Home");
             }
+           
             return View(viewModel);
         }
 
