@@ -9,6 +9,6 @@ namespace LMSGroupOne.LibraryClientApi
     {
         Task<IEnumerable<AuthorDto>> GetAllAuthors(CancellationToken token);
         Task<IEnumerable<WorkDto>> GetAllWorks(CancellationToken token);
-        Task<AuthorDto> GetAuthor(CancellationToken token, int id);
+        Task<AuthorDto> GetAuthor(CancellationToken token, string id);
     }
 }

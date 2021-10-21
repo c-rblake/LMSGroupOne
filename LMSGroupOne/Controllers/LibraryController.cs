@@ -28,7 +28,7 @@ namespace LMSGroupOne.Controllers
             var cancellation = new CancellationTokenSource();
             var r1 = await libraryClient2.GetAllAuthors(cancellation.Token);
             var r2 = await libraryClient2.GetAllWorks(cancellation.Token);   //todo null                            
-            //var r3 = await libraryClient2.GetAuthor(cancellation.Token, 5); Todo
+            var r3 = await libraryClient2.GetAuthor(cancellation.Token, "5"); //Todo
             var res = await GetWithStreamAndFactory();
 
 
@@ -84,14 +84,14 @@ namespace LMSGroupOne.Controllers
             return await base.GetAsync<IEnumerable<AuthorDto>>(token, "api/authors"); //
 
         }
-        public async Task<AuthorDto> GetAuthor(CancellationToken token, int id)
+        public async Task<AuthorDto> GetAuthor(CancellationToken token, string id)
         {
             // return await base.GetAsync<CodeEventDto>(token, $"api/events/{name}");
-            return await base.GetAsync<AuthorDto>(token, $"api/events/{id}");
+            return await base.GetAsync<AuthorDto>(token, $"api/authors/{id}");
         }
         public async Task<IEnumerable<WorkDto>> GetAllWorks(CancellationToken token)
         {
-            return await base.GetAsync<IEnumerable<WorkDto>>(token, "api/authors");
+            return await base.GetAsync<IEnumerable<WorkDto>>(token, "api/works");
         }
 
 
@@ -113,6 +113,7 @@ namespace LMSGroupOne.Controllers
 
         public async Task<T> GetAsync<T>(CancellationToken token, string path, HttpMethod method = null, string contentType = "application/json") // Requires a lot of information. AutoGenerate DTO.
         {
+            //Microsoft HTTP client class has these already.
             T dtos; //Field to hold authorDtos
             if (method is null)
             {
