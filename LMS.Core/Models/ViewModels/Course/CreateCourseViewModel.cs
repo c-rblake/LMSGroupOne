@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using LMSGroupOne.Validations;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LMS.Core.Models.ViewModels.Course
@@ -17,6 +18,8 @@ namespace LMS.Core.Models.ViewModels.Course
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime StartDate { get; set; }
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        [CheckDates]
+        [Required]
         public DateTime EndDate { get; set; }
 
     }
