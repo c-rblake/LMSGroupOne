@@ -1,8 +1,10 @@
 ﻿using LMSGroupOne.LibraryClientApi;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -31,6 +33,12 @@ namespace LMSGroupOne.Controllers
             var r3 = await libraryClient2.GetAuthor(cancellation.Token, "5"); //Todo
             var res = await GetWithStreamAndFactory();
 
+            const string AuthorDTOJSON = "{'Id':'5', 'Name':'Al Bundy', 'Age': '43'}";
+            AuthorDto author = JsonConvert.DeserializeObject<AuthorDto>(AuthorDTOJSON);
+            dynamic authordynamic = JsonConvert.DeserializeObject(AuthorDTOJSON);
+
+            var text = Activator.CreateInstance(System.Type.GetTypeFromProgID("Excel.Application", throwOnError:true));
+
 
             return View();
         }
@@ -40,6 +48,7 @@ namespace LMSGroupOne.Controllers
         private async Task<IEnumerable<AuthorDto>> GetWithStreamAndFactory() // Requires a lot of information. AutoGenerate DTO. 
         {
             IEnumerable<AuthorDto> authorDtos; //Field to hold authorDtos
+            IEnumerable<dynamic> jsonData;
 
             //REQUEST
             var request = new HttpRequestMessage(HttpMethod.Get, "api/authors");
@@ -59,6 +68,9 @@ namespace LMSGroupOne.Controllers
                         //Transform object to the right format.
                         var serializer = new Newtonsoft.Json.JsonSerializer(); //Not built in JsonSerializer
                         authorDtos = serializer.Deserialize<IEnumerable<AuthorDto>>(jsonReader);
+
+                        //dynamic config = JsonConvert.DeserializeObject<ExpandoObject>(json, new ExpandoObjectConverter());
+                        //jsonData = serializer.Deserialize<IEnumerable<dynamic>>(jsonReader);
                     }
                 }
             }
