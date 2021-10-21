@@ -73,6 +73,5 @@ namespace LMSGroupOne.Controllers
             }
             return View();
         }
-
     }
 }
