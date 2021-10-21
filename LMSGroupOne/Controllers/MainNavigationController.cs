@@ -15,8 +15,7 @@ using System.Threading.Tasks;
 namespace LMSGroupOne.Controllers
 {
     public class MainNavigationController : Controller
-    {
-        static int nextId;
+    {        
         private readonly IJTUnitOfWork uow;
         private readonly UserManager<Person> userManager;
         public MainNavigationController(IJTUnitOfWork uow, UserManager<Person> userManager)
@@ -30,13 +29,7 @@ namespace LMSGroupOne.Controllers
 
         }
 
-        //private string GetNextId()  // använd guids iställlet?
-        //{
-
-        //    return $"folder{(nextId++)}";
-
-        //}
-
+       
         public async Task<IActionResult> Index()
         {
             var user = await userManager.GetUserAsync(User);

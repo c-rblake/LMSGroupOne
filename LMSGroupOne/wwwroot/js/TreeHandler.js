@@ -310,18 +310,41 @@
     
     #OnNew(event) {        
 
+        let modal = document.getElementById("centerModalId");
+        modal.style.display = "block";
+
         $.ajax({
             type: "GET",
-            url: "/AddNavigation/OnNew",
-            data: { path: event.target.id, id: "hello_id", type: event.target.dataset.itemCreates, name: "hello world"},
+            url: "/AddNavigation/LoadAddView",
+            data: { path: event.target.id, id: "hello_id", type: event.target.dataset.itemCreates, name: "hello world" },
             cache: false,
             success: result => {
-                let obj = JSON.parse(result);                
-                if (obj.success) {                    
-                    this.AddSubTree(obj.subTree, obj.type, obj.path);                    
-                } 
+                let modalContent = document.getElementById("centerModalContentId");
+                modalContent.innerHTML = result;
+                console.log(result);
             }
         });
+
+
+
+
+
+
+
+
+
+        //$.ajax({
+        //    type: "GET",
+        //    url: "/AddNavigation/OnNew",
+        //    data: { path: event.target.id, id: "hello_id", type: event.target.dataset.itemCreates, name: "hello world"},
+        //    cache: false,
+        //    success: result => {
+        //        let obj = JSON.parse(result);                
+        //        if (obj.success) {                    
+        //            this.AddSubTree(obj.subTree, obj.type, obj.path);                    
+        //        } 
+        //    }
+        //});
     }
 
     AddSubTree(subTree, type, path) {
