@@ -1,5 +1,10 @@
 ﻿@model LMSGroupOne.Models.MainNavigation.TreeNode
 
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" }))
+{
+    @Html.AntiForgeryToken()
+}
+
 @{
     ViewData["Title"] = "LMS Group1";
 }
@@ -54,10 +59,7 @@
     /* Modal Content */
     .centerModalContent {
         background-color: #fefefe;
-        margin: auto;
-        padding: 20px;
-        border: 1px solid #888;
-        width: 80%;
+        max-width: 500px;
     }
 
     /* The Close Button */
@@ -79,17 +81,75 @@
 
 
 <!-- The Modal -->
-<div id="centerModalId" class="centerModal">
+<div id="centerModalId" class="centerModal container-fluid">
 
     <!-- Modal content -->
-    <div id="centerModalContentId" class="centerModalContent">
-        <span class="close">&times;</span>
-        <p>Some text in the Modal..</p>
+    <div id="centerModalContentId" class="card m-auto centerModalContent">
+
+        <div class="card-header">
+
+        </div>
+            
+                <div id="centerModalBodyId" class="card-body">
+
+                </div>
+            
+        <div class="card-footer">
+            <button id="centerModalButton" class="btn btn-outline-primary">press me</button>
+        </div>
+
+
     </div>
 
 </div>
 
 
+
+<script>
+
+    
+
+
+
+
+    document.getElementById("centerModalButton").addEventListener("click", (event) => {
+        console.log("clicked on the modal button");
+
+
+        var tform = $('#__AjaxAntiForgeryForm');
+        var token = $('input[name="__RequestVerificationToken"]', tform).val();
+
+
+        let form = document.getElementById("createFormId");
+        console.log(form);
+
+        var formData = JSON.stringify($("#createFormId").serializeArray());
+        console.log(formData);
+
+        var data = JSON.parse(formData);
+        console.log(data[1]);
+
+        name = form.elements["Name"].value;
+        console.log(name);
+
+        $.ajax({
+            type: "POST",
+            url: "/AddNavigation/LoadAddView",
+            data: { __RequestVerificationToken: token, Name:name },
+            cache: false,
+            success: result => {
+                let modalContent = document.getElementById("centerModalBodyId");
+                modalContent.innerHTML = result;
+
+            }
+        });
+
+
+
+
+    });
+
+</script>
 
 
 
@@ -119,8 +179,8 @@
     // test script for modal delete it later
     window.onclick = function (event) {
         let modal = document.getElementById("centerModalId")
-    if (event.target == modal) {
-    modal.style.display = "none";
-  }
-}
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
 </script>

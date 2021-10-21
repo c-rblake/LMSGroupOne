@@ -315,20 +315,18 @@
 
         $.ajax({
             type: "GET",
-            url: "/AddNavigation/LoadAddView",
-            data: { path: event.target.id, id: "hello_id", type: event.target.dataset.itemCreates, name: "hello world" },
+            url: "/AddNavigation/InitAddView",
+            data: { Name:"hello world", Description: "new and brave"},
             cache: false,
             success: result => {
-                let modalContent = document.getElementById("centerModalContentId");
+                let modalContent = document.getElementById("centerModalBodyId");
                 modalContent.innerHTML = result;
-                console.log(result);
+
+               
             }
         });
 
-
-
-
-
+        
 
 
 

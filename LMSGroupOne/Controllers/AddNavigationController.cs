@@ -1,4 +1,5 @@
 ﻿using LMS.Core.Models.Entities;
+using LMS.Core.Models.ViewModels.Course;
 using LMS.Core.Repositories;
 using LMSGroupOne.Models.MainNavigation;
 using Microsoft.AspNetCore.Identity;
@@ -68,15 +69,52 @@ namespace LMSGroupOne.Controllers
 
         }
 
-        public IActionResult LoadAddView()
+        public IActionResult InitAddView(CourseModelView input)
         {
             
-            return PartialView("../Course/Create");
 
+            var model = new CreateCourseViewModel
+            {
+                Name=input.Name,
+                Description=input.Description,
+                StartDate=DateTime.Now,
+                EndDate=DateTime.Now
+                
+            };
+
+
+            
+            return PartialView("../MainNavigation/Create/CreateCourse", model);
             
         }
 
-        
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult LoadAddView(CreateCourseViewModel inp)
+        {
+            Debug.WriteLine("model------------");
+            Debug.WriteLine(inp.Name);
+
+            //if (ModelState.IsValid)
+            //{
+            //    Debug.WriteLine("Modelstate is valid");
+            //}
+            var model = new CreateCourseViewModel
+            {
+                Name = inp.Name,
+                Description = "efg",
+                StartDate = DateTime.Now,
+                EndDate = DateTime.Now
+
+            };
+
+
+            return PartialView("../MainNavigation/Create/CreateCourse", model);
+
+        }
+
+
 
         private TreeNode MakeNode(string id, string name, NodeType type, NodeType creates, TreeNode[] childNodes)
         {
