@@ -90,7 +90,7 @@ namespace LMSGroupOne.Controllers
 
         [Authorize(Roles = "Teacher")]
         [Route("/account/edit/{id}")]
-        public async Task<IActionResult> EditAccount(string? id = "165284a4-82e8-47c9-902c-7afeab45c459")
+        public async Task<IActionResult> EditAccount(string id = "165284a4-82e8-47c9-902c-7afeab45c459")
         {
             if (id == null)
             {

@@ -15,6 +15,12 @@
             <hr />
             <div asp-validation-summary="All" class="text-danger"></div>
             <div class="form-group">
+                <label asp-for="UserName"></label>
+                <input asp-for="UserName" class="form-control" />
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
                 <label asp-for="FirstName"></label>
                 <input asp-for="FirstName" class="form-control" />
                 <span asp-validation-for="FirstName" class="text-danger"></span>
@@ -37,7 +43,7 @@
                 <span asp-validation-for="Role" class="text-danger"></span>
             </div>
             <div class="form-group" id="course">
-                <label asp-for="CourseId">Add to course (not required)</label>
+                <label asp-for="CourseId"></label>
                 <select asp-for="CourseId" asp-items="@await courseSelectService.GetCoursesAsync()" class="form-control" id="course-select">
                     <option value="" hidden disabled selected>Select a course</option>
                 </select>
@@ -56,12 +62,11 @@
 
     <script type="text/javascript">
         $(function hideOnLoad() {
-            $("#course").hide();
+            if ((this).val() == "Teacher")) $("#course").hide();
         });
         $(function () {
             $("#role").change(function () {
-                if ($(this).val() == "Student") { $("#course").toggle(); }
-                else if ($(this).val() == "Teacher") { $("#course-select")[0].selectedIndex = -1; $("#course").hide('slow'); }
+                if ($(this).val() == "Teacher") { $("#course-select")[0].selectedIndex = -1; $("#course").hide('slow'); }
             });
         });
     </script>

@@ -26,8 +26,9 @@ namespace LMS.Core.Models.ViewModels.Account
         public string LastName { get; set; }
 
         [Required, EmailAddress]
-        [Display(Name = "E-mail address (this will be the user name)")]
+        [Display(Name = "E-mail address")]
         public string Email { get; set; }
+        [Required]
         public string Role { get; set; }
 
         [Display(Name = "Course")]

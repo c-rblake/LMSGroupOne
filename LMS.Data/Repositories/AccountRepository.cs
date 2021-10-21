@@ -50,12 +50,10 @@ namespace LMS.Data.Repositories
 
         public async Task<IdentityRole> RoleFindAsync(string id)
         {
-            var roleId = db.UserRoles
-                .Where(r => r.UserId == id)
-                .Select(i => i.RoleId)
-                .ToString();  //FindAsync(id);
-
-            return await roleManager.FindByIdAsync(roleId);
+            var roleId = await db.UserRoles
+                .FirstOrDefaultAsync(u => u.UserId == id);
+               
+            return await roleManager.FindByIdAsync(roleId.RoleId);
         }
 
         public async Task RoleUpdateAsync(Person account, string oldRoleName, string newRoleName)
