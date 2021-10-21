@@ -45,17 +45,22 @@ namespace LMSGroupOne.Controllers
         {
             int moduleId = model.ModuleId;
             IEnumerable<Activity> activities = await GetAllActivitiesByModuleAsync(moduleId);
+            var module = await uow.ModuleRepository.GetModule(moduleId);
             var activityTypes = await GetActivityTypes();
             var modules = await GetModules();
             ViewBag.activityTypes = activityTypes;
             ViewBag.modules = modules;
 
+            if(model.StartDate<module.StartDate || model.EndDate > module.EndDate)
+            {
+                ModelState.AddModelError("Name", $"one part of this activity is outside {module.Name} period");
+                return View(model);
+            }
             foreach (Activity activity in activities)
             {
                 if(model.StartDate<=activity.EndDate && model.EndDate >= activity.StartDate)
                 {
-                    ModelState.AddModelError("Name", "this activity overlaps with current activities");
-                    
+                    ModelState.AddModelError("Name", "this activity overlaps with current activities");                  
                     return View(model);
                 }
             }
@@ -74,6 +79,7 @@ namespace LMSGroupOne.Controllers
             {
                 return NotFound();
             }
+
             var course = mapper.Map<ActivityEditViewModel>(await uow.ActivityRepository.FindAsync(id));
             if (course == null)
             {
@@ -97,11 +103,17 @@ namespace LMSGroupOne.Controllers
                 return NotFound();
             }
             int moduleId = viewModel.ModuleId;
+            var module = await uow.ModuleRepository.GetModule(moduleId);
             IEnumerable<Activity> activities = await GetAllActivitiesByModuleAsync(moduleId);
             var activityTypes = await GetActivityTypes();
             var modules = await GetModules();
             ViewBag.activityTypes = activityTypes;
             ViewBag.modules = modules;
+            if (viewModel.StartDate < module.StartDate || viewModel.EndDate > module.EndDate)
+            {
+                ModelState.AddModelError("Name", $"one part of this activity is outside {module.Name} period");
+                return View(viewModel);
+            }
             foreach (Activity activity in activities)
             {
                 if (viewModel.StartDate <= activity.EndDate && viewModel.EndDate >= activity.StartDate)
