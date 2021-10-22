@@ -24,7 +24,7 @@ namespace LMSGroupOne
 
                 var context = services.GetRequiredService<ApplicationDbContext>();
 
-               context.Database.EnsureDeleted(); 
+               context.Database.EnsureCreated(); 
                context.Database.Migrate();
 
                 try

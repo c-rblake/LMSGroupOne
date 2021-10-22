@@ -6,6 +6,8 @@ using LMS.Core.Models.ViewModels.Module;
 using LMS.Core.Models.ViewModels.Activity;
 using LMS.Core.Models.ViewModels.Course;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using LMS.Core.Models.Dto;
+using LMS.Core.Models.ViewModels.API.Work;
 
 namespace LMS.Data.Data
 {
@@ -22,6 +24,10 @@ namespace LMS.Data.Data
             CreateMap<Activity, ActivityCreateViewModel>().ReverseMap();
             CreateMap<Activity, ActivityEditViewModel>().ReverseMap();
             CreateMap<Person, CreateAccountViewModel>().ReverseMap();
+            CreateMap<AuthorsViewmodel, AuthorDto >().ReverseMap();
+            CreateMap<WorksViewModel, WorkDto>().ReverseMap();
+
+
         }
     }
 }

@@ -5,6 +5,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Net.Http;
 using AutoMapper;
+using LMS.Core.Models.Dto;
+using LMS.Core.Models.ViewModels;
+using LMS.Core.Models.ViewModels.API;
+using LMS.Core.Models.Entities.API;
+using Newtonsoft.Json;
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
 
 namespace LMSGroupOne.Controllers
 {
@@ -41,7 +48,7 @@ namespace LMSGroupOne.Controllers
             }
 
             //Map 
-            var model = mapper.Map<IEnumerable<AuthorViewModel>>(authors);
+            var model = mapper.Map<IEnumerable<AuthorsViewmodel>>(authors);
 
             //return View(courses);
             //var model = courses
@@ -53,6 +60,49 @@ namespace LMSGroupOne.Controllers
             // });
 
             return View("GetAuthors", model.ToList());
+        }
+        public async Task<ActionResult> CreateAuthor(Author author)
+        {
+            var client = httpClientFactory.CreateClient("LMSClient");
+            JsonContent content = JsonContent.Create(author);
+            
+            var response = await client.PostAsync("Authors", content);
+
+            //If success received   
+            AuthorCreateDto authorCreated = default;
+            if (response.IsSuccessStatusCode)
+            {
+                authorCreated = await response.Content.ReadAsAsync<AuthorCreateDto>();
+
+            }
+            else
+            {
+                //Error response received   
+                //courses = Enumerable.Empty<CourseViewModel>();
+                ModelState.AddModelError(string.Empty, "Server error.");
+            }
+
+            return RedirectToAction(nameof(GetAuthors));
+        }
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        // POST: Authors/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("FirstName,LastName,DateOfBirth,DateOfDeath")] Author author)
+        {
+            if (ModelState.IsValid)
+            {
+                var auth = await CreateAuthor(author);
+            
+                return RedirectToAction(nameof(GetAuthors));
+            }
+            return View(author);
         }
     }
 }
