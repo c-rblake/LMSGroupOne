@@ -56,6 +56,7 @@ namespace LMSGroupOne.Controllers
                 ModelState.AddModelError("Name", $"one part of this activity is outside {module.Name} period");
                 return View(model);
             }
+            
             foreach (Activity activity in activities)
             {
                 if(model.StartDate<=activity.EndDate && model.EndDate >= activity.StartDate)
@@ -114,6 +115,7 @@ namespace LMSGroupOne.Controllers
                 ModelState.AddModelError("Name", $"one part of this activity is outside {module.Name} period");
                 return View(viewModel);
             }
+            activities = activities.Where(a => a.Id != id);
             foreach (Activity activity in activities)
             {
                 if (viewModel.StartDate <= activity.EndDate && viewModel.EndDate >= activity.StartDate)
