@@ -97,40 +97,16 @@ namespace LMSGroupOne.Controllers
                 return NotFound();
             }
 
-            var personAccount = await uow.AccountRepository.FindByIdAsync(id);
-
-            if (personAccount == null)
-            {
-                return NotFound();
-            }
-
-            var userAccount = await uow.AccountRepository.GetUserAsync(id);
-
-            if (userAccount == null)
-            {
-                return NotFound();
-            }
-
             var accountRole = await uow.AccountRepository.RoleFindAsync(id);
 
-            /*var viewModel = new AccountEditViewModel
-            {
-                Id = userAccount.Id,
-                UserName = userAccount.UserName,
-                FirstName = personAccount.FirstName,
-                LastName = personAccount.LastName,
-                Email = personAccount.Email,
-                Role = accountRole.Name,
-                CourseId = personAccount.CourseId
-            };*/
-
             var account = mapper.Map<AccountEditViewModel>(await uow.AccountRepository.FindByIdAsync(id));
+
+            account.Role = accountRole.Name;
 
             if (account == null)
             {
                 return NotFound();
             }
-
 
             return View(account);
         }
@@ -139,15 +115,17 @@ namespace LMSGroupOne.Controllers
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Teacher")]
         [Route("/account/edit/{id}")]
-        public async Task<IActionResult> EditAccount(AccountEditViewModel editAccount)
+        public async Task<IActionResult> EditAccount(string id, AccountEditViewModel editAccount)
         {
-            if (ModelState.IsValid)
-            {
-                var account = await uow.AccountRepository.FindByIdAsync(editAccount.Id);
-
-                if (editAccount.Id != account.Id)
+                if (id != editAccount.Id)
                 {
                     return NotFound();
+                }
+
+                if (editAccount.Role == "Student" && editAccount.CourseId == null)
+                {
+                    ModelState.AddModelError("Course", "Course is required for Student");
+                    return View();
                 }
 
                 if (editAccount.Role == "Teacher")
@@ -155,32 +133,37 @@ namespace LMSGroupOne.Controllers
                     editAccount.CourseId = null;
                 }
 
-                account.UserName = editAccount.UserName;
-                account.Email = editAccount.Email;
-                account.FirstName = editAccount.FirstName;
-                account.LastName = editAccount.LastName;
-                account.CourseId = editAccount.CourseId;
-
-                mapper.Map(editAccount, account);
-
-                await uow.AccountRepository.UpdateRangePerson(account);
-                await uow.CompleteAsync();
-
-                var oldRole = await uow.AccountRepository.RoleFindAsync(editAccount.Id);
-
-                var oldRoleName = oldRole.Name;
-
-                var newRoleName = editAccount.Role;
-
-                if (oldRoleName != newRoleName)
+                if (ModelState.IsValid)
                 {
-                    await uow.AccountRepository.RoleUpdateAsync(account, oldRoleName, newRoleName);
+
+                try
+                {
+                    var account = await uow.AccountRepository.FindByIdAsync(editAccount.Id);
+                    mapper.Map(editAccount, account);
+                    await uow.AccountRepository.UpdateRangePerson(account);
+                    await uow.CompleteAsync();
+
+                    var oldRole = await uow.AccountRepository.RoleFindAsync(editAccount.Id);
+
+                    var oldRoleName = oldRole.Name;
+
+                    var newRoleName = editAccount.Role;
+
+                    if (oldRoleName != newRoleName)
+                    {
+                        await uow.AccountRepository.RoleUpdateAsync(account, oldRoleName, newRoleName);
+                    }
+
+                    ViewBag.UserName = account.Email;
+
                 }
-
-                ViewBag.UserName = account.Email;
-
+                catch (DbUpdateConcurrencyException)
+                {
+                    throw;
+                }
+                return View();
             }
-            return View();
+            return View(editAccount);
 
         }
 

@@ -21,9 +21,7 @@ namespace LMS.Data.Data
             CreateMap<Activity, ActivityEditViewModel>().ReverseMap();
 
             CreateMap<Person, AccountCreateViewModel>().ReverseMap();
-            CreateMap<Person, AccountEditViewModel>()
-                //.ForMember(destination => destination.Role, from => from.MapFrom<AttendingResolver>())
-                .ReverseMap();
+            CreateMap<Person, AccountEditViewModel>().ReverseMap();
         }
     }
 }
