@@ -309,20 +309,31 @@
 
     
     #OnNew(event) {        
-
         let modal = document.getElementById("centerModalId");
-        modal.style.display = "block";
+        let button = document.getElementById("centerModalButton");
+        button.innerHTML = "New";
+        button.style.display = "block"; 
+        let url = "";
+        let type = event.target.dataset.itemCreates;        
+        switch (parseInt(type))
+        {
+            case TreeFactory.NodeTypes.COURSE:
+                url = "/Course/Create";                
+                modal.style.display = "block";
+                break;
+        }
+
+        
 
         $.ajax({
             type: "GET",
-            url: "/AddNavigation/InitAddView",
-            data: { Name:"hello world", Description: "new and brave"},
+            url: url,
+            data: {},
             cache: false,
             success: result => {
                 let modalContent = document.getElementById("centerModalBodyId");
-                modalContent.innerHTML = result;
-
-               
+                modalContent.innerHTML = result;                                
+                fixvalidation();               
             }
         });
 

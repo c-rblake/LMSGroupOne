@@ -26,7 +26,11 @@
 
 
 
-
+function fixvalidation() {
+    console.log('Create Form loaded');
+    const form = document.getElementById("formId");
+    $.validator.unobtrusive.parse(form);
+}
 
 
 

@@ -19,5 +19,11 @@ namespace LMS.Core.Models.ViewModels.Course
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime EndDate { get; set; }
 
+
+
+        // 
+        public bool Success { get; set; }  // creation status
+        public string Message { get; set; }   // returnmessage
+
     }
 }

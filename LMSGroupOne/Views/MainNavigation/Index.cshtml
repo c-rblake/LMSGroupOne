@@ -1,5 +1,7 @@
 ﻿@model LMSGroupOne.Models.MainNavigation.TreeNode
 
+
+
 @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" }))
 {
     @Html.AntiForgeryToken()
@@ -46,7 +48,7 @@
         display: none; /* Hidden by default */
         position: fixed; /* Stay in place */
         z-index: 1; /* Sit on top */
-        padding-top: 100px; /* Location of the box */
+
         left: 0;
         top: 0;
         width: 100%; /* Full width */
@@ -61,41 +63,27 @@
         background-color: #fefefe;
         max-width: 500px;
     }
-
-    /* The Close Button */
-    .close {
-        color: #aaaaaa;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-    }
-
-        .close:hover,
-        .close:focus {
-            color: #000;
-            text-decoration: none;
-            cursor: pointer;
-        }
 </style>
 
 
 
 <!-- The Modal -->
-<div id="centerModalId" class="centerModal container-fluid">
+<div id="centerModalId" class="centerModal container-fluid h-100">
 
     <!-- Modal content -->
-    <div id="centerModalContentId" class="card m-auto centerModalContent">
+    <div id="centerModalContentId" class="card m-auto centerModalContent m-5 shadow">
 
-        <div class="card-header">
+        <div class="card-header bg-primary">
+            <h2 class="card-title">Create Course</h2>
+        </div>
+
+        <div id="centerModalBodyId" class="card-body">
 
         </div>
-            
-                <div id="centerModalBodyId" class="card-body">
 
-                </div>
-            
         <div class="card-footer">
-            <button id="centerModalButton" class="btn btn-outline-primary">press me</button>
+            <button id="centerModalButton" class="btn btn-outline-success float-left">Create</button>
+            <button id="centerModalClose" class="btn btn-outline-primary float-lg-right">Close</button>
         </div>
 
 
@@ -107,7 +95,13 @@
 
 <script>
 
-    
+    document.getElementById("centerModalClose").addEventListener("click", (event) => {
+        console.log("cancel pressed");
+        let modal = document.getElementById("centerModalId");
+
+        modal.style.display = "none";
+
+    });
 
 
 
@@ -120,28 +114,55 @@
         var token = $('input[name="__RequestVerificationToken"]', tform).val();
 
 
-        let form = document.getElementById("createFormId");
-        console.log(form);
 
-        var formData = JSON.stringify($("#createFormId").serializeArray());
-        console.log(formData);
+        
 
-        var data = JSON.parse(formData);
-        console.log(data[1]);
+        let form = document.getElementById("formId");
+        //console.log(form);
 
-        name = form.elements["Name"].value;
-        console.log(name);
 
         $.ajax({
             type: "POST",
-            url: "/AddNavigation/LoadAddView",
-            data: { __RequestVerificationToken: token, Name:name },
+            url: "/Course/Create",
+            data: {
+                __RequestVerificationToken: token,
+                Name: form.elements["Name"].value,
+                Description: form.elements["Description"].value,
+                StartDate: form.elements["StartDate"].value,
+                EndDate: form.elements["EndDate"].value,
+            },
             cache: false,
             success: result => {
                 let modalContent = document.getElementById("centerModalBodyId");
                 modalContent.innerHTML = result;
+                fixvalidation();
+
+                //const form = target.querySelector('form');
+                //$.validator.unobtrusive.parse(form);
+
+                //const form = document.getElementById('createFormId');
+                //$.validator.unobtrusive.parse(form);
+
+
+
+
+                form = document.getElementById("formId");
+                let success = form.elements["Success"].value;
+                console.log(success);
+                if (success == "True") {
+                    console.log("course was created");
+                    document.getElementById("centerModalButton").style.display = "none";
+                }
+
+
+
+
+
 
             }
+
+
+
         });
 
 
@@ -149,7 +170,14 @@
 
     });
 
+
+
 </script>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+}
 
 
 
@@ -175,12 +203,3 @@
 
 </script>
 
-<script>
-    // test script for modal delete it later
-    window.onclick = function (event) {
-        let modal = document.getElementById("centerModalId")
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
-    }
-</script>
