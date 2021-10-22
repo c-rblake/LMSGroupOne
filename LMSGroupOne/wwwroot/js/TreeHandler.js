@@ -308,18 +308,40 @@
     }
 
     
-    #OnNew(event) {        
-        let modal = document.getElementById("centerModalId");
+    #OnNew(event) {
+
+        console.log("-------------parent id-----------------------");
+        console.log(event.target.dataset.itemParentId);
+
+        let modal = document.getElementById("centerModalId");        
         let button = document.getElementById("centerModalButton");
+        let title = document.getElementById("centerModalTitleId");
+        let data = "";
         button.innerHTML = "New";
         button.style.display = "block"; 
         let url = "";
-        let type = event.target.dataset.itemCreates;        
+        let type = event.target.dataset.itemCreates;
+        modal.dataset.itemType = type;
+        modal.dataset.itemParentId = event.target.id;
+
         switch (parseInt(type))
         {
             case TreeFactory.NodeTypes.COURSE:
                 url = "/Course/Create";                
                 modal.style.display = "block";
+                title.innerHTML = "Create Course";
+                break;
+            case TreeFactory.NodeTypes.MODULE:
+                url = "/Module/CreateModule";
+                data = event.target.dataset.itemParentId;
+                modal.style.display = "block";
+                title.innerHTML = "Create Module";
+                break;
+            case TreeFactory.NodeTypes.ACTIVITY:
+                url = "/Activity/Create";
+                data = event.target.dataset.itemParentId;
+                modal.style.display = "block";
+                title.innerHTML = "Create Activity";
                 break;
         }
 
@@ -328,7 +350,7 @@
         $.ajax({
             type: "GET",
             url: url,
-            data: {},
+            data: data,
             cache: false,
             success: result => {
                 let modalContent = document.getElementById("centerModalBodyId");

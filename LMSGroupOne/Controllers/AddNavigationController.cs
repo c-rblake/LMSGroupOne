@@ -69,50 +69,48 @@ namespace LMSGroupOne.Controllers
 
         }
 
-        public IActionResult InitAddView(CourseModelView input)
-        {
+        //public IActionResult InitAddView(CourseModelView input)
+        //{
             
 
-            var model = new CreateCourseViewModel
-            {
-                Name=input.Name,
-                Description=input.Description,
-                StartDate=DateTime.Now,
-                EndDate=DateTime.Now
+        //    var model = new CreateCourseViewModel
+        //    {
+        //        Name=input.Name,
+        //        Description=input.Description,
+        //        StartDate=DateTime.Now,
+        //        EndDate=DateTime.Now
                 
-            };
-
-
+        //    };
             
-            return PartialView("../MainNavigation/Create/CreateCourse", model);
+        //    return PartialView("../MainNavigation/Create/CreateCourse", model);
             
-        }
+        //}
 
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult LoadAddView(CreateCourseViewModel inp)
-        {
-            Debug.WriteLine("model------------");
-            Debug.WriteLine(inp.Name);
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public IActionResult LoadAddView(CreateCourseViewModel inp)
+        //{
+        //    Debug.WriteLine("model------------");
+        //    Debug.WriteLine(inp.Name);
 
-            //if (ModelState.IsValid)
-            //{
-            //    Debug.WriteLine("Modelstate is valid");
-            //}
-            var model = new CreateCourseViewModel
-            {
-                Name = inp.Name,
-                Description = "efg",
-                StartDate = DateTime.Now,
-                EndDate = DateTime.Now
+        //    //if (ModelState.IsValid)
+        //    //{
+        //    //    Debug.WriteLine("Modelstate is valid");
+        //    //}
+        //    var model = new CreateCourseViewModel
+        //    {
+        //        Name = inp.Name,
+        //        Description = "efg",
+        //        StartDate = DateTime.Now,
+        //        EndDate = DateTime.Now
 
-            };
+        //    };
 
 
-            return PartialView("../MainNavigation/Create/CreateCourse", model);
+        //    return PartialView("../MainNavigation/Create/CreateCourse", model);
 
-        }
+        //}
 
 
 

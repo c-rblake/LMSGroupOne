@@ -74,7 +74,7 @@
     <div id="centerModalContentId" class="card m-auto centerModalContent m-5 shadow">
 
         <div class="card-header bg-primary">
-            <h2 class="card-title">Create Course</h2>
+            <h2 id="centerModalTitleId" class="card-title">Hello world!</h2>
         </div>
 
         <div id="centerModalBodyId" class="card-body">
@@ -95,6 +95,7 @@
 
 <script>
 
+    // close modal
     document.getElementById("centerModalClose").addEventListener("click", (event) => {
         console.log("cancel pressed");
         let modal = document.getElementById("centerModalId");
@@ -105,7 +106,7 @@
 
 
 
-
+    // 
     document.getElementById("centerModalButton").addEventListener("click", (event) => {
         console.log("clicked on the modal button");
 
@@ -114,16 +115,39 @@
         var token = $('input[name="__RequestVerificationToken"]', tform).val();
 
 
-
-        
+        let type = document.getElementById("centerModalId").dataset.itemType;
+        console.log("receiving type");
+        console.log("----------------------");
+        console.log(type);
 
         let form = document.getElementById("formId");
         //console.log(form);
 
+        let url = "";
+        switch (parseInt(type)) {
+            case TreeFactory.NodeTypes.COURSE:
+                url = "/Course/Create";
+                
+                break;
+            case TreeFactory.NodeTypes.MODULE:
+                url = "/Module/CreateModule";
+                
+                break;
+            case TreeFactory.NodeTypes.ACTIVITY:
+                url = "/Activity/Create";
+                
+                break;
+        }
 
+
+
+
+
+
+        // todo check type and switch
         $.ajax({
             type: "POST",
-            url: "/Course/Create",
+            url: url,
             data: {
                 __RequestVerificationToken: token,
                 Name: form.elements["Name"].value,
@@ -148,13 +172,38 @@
 
                 form = document.getElementById("formId");
                 let success = form.elements["Success"].value;
+                let returnId = form.elements["ReturnId"].value;
+                let name = form.elements["Name"].value;
+
+               
                 console.log(success);
                 if (success == "True") {
-                    console.log("course was created");
+                    console.log("course was created ooooooooooooooooooo");
                     document.getElementById("centerModalButton").style.display = "none";
+
+                    // success, add stuff to tree
+                    let path = document.getElementById("centerModalId").dataset.itemParentId;
+
+                    $.ajax({
+                        type: "GET",
+                        url: "/AddNavigation/OnNew",
+                        data: { path: path, id: returnId, type: type, name: name},
+                        cache: false,
+                        success: result => {
+                            let obj = JSON.parse(result);                
+                            if (obj.success) {                    
+                                treeHandler.AddSubTree(obj.subTree, obj.type, obj.path);                    
+                            } 
+                        }
+                    });
+
+
+
                 }
 
 
+
+               
 
 
 

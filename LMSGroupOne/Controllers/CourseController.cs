@@ -89,6 +89,7 @@ namespace LMSGroupOne.Controllers
                 await uow.CompleteAsync();
                 course.Success = true;
                 course.Message = "Course was created";
+                course.ReturnId = 1234;  // todo return a valid id for the created course
             }
             else
             {
