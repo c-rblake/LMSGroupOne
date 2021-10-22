@@ -343,9 +343,7 @@
                 modal.style.display = "block";
                 title.innerHTML = "Create Activity";
                 break;
-        }
-
-        
+        }        
 
         $.ajax({
             type: "GET",
@@ -358,24 +356,8 @@
                 ModalHandler.FixValidation();               
             }
         });
+             
 
-        
-
-
-
-
-        //$.ajax({
-        //    type: "GET",
-        //    url: "/AddNavigation/OnNew",
-        //    data: { path: event.target.id, id: "hello_id", type: event.target.dataset.itemCreates, name: "hello world"},
-        //    cache: false,
-        //    success: result => {
-        //        let obj = JSON.parse(result);                
-        //        if (obj.success) {                    
-        //            this.AddSubTree(obj.subTree, obj.type, obj.path);                    
-        //        } 
-        //    }
-        //});
     }
 
     AddSubTree(subTree, type, path) {
@@ -383,6 +365,14 @@
         let elmer = this.#FindListGroup(subTree.Type, path);
         let item = TreeFactory.GenerateSubTree(subTree, (item) => this.#AddEventListener(item));
         elmer.appendChild(item);
+
+        //console.log("the item");
+        //console.log(item);
+        //console.log("elmer");
+        let caret = elmer.previousSibling.childNodes[0].hidden = false;
+        
+
+        this.#SelectionOutline(elmer.previousSibling);
     }
 
     #AddEventListener(item) {
