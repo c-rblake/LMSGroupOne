@@ -2,6 +2,7 @@
 
 
 
+
 @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" }))
 {
     @Html.AntiForgeryToken()
@@ -11,6 +12,7 @@
     ViewData["Title"] = "LMS Group1";
 }
 <script src="~/js/WindowResizer.js" asp-append-version="true"></script>
+<script src="~/js/LoadHomePage.js" asp-append-version="true"></script>
 
 <div class="container-fluid p-0 m-0" style="min-height:100%; max-height:100%;">
     <div class="row p-0 m-0">
@@ -34,39 +36,6 @@
 </div>
 
 
-
-//------------------------modal ---------------------
-
-
-<style>
-    /*body {
-        font-family: Arial, Helvetica, sans-serif;
-    }*/
-
-    /* The Modal (background) */
-    .centerModal {
-        display: none; /* Hidden by default */
-        position: fixed; /* Stay in place */
-        z-index: 1; /* Sit on top */
-
-        left: 0;
-        top: 0;
-        width: 100%; /* Full width */
-        height: 100%; /* Full height */
-        overflow: auto; /* Enable scroll if needed */
-        background-color: rgb(0,0,0); /* Fallback color */
-        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-    }
-
-    /* Modal Content */
-    .centerModalContent {
-        background-color: #fefefe;
-        max-width: 500px;
-    }
-</style>
-
-
-
 <!-- The Modal -->
 <div id="centerModalId" class="centerModal container-fluid h-100">
 
@@ -85,24 +54,48 @@
             <button id="centerModalButton" class="btn btn-outline-success float-left">Create</button>
             <button id="centerModalClose" class="btn btn-outline-primary float-lg-right">Close</button>
         </div>
-
-
     </div>
-
 </div>
 
 
 
 <script>
 
-    // close modal
-    document.getElementById("centerModalClose").addEventListener("click", (event) => {
-        console.log("cancel pressed");
-        let modal = document.getElementById("centerModalId");
 
-        modal.style.display = "none";
+    class ModalHandler
+    {
 
-    });
+        constructor()
+        {
+            document.getElementById("centerModalClose").addEventListener("click", this.OnCloseButton);
+        }
+
+        OnCloseButton()
+        {                           
+            let modal = document.getElementById("centerModalId");
+            modal.style.display = "none";            
+        }
+
+
+
+        OnButton()
+        {
+
+
+
+
+        }
+
+
+
+
+    }
+
+    let modalHandler = new ModalHandler();
+
+    
+
+    
 
 
 
@@ -124,37 +117,35 @@
         //console.log(form);
 
         let url = "";
+        let data = "";
         switch (parseInt(type)) {
             case TreeFactory.NodeTypes.COURSE:
                 url = "/Course/Create";
-                
+                data =
+                {
+                    __RequestVerificationToken: token,
+                    Name: form.elements["Name"].value,
+                    Description: form.elements["Description"].value,
+                    StartDate: form.elements["StartDate"].value,
+                    EndDate: form.elements["EndDate"].value,
+                };
                 break;
             case TreeFactory.NodeTypes.MODULE:
                 url = "/Module/CreateModule";
-                
+                //todo data
                 break;
             case TreeFactory.NodeTypes.ACTIVITY:
                 url = "/Activity/Create";
-                
+                // todo data
                 break;
         }
-
-
-
-
 
 
         // todo check type and switch
         $.ajax({
             type: "POST",
             url: url,
-            data: {
-                __RequestVerificationToken: token,
-                Name: form.elements["Name"].value,
-                Description: form.elements["Description"].value,
-                StartDate: form.elements["StartDate"].value,
-                EndDate: form.elements["EndDate"].value,
-            },
+            data: data,
             cache: false,
             success: result => {
                 let modalContent = document.getElementById("centerModalBodyId");
@@ -177,7 +168,8 @@
 
                
                 console.log(success);
-                if (success == "True") {
+                if (success == "True")
+                {
                     console.log("course was created ooooooooooooooooooo");
                     document.getElementById("centerModalButton").style.display = "none";
 
@@ -230,25 +222,5 @@
 
 
 
-<script>
-    window.addEventListener("load", (event) => {
-        LoadPersonalHomeView(event)
-    });
 
-    function LoadPersonalHomeView(event) {
-
-
-        $.ajax({
-            type: "GET",
-            url: "/MainNavigation/OnHome",
-            data: { type: "load" },
-            cache: false,
-            success: result => {
-                document.getElementById("contentDivId").innerHTML = result;
-            }
-        });
-
-    };
-
-</script>
 
