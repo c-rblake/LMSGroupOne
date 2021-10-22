@@ -355,7 +355,7 @@
             success: result => {
                 let modalContent = document.getElementById("centerModalBodyId");
                 modalContent.innerHTML = result;                                
-                fixvalidation();               
+                ModalHandler.FixValidation();               
             }
         });
 
