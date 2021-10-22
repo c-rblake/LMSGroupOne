@@ -13,5 +13,7 @@ namespace LMS.Core.Repositories
 
         IJTActivityRepository ActivityRepository { get; }
 
+        IJTDocumentRepository DocumentRepository { get; }
+
     }
 }

@@ -1,3 +1,16 @@
 ﻿@using LMSGroupOne.Models.MainNavigation
-@model PlaceholderModelView
-placeholder view for document with id @Model.Id
+@model DocumentModelView
+
+
+<div class="container-fluid text-center">
+    <h2>Document:</h2>
+    <H1>@Model.Name</H1>
+    <h4>TimeStamp: @Model.TimeStamp</h4>
+    <h4>url: @Model.DocumentUrl</h4>
+    <h4>Uploaded by:@Model.PersonName</h4>
+    <p>@Model.Description</p>
+
+
+
+
+</div>
