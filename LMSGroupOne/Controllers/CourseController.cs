@@ -34,12 +34,16 @@ namespace LMSGroupOne.Controllers
             {
                 return NotFound();
             }
-            var course = mapper.Map<CourseEditViewModel>(await uow.CourseRepository.FindAsync(id));
-            if (course == null)
+
+            var course = await uow.CourseRepository.FindAsync(id);
+            ViewBag.courseName = course.Name;
+            var model = mapper.Map<CourseEditViewModel>(course);
+            
+            if (model == null)
             {
                 return NotFound();
             }
-            return View(course);
+            return View(model);
         }
 
         [Authorize(Roles = "Teacher")]
