@@ -82,7 +82,7 @@ namespace LMSGroupOne
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                   pattern: "{controller=Home}/{action=Index}");
+                   pattern: "{controller=Student}/{action=Index}");
             endpoints.MapRazorPages();
             });
         }

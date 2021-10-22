@@ -279,13 +279,27 @@ namespace LMS.Data.Data
         {
             var students = new List<User>();
 
-            for (int i = 0; i < amount; i++)
+            for (int i = 0; i-1 < amount; i++)
             {
                 var firstName = fake.Name.FirstName();
                 var lastName = fake.Name.LastName();
                 var random = new Random();
                 var emailFirstName = firstName.ToLower();
                 var emailLastName = lastName.ToLower();
+
+                if(i==0)
+                {
+                    var testStudent = new User
+                    {
+                        FirstName = "test",
+                        LastName = "testsson",
+                        Documents = GetDocuments(2),
+                        UserName = "test@test.com",
+                        Course = courses[random.Next(0, courses.Count)]
+                    };
+                    students.Add(testStudent);
+                }
+
 
                 var user = new User
                 {
