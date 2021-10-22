@@ -1,5 +1,6 @@
 ﻿using LMS.Core.Models.Entities;
 using LMS.Core.Models.ViewModels.Document;
+using LMS.Data.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -21,69 +22,64 @@ namespace LMSGroupOne.Controllers
         private readonly UserManager<Person> _userManager;
         private readonly SignInManager<Person> _signInManager;
         private readonly IWebHostEnvironment _environment;
+        private readonly ApplicationDbContext _db;
 
-        public DocumentController(ILogger<DocumentController> logger, UserManager<Person> userManager, SignInManager<Person> signInManager, IWebHostEnvironment environment)
+        public DocumentController(ILogger<DocumentController> logger, UserManager<Person> userManager, SignInManager<Person> signInManager, IWebHostEnvironment environment, ApplicationDbContext db)
         {
             _logger = logger;
             _userManager = userManager;
             _signInManager = signInManager;
             _environment = environment;
+            _db = db;
         }
 
 
         [Authorize]
         public IActionResult Upload()
         {
-            var addDocumentViewModel = new UploadDocumentsViewModel { };
-
-            return View(addDocumentViewModel);
+            return View();
         }
 
 
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public IActionResult Upload(List<IFormFile> postedDocuments, UploadDocumentsViewModel viewModel)
+        public async Task<IActionResult> Upload(List<IFormFile> postedDocuments, UploadDocumentsViewModel viewModel)
         {
-            string wwwPath = _environment.WebRootPath;
+                string wwwPath = _environment.WebRootPath;
 
-            string documentsDirectoryPath = Path.Combine(wwwPath, "documents");
+                string documentsDirectoryPath = Path.Combine(wwwPath, "documents");
 
-            if (!Directory.Exists(documentsDirectoryPath))
-            {
-                Directory.CreateDirectory(documentsDirectoryPath);
-            }
-
-            List<string> uploadedDocuments = new List<string>();
-
-            foreach (IFormFile postedDocument in postedDocuments)
-            {
-                string fileName = Path.GetFileName(postedDocument.FileName);
-
-                string documentUrl = Path.Combine(documentsDirectoryPath, fileName);
-
-                var personId = _userManager.GetUserId(User);
-
-                using (FileStream stream = new FileStream(documentUrl, FileMode.Create))
+                if (!Directory.Exists(documentsDirectoryPath))
                 {
-                    postedDocument.CopyTo(stream);
-                    uploadedDocuments.Add(fileName);
-                    var document = new Document
-                    {
-                        Name = fileName,
-                        DocumentUrl = documentUrl,
-                        TimeStamp = DateTime.Now,
-                        PersonId = personId
-                    };
-
-                    //db.Documents.Add(document);
-                    //await db.SaveChangesAsync();
-
+                    Directory.CreateDirectory(documentsDirectoryPath);
                 }
+
+                var userId = _userManager.GetUserId(User);
+
+                foreach (IFormFile postedDocument in postedDocuments)
+                {
+                    string fileName = Path.GetFileName(postedDocument.FileName);
+
+                    string documentUrl = Path.Combine(documentsDirectoryPath, fileName);
+
+                    using (FileStream stream = new FileStream(documentUrl, FileMode.Create))
+                    {
+                        postedDocument.CopyTo(stream);
+                    }
+                                        
+                    var document = new Document
+                        {
+                            Name = fileName,
+                            DocumentUrl = documentUrl,
+                            TimeStamp = DateTime.Now,
+                            PersonId = userId
+                        };
+
+                     _db.Documents.AddRange(document);
+                     await _db.SaveChangesAsync();
             }
             return RedirectToAction(nameof(Index), "Home");
-
         }
-
     }
 }
