@@ -8,5 +8,10 @@
 <form method="post" enctype="multipart/form-data" asp-controller="Document" asp-action="Upload">
     <span>Select File:</span>
     <input type="file" name="postedDocuments" multiple />
+    <div class="form-group col-md-4">
+        <label asp-for="Description" class="control-label"></label>
+        <input asp-for="Description" class="form-control" />
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
     <input type="submit" value="Upload" />
 </form>

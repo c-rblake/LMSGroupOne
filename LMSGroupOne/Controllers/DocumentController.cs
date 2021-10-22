@@ -44,7 +44,7 @@ namespace LMSGroupOne.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Upload(List<IFormFile> postedDocuments, UploadDocumentsViewModel viewModel)
+        public async Task<IActionResult> Upload(List<IFormFile> postedDocuments, UploadDocumentsViewModel viewModel, string description)
         {
                 string wwwPath = _environment.WebRootPath;
 
@@ -73,13 +73,22 @@ namespace LMSGroupOne.Controllers
                             Name = fileName,
                             DocumentUrl = documentUrl,
                             TimeStamp = DateTime.Now,
-                            PersonId = userId
+                            PersonId = userId,
+                            Description = description
                         };
 
                      _db.Documents.AddRange(document);
                      await _db.SaveChangesAsync();
             }
             return RedirectToAction(nameof(Index), "Home");
+        }
+
+        public async Task<IActionResult> Download(Uri uri)
+        {
+
+
+
+            return View(nameof(Upload));
         }
     }
 }
