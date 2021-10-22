@@ -107,3 +107,7 @@ body {
 .img100h {
     height: 100%;
 }
+
+#postedDocuments {
+    border: none;
+}

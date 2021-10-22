@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -35,49 +36,75 @@ namespace LMSGroupOne.Controllers
 
 
         [Authorize]
-        public IActionResult Upload()
+        [Route("/document/uploadcoursedocuments/{id}")]
+        public async Task<IActionResult> UploadCourseDocuments(int id)
         {
-            return View();
+            var courses = await _db.Courses.ToListAsync();
+
+            var course = courses.Where(a => a.Id == id).FirstOrDefault();
+
+            var viewModel = new UploadDocumentsViewModel
+            {
+                Course = course
+            };
+
+            return View(viewModel);
         }
 
 
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Upload(List<IFormFile> postedDocuments, UploadDocumentsViewModel viewModel)
+        [Route("/document/uploadcoursedocuments/{id}")]
+        public async Task<IActionResult> UploadCourseDocuments(int id, List<IFormFile> postedDocuments, UploadDocumentsViewModel viewModel)
         {
-                string wwwPath = _environment.WebRootPath;
+            if (ModelState.IsValid)
+            {
+                var course = _db.Courses.Where(a => a.Id == id).FirstOrDefault();
 
-                string documentsDirectoryPath = Path.Combine(wwwPath, "documents");
+                string path = Path.Combine(_environment.WebRootPath, $"documents/{course.Name}");
 
-                if (!Directory.Exists(documentsDirectoryPath))
+                if (!Directory.Exists(path))
                 {
-                    Directory.CreateDirectory(documentsDirectoryPath);
+                    Directory.CreateDirectory(path);
                 }
 
                 var userId = _userManager.GetUserId(User);
 
-                foreach (IFormFile postedDocument in postedDocuments)
+                try
                 {
-                    string fileName = Path.GetFileName(postedDocument.FileName);
-
-                    string documentUrl = Path.Combine(documentsDirectoryPath, fileName);
-
-                    using (FileStream stream = new FileStream(documentUrl, FileMode.Create))
+                    foreach (IFormFile postedDocument in postedDocuments)
                     {
-                        postedDocument.CopyTo(stream);
-                    }
-                                        
-                    var document = new Document
+                        string fileName = Path.GetFileName(postedDocument.FileName);
+
+                        string documentUrl = Path.Combine(path, fileName);
+
+                        using (FileStream stream = new FileStream(documentUrl, FileMode.Create))
                         {
-                            Name = fileName,
+                            await postedDocument.CopyToAsync(stream);
+                        }
+
+                        var document = new Document
+                        {
+                            Name = fileName.Split(".")[0],
                             DocumentUrl = documentUrl,
                             TimeStamp = DateTime.Now,
-                            PersonId = userId
+                            PersonId = userId,
+                            Course = course,
+                            CourseId = course.Id
                         };
 
-                     _db.Documents.AddRange(document);
-                     await _db.SaveChangesAsync();
+                        _db.Documents.AddRange(document);
+                        await _db.SaveChangesAsync();
+                    }
+
+                    ViewBag.Result = "Upload was successfull";
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    throw;
+                }
+                return View();
             }
             return RedirectToAction(nameof(Index), "Home");
         }
