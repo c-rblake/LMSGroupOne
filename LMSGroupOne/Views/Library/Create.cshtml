@@ -1,0 +1,76 @@
+﻿@model LMSGroupOne.LibraryClientApi.CreateAuthorViewModel
+
+
+@{
+    ViewData["Title"] = "Create Author";
+}
+
+<h1>@ViewData["Title"] </h1>
+<h1>@TempData["apiresult"]</h1>
+<h1>@TempData["temporarytest"]</h1>
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <h4>Create account</h4>
+            <hr />
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="FirstName"></label>
+                <input asp-for="FirstName" value="AAA" class="form-control" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LastName"></label>
+                <input asp-for="LastName" value="AAA" class="form-control" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DateOfBirth"></label>
+                <input asp-for="DateOfBirth" class="form-control" value="@DateTime.Now"/>
+                <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DateOfDeath"></label>
+                <input asp-for="DateOfDeath" class="form-control" />
+                <span asp-validation-for="DateOfDeath" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="GenreId"></label>
+                <input asp-for="GenreId" value="1" class="form-control" />
+                <span asp-validation-for="GenreId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TypeId"></label>
+                <input asp-for="TypeId" value="1" class="form-control" />
+                <span asp-validation-for="TypeId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Title"></label>
+                <input asp-for="Title" value ="my favorite title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description"></label>
+                <input asp-for="Description" value="very good" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Level"></label>
+                <input asp-for="Level" value="low" class="form-control" />
+                <span asp-validation-for="Level" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PublicationDate"></label>
+                <input asp-for="PublicationDate" value="@DateTime.Now" class="form-control" />
+                <span asp-validation-for="PublicationDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create Author" class="btn btn-primary" />
+                <a asp-controller="Home" asp-action="Index" class="btn btn-primary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+

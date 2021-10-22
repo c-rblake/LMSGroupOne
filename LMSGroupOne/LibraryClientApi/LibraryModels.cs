@@ -59,6 +59,40 @@ namespace LMSGroupOne.LibraryClientApi
         public string Name { get; set; }
     }
 
+    public class Author
+    {
+        public int Id { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+
+        //Todo DateTimeOffset instead
+        public DateTimeOffset DateOfBirth { get; set; }
+        public DateTimeOffset? DateOfDeath { get; set; }
+
+        //Nav properties
+        public List<Work> Works { get; set; } = new List<Work>(); // Want to AddRange
+    }
+
+    public class Work
+    {
+        public int Id { get; set; }
+        public int GenreId { get; set; }
+        public int TypeId { get; set; }
+
+        public string Title { get; set; } //<string, Mappning + reverse>
+
+        public string Description { get; set; }
+
+        public string Level { get; set; }
+
+        public DateTime PublicationDate { get; set; }
+
+        public ICollection<Author> Authors { get; set; }
+        public Genre Genre { get; set; }
+
+        public Type Type { get; set; }
+    }
+
     public class WorkDto
     {
         public int Id { get; set; }
@@ -89,5 +123,29 @@ namespace LMSGroupOne.LibraryClientApi
 
         //Nav properties
         //public ICollection<Work> Works { get; set; }
+    }
+    public class CreateAuthorViewModel
+    {
+        //Author
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public DateTimeOffset DateOfBirth { get; set; }
+        public DateTimeOffset? DateOfDeath { get; set; }
+
+        //Work
+        public int GenreId { get; set; }
+        public int TypeId { get; set; }
+
+        public string Title { get; set; } //<string, Mappning + reverse>
+
+        public string Description { get; set; }
+
+        public string Level { get; set; }
+
+        public DateTime PublicationDate { get; set; }
+
+        public Genre Genre { get; set; }
+
+        public LibraryClientApi.Type Type { get; set; }
     }
 }

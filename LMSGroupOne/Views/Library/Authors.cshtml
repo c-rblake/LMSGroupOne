@@ -1,0 +1,50 @@
+﻿@model IEnumerable<LMSGroupOne.LibraryClientApi.AuthorDto>
+
+    @{
+        ViewData["Title"] = "Index";
+    }
+
+    <h1>Authors</h1>
+
+@if(Model != null)
+{ 
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Works)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var author in Model)
+            {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => author.Name)
+                </td>
+                <td>
+                    
+                    @foreach (var work in author.Works)
+                    {
+                        @*@Html.DisplayFor(workitem => work.Title)*@
+                        <p>@work.Title</p>
+                    }
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@author.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@author.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@author.Id">Delete</a>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+}

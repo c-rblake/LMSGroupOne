@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace LMSGroupOne.Controllers
 {
-    public class LibraryController:Controller
+    public class LibraryController : Controller
     {
         private readonly LibraryClient libraryClient;
         private readonly ILibraryClient2 libraryClient2;
@@ -37,7 +37,50 @@ namespace LMSGroupOne.Controllers
             AuthorDto author = JsonConvert.DeserializeObject<AuthorDto>(AuthorDTOJSON);
             dynamic authordynamic = JsonConvert.DeserializeObject(AuthorDTOJSON);
 
-            var text = Activator.CreateInstance(System.Type.GetTypeFromProgID("Excel.Application", throwOnError:true));
+            var text = Activator.CreateInstance(System.Type.GetTypeFromProgID("Excel.Application", throwOnError: true));
+
+
+            return View();
+        }
+
+        public async Task<IActionResult> Authors()
+        {
+            var cancellation = new CancellationTokenSource();
+            IEnumerable<AuthorDto> authorDtos;
+
+            authorDtos = await libraryClient2.GetAllAuthors(cancellation.Token);
+
+            return View(authorDtos);
+            //return View();
+
+        }
+        public async Task<IActionResult> Create(CreateAuthorViewModel createAuthorViewModel)
+        {
+            if (ModelState.IsValid)
+                Console.WriteLine("");
+
+            var author = new Author
+            {
+                FirstName = createAuthorViewModel.FirstName,
+                LastName = createAuthorViewModel.LastName,
+                DateOfBirth = createAuthorViewModel.DateOfBirth,
+                DateOfDeath = createAuthorViewModel.DateOfDeath,
+            };
+            author.Works.Add(new Work
+            {
+                PublicationDate = createAuthorViewModel.PublicationDate,
+                GenreId = createAuthorViewModel.GenreId,
+                TypeId = createAuthorViewModel.TypeId,
+                Description = createAuthorViewModel.Description,
+                Title = createAuthorViewModel.Title,
+                Level = createAuthorViewModel.Level
+            });
+            //Post
+
+            var result = await libraryClient2.PostAuthor(author);
+            //var (response, obje) = await libraryClient2.PostAuthor2("",author);
+            var response = await libraryClient2.PostAuthor2(author);
+
 
 
             return View();
@@ -77,7 +120,7 @@ namespace LMSGroupOne.Controllers
             return authorDtos;
         }
 
-
+        
     }
     public class LibraryClient2 : BaseClient, ILibraryClient2
     {
@@ -93,7 +136,8 @@ namespace LMSGroupOne.Controllers
 
         public async Task<IEnumerable<AuthorDto>> GetAllAuthors(CancellationToken token)
         {
-            return await base.GetAsync<IEnumerable<AuthorDto>>(token, "api/authors"); //
+            //return await base.GetAsync<IEnumerable<AuthorDto>>(token, "api/authors");
+            return await base.GetAsync<IEnumerable<AuthorDto>>(token, "api/authors/?includeWorks=true");
 
         }
         public async Task<AuthorDto> GetAuthor(CancellationToken token, string id)
@@ -105,8 +149,23 @@ namespace LMSGroupOne.Controllers
         {
             return await base.GetAsync<IEnumerable<WorkDto>>(token, "api/works");
         }
+        public async Task<Author> PostAuthor(Author author)
+        {
+            // return await base.GetAsync<CodeEventDto>(token, $"api/events/{name}");
+            return await base.PostAsync<Author>(path: $"api/authors/", author);
+        }
 
+        //public async Task<(string, object)> PostAuthor2(string str, Author author)
+        //{
+        //    // return await base.GetAsync<CodeEventDto>(token, $"api/events/{name}");
+        //    return await base.PostAsync2<(string, object)>(path: $"api/authors/", ("", author));
 
+        //}
+
+        public async Task<string> PostAuthor2(Author author)
+        {
+            return await base.PostAsync2(path: $"api/authors/", author);
+        }
     }
 
     public class BaseClient
@@ -131,7 +190,7 @@ namespace LMSGroupOne.Controllers
             {
                 method = HttpMethod.Get; //More for fun
             }
-                
+
             //REQUEST
             var request = new HttpRequestMessage(method, path); //ToDo HttpMethod.Get
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(contentType));
@@ -156,6 +215,89 @@ namespace LMSGroupOne.Controllers
             }
             return dtos;
         }
+        //public async Task<string> PostAsync<T>(string path, T content, string contentType = "application/json") //Todo what to return
+        public async Task<T> PostAsync<T>(string path, T content, string contentType = "application/json")
+        {
+            
+            //https://docs.microsoft.com/en-us/dotnet/api/system.net.http.httpclient?view=net-5.0
+            //Request
+            var request = new HttpRequestMessage(HttpMethod.Post, path);
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(contentType));
+
+            //Respons
+            string json = JsonConvert.SerializeObject(content);
+            StringContent stringContent = new StringContent(json, System.Text.Encoding.UTF8, contentType);
+
+            
+
+            var response = await HttpClient.PostAsync(path, stringContent); //HttpResponseMessage
+            if (response.IsSuccessStatusCode)
+            {
+                response.StatusCode.ToString();
+                return content;
+
+            }
+            return content;
+            //return (response.StatusCode.ToString());
+
+        }
+        //(string, T)
+        //Todo Deconstruction of T is needed but how? (string, T) perhaps
+        //public async Task<T> PostAsync2<T>(string path, T content, string contentType = "application/json") //where T:TestClass
+        //{
+        //    //Tuple Management
+
+        //    //content = (TestClass)content;
+
+        //    //https://docs.microsoft.com/en-us/dotnet/api/system.net.http.httpclient?view=net-5.0
+        //    //Request
+        //    var request = new HttpRequestMessage(HttpMethod.Post, path);
+        //    request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(contentType));
+
+        //    //Respons
+        //    string json = JsonConvert.SerializeObject(content);
+        //    StringContent stringContent = new StringContent(json, System.Text.Encoding.UTF8, contentType);
+
+
+        //    var response = await HttpClient.PostAsync(path, stringContent); //HttpResponseMessage
+        //    if (response.IsSuccessStatusCode)
+        //    {
+        //        //return (response.StatusCode.ToString());
+        //        return content;
+        //    }
+        //    return content;
+        //    //return (response.StatusCode.ToString());
+
+        //}
+
+        public async Task<string> PostAsync2(string path, Author body, string contentType = "application/json") //where T:TestClass
+        {
+            //Tuple Management
+
+            //content = (TestClass)content;
+
+            //https://docs.microsoft.com/en-us/dotnet/api/system.net.http.httpclient?view=net-5.0
+            //Request
+            var request = new HttpRequestMessage(HttpMethod.Post, path);
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(contentType));
+
+            //Respons
+            string json = JsonConvert.SerializeObject(body);
+            StringContent stringContent = new StringContent(json, System.Text.Encoding.UTF8, contentType);
+
+
+            var response = await HttpClient.PostAsync(path, stringContent); //HttpResponseMessage
+            if (response.IsSuccessStatusCode)
+            {
+                return (response.StatusCode.ToString());
+                //return content;
+            }
+            //return content;
+            return (response.StatusCode.ToString());
+
+        }
+
+
 
 
     }

@@ -99,7 +99,7 @@ namespace LMSGroupOne
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                   pattern: "{controller=Library}/{action=Index}");
+                   pattern: "{controller=Library}/{action=Authors}");
             endpoints.MapRazorPages();
             });
         }
