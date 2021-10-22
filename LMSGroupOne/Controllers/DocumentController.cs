@@ -83,12 +83,57 @@ namespace LMSGroupOne.Controllers
             return RedirectToAction(nameof(Index), "Home");
         }
 
-        public async Task<IActionResult> Download(Uri uri)
+        public async Task<IActionResult> Download()
         {
+            var model = _db.Documents.Select(row => row);
 
-
-
-            return View(nameof(Upload));
+            return View(nameof(Download), model);
         }
+
+        public async Task<IActionResult> DownloadFile(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var file = _db.Documents.FirstOrDefault(d => d.Id == id);
+            string filePath = file.DocumentUrl;
+
+            string contentType = "application/pdf";
+
+            byte[] fileBytes = GetFile(filePath);
+
+            return File(
+        fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, filePath);
+
+
+            //return View(DownloadFile);
+
+        }
+
+        byte[] GetFile(string s)
+        {
+            System.IO.FileStream fs = System.IO.File.OpenRead(s);
+            byte[] data = new byte[fs.Length];
+            int br = fs.Read(data, 0, data.Length);
+            if (br != fs.Length)
+                throw new System.IO.IOException(s);
+            return data;
+        }
+
+        //public FileResult Download(string id)
+        //{
+        //    int fid = Convert.ToInt32(id);
+        //    var files = objData.GetFiles();
+        //    string filename = (from f in files
+        //                       where f.FileId == fid
+        //                       select f.FilePath).First();
+        //    string contentType = "application/pdf";
+        //    //Parameters to file are
+        //    //1. The File Path on the File Server
+        //    //2. The content type MIME type
+        //    //3. The parameter for the file save by the browser
+        //    return File(filename, contentType, "Report.pdf");
+        //}
     }
 }
