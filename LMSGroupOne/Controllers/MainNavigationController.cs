@@ -15,8 +15,7 @@ using System.Threading.Tasks;
 namespace LMSGroupOne.Controllers
 {
     public class MainNavigationController : Controller
-    {
-        static int nextId;
+    {        
         private readonly IJTUnitOfWork uow;
         private readonly UserManager<Person> userManager;
         public MainNavigationController(IJTUnitOfWork uow, UserManager<Person> userManager)
@@ -29,7 +28,8 @@ namespace LMSGroupOne.Controllers
             //nextId = 0;
 
         }
-         
+
+       
         public async Task<IActionResult> Index()
         {
             var user = await userManager.GetUserAsync(User);
@@ -667,6 +667,10 @@ namespace LMSGroupOne.Controllers
             return PartialView("Search", model);
         }
 
+
+
+
+        
     }
 
     
