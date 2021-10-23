@@ -108,12 +108,13 @@ namespace LMSGroupOne.Controllers
 
 
         [HttpGet]
-        public IActionResult VerifyCourseName(string Name)
+        public JsonResult VerifyCourseName(string Name)
         {            
             bool courseExists = uow.CourseRepository.CourseExist(Name);
             if (courseExists)
             {
                 return Json($"A Course with name {Name} already exists.");
+                //return Json(false);
             }
             return Json(true);
         }

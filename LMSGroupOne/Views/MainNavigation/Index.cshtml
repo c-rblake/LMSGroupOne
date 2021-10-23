@@ -1,6 +1,9 @@
 ﻿@model LMSGroupOne.Models.MainNavigation.TreeNode
 
-
+<style>
+    editButton {
+    }
+</style>
 
 
 @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" }))
@@ -32,7 +35,7 @@
             @await Html.PartialAsync("_MainContentPartial")
 
         </div>
-
+        
 
     </div>
 </div>

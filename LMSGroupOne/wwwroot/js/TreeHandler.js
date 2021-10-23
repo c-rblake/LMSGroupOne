@@ -21,6 +21,9 @@
 
     #contentDiv;
 
+    #currentDisplayId;
+    #currentDisplayType;
+
     constructor(menuDivId, contentDivId, thrashCanId) {
         this.#pressPositionX = 0;
         this.#pressPositionY = 0;
@@ -81,6 +84,7 @@
         this.#initialMove = false;
         this.#draging = false;
 
+        
     }
 
     #OnMouseMove(event) {
@@ -111,6 +115,7 @@
 
     #OnClick(event) {
 
+        
         if (this.#longPress) {
             return;
         }
@@ -132,20 +137,10 @@
 
 
 
+
         if (event.target.dataset.itemType != TreeFactory.NodeTypes.FOLDER)
         {
-            $.ajax({
-                type: "GET",
-                url: "/MainNavigation/OnTreeClick",
-                data: { id: event.target.id, type: event.target.dataset.itemType },
-                cache: false,
-                success: result => {
-                    console.log(result);
-                    //this.#contentDiv.innerHTML = result;
-                    document.getElementById("contentDivId").innerHTML = result;
-                }
-            });
-
+            this.#LoadMainContent(event.target.id, event.target.dataset.itemType);                       
         }
                 
         
@@ -165,7 +160,103 @@
 
         if (event.target.dataset.itemExtra == "new") {                        
             this.#OnNew(event);
+        }        
+
+    }
+
+    #LoadMainContent(id, type)
+    {        
+        $.ajax({
+            type: "GET",
+            url: "/MainNavigation/OnTreeClick",
+            data: { id: id, type: type },
+            cache: false,
+            success: result => {
+                console.log(result);
+
+                document.getElementById("contentDivId").innerHTML = result;
+
+                let editButton = document.getElementById("editButtonId");
+                if (editButton) {
+                    editButton.addEventListener("click", (event) => { this.#OnEdit(event); });
+                }
+
+                this.#currentDisplayId = id;
+                this.#currentDisplayType = type;
+            }
+        });       
+
+
+    }
+
+
+
+    #OnEdit(event)
+    {
+        console.log("------------------edit------------------")
+        console.log(event);
+
+        
+
+        let modal = document.getElementById("centerModalId");
+        let button = document.getElementById("centerModalButton");
+        let title = document.getElementById("centerModalTitleId");
+        let data = "";
+        button.innerHTML = "Edit";
+        button.style.display = "block";
+        let url = "";
+        let type = event.target.dataset.itemType;
+        let id = event.target.dataset.itemId;
+        modal.dataset.itemType = type;
+        //modal.dataset.itemParentId = event.target.id;
+        modal.dataset.itemOperation = "edit";
+        modal.dataset.itemId = id;
+
+        
+
+
+        switch (parseInt(type)) {
+            case TreeFactory.NodeTypes.COURSE:
+                url = "/Course/Create";  // todo correct url, testing with course
+                data = id;
+                modal.style.display = "block";
+                title.innerHTML = "Edit Course";
+                break;
+            case TreeFactory.NodeTypes.MODULE:
+                url = "/Course/Create";  // todo correct url, testing with course
+                data = id;
+                modal.style.display = "block";
+                title.innerHTML = "Edit Module";
+                break;
+            case TreeFactory.NodeTypes.ACTIVITY:
+                url = "/Course/Create";  // todo correct url, testing with course
+                data = id;
+                modal.style.display = "block";
+                title.innerHTML = "Edit Activity";
+                break;
         }
+
+        $.ajax({
+            type: "GET",
+            url: url,
+            data: data,
+            cache: false,
+            success: result => {
+                let modalContent = document.getElementById("centerModalBodyId");
+                modalContent.innerHTML = result;
+                ModalHandler.FixValidation();
+            }
+        });
+
+
+
+
+
+
+
+
+
+
 
     }
 
@@ -323,6 +414,7 @@
         let type = event.target.dataset.itemCreates;
         modal.dataset.itemType = type;
         modal.dataset.itemParentId = event.target.id;
+        modal.dataset.itemOperation = "new";
 
         switch (parseInt(type))
         {
@@ -360,6 +452,20 @@
 
     }
 
+    UpdateAfterEdit(id, type, name)
+    {
+        let item = this.#FindItem(type, id, name);
+        
+        // rename the treenode
+        item.childNodes[2].innerHTML = name;
+
+        // relaod page if current
+        if (this.#currentDisplayId == id && this.#currentDisplayType == type) {            
+            this.#LoadMainContent(id, type);
+        }
+    }
+
+
     AddSubTree(subTree, type, path) {
 
         let elmer = this.#FindListGroup(subTree.Type, path);
@@ -379,6 +485,8 @@
         item.addEventListener("click", (event) => this.#OnClick(event));
         item.addEventListener("dblclick", (event) => this.#OnDblClick(event));
         item.addEventListener("mousedown", (event) => this.#OnDown(event));
+
+        
     }
 
     GenerateTree(node)
@@ -396,6 +504,19 @@
         let bstr = '[data-item-creates="' + type + '"]';        
         let q = document.querySelectorAll(gstr + bstr);       
         return q[0].parentNode.nextSibling;                
+    }
+
+    #FindItem(type, id)
+    {
+        console.log("find item");
+        console.log("type:" + type);
+        console.log("id:"+id);
+
+        let gstr = "[id='" + id + "']";
+        let bstr = '[data-item-type="' + type + '"]';
+        let q = document.querySelectorAll(gstr + bstr);
+        
+        return q[0].parentNode;
     }
 
 

@@ -3,12 +3,17 @@
 
 <div class="container-fluid text-center">
     <h2>Course:</h2>
-    <H1>@Model.Name</h1>
+    <H1>@Model.Name</H1>
     <h4>Starts: @Model.StartDate</h4>
     <h4>Ends: @Model.EndDate</h4>
     <p>@Model.Description</p>
 
-
-
+    @if (User.IsInRole("Teacher"))
+    {
+        <button id="editButtonId" data-item-id=@Model.Id data-item-type=@((int)(NodeType.course)) class="btn btn-outline-primary">Edit</button>
+    }
 
 </div>
+
+
+
