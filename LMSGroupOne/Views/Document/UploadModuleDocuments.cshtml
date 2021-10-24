@@ -1,15 +1,15 @@
-﻿@model UploadCourseDocumentsViewModel
+﻿@model UploadModuleDocumentsViewModel
 
 @{
-    ViewData["Title"] = "Upload course documents";
+    ViewData["Title"] = "Upload module documents";
 }
 
 <h1>@ViewData["Title"]</h1>
 
 <div class="row">
     <div class="col-md-4">
-        <form method="post" enctype="multipart/form-data" asp-controller="Document" asp-action="UploadCourseDocuments" name="UploadCourseDocumentsForm" onsubmit="return validateForm()">
-            <h4>Upload course documents</h4>
+        <form method="post" enctype="multipart/form-data" asp-controller="Document" asp-action="UploadModuleDocuments" name="UploadModuleDocumentsForm" onsubmit="return validateForm()">
+            <h4>Upload module documents</h4>
             <hr />
             <div asp-validation-summary="All" class="text-danger"></div>
             <div class="form-group">
@@ -28,13 +28,13 @@
     </div>
 </div>
 
-<div class="modal fade" id="uploadCourseDocumentsResult" tabindex="-1" role="dialog" aria-labelledby="aModalLabel" aria-hidden="true">
+<div class="modal fade" id="uploadModuleDocumentsResult" tabindex="-1" role="dialog" aria-labelledby="aModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header"><h5 class="modal-title" id="aModalLabel">Result</h5></div>
             <div class="modal-body">@ViewBag.Result</div>
             <div class="modal-footer">
-                <a asp-controller="Document" asp-action="UploadCourseDocuments">More uploads to the same course</a>
+                <a asp-controller="Document" asp-action="UploadModuleDocuments">More uploads to the same module</a>
                 <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
             </div>
 
@@ -49,7 +49,7 @@
         <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
         <script type="text/javascript">
             $(function () {
-            $("#uploadCourseDocumentsResult").modal('show');
+            $("#uploadModuleDocumentsResult").modal('show');
             });
         </script>
     }
@@ -60,11 +60,11 @@
 
 <script type="text/javascript">
     setTimeout(function () {
-        $("#uploadCourseDocumentsResult").modal('hide')
+        $("#uploadModuleDocumentsResult").modal('hide')
     }, 4000);
 
     function validateForm() {
-        var x = document.forms["UploadCourseDocumentsForm"]["postedDocuments"].value;
+        var x = document.forms["UploadModuleDocumentsForm"]["postedDocuments"].value;
         if (x == "") {
             alert("Please choose document(s) to upload");
             return false;
