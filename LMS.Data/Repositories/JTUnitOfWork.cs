@@ -28,6 +28,10 @@ namespace LMS.Data.Repositories
             DocumentRepository = new JTDocumentRepository(db);
         }
 
-       
+        public async Task CompleteAsync()
+        {
+            await db.SaveChangesAsync();
+        }
+
     }
 }

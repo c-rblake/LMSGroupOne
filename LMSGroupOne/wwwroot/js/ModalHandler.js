@@ -73,15 +73,15 @@
         let path = document.getElementById("centerModalId").dataset.itemParentId;
 
         let returnId = form.elements["ReturnId"].value;
-        let name = form.elements["Name"].value;
+        //let name = form.elements["Name"].value;
         
         switch (operation)
         {
-            case "new":
+            case "new":                
                 $.ajax({
                     type: "GET",
                     url: "/AddNavigation/OnNew",
-                    data: { path: path, id: returnId, type: type, name: name },
+                    data: { path: path, id: returnId, type: type, name: form.elements["Name"].value },
                     cache: false,
                     success: result => {
                         let obj = JSON.parse(result);
@@ -91,12 +91,16 @@
                     }
                 });
                 break;
-            case "edit":
+            case "edit":                
                 let id = document.getElementById("centerModalId").dataset.itemId;
-                console.log("name:=>"+name)
-                treeHandler.UpdateAfterEdit(id, type, name);
+                
+                treeHandler.UpdateAfterEdit(id, type, form.elements["Name"].value);
                 // todo metod to update node name, reload page
 
+                break;
+            case "delete":
+                console.log("deleted");
+                treeHandler.UpdateAfterDelete(parseInt(returnId), type);                
                 break;
 
         }
@@ -115,14 +119,11 @@
 
         let data = {};
         for (let i = 0; i < form.elements.length; i++) {
-            if ((form.elements[i].name != "Success") && (form.elements[i].name != "ReturnId")) {
+            if ((form.elements[i].name != "Success") && (form.elements[i].name != "ReturnId") ) {
                 data[form.elements[i].name] = form.elements[i].value;
             }
         }
-
-        data["__RequestVerificationToken"] = token;
-
-               
+        data["__RequestVerificationToken"] = token;               
 
         // add url and modify data
         switch (parseInt(type)) {
@@ -157,16 +158,19 @@
             case "edit":
                 url = "/Course/Create";                
                 break;
+            case "delete":
+                url = "/Delete/DeleteCourse";
+                data["Id"] = parseInt(form.elements["Id"].value);
+                break;
         }
         return { url: url, data: data };
     }
 
 
-    static GetActivityRepostData(operation, token) {
+    static GetActivityRepostData(operation, token, data) {
 
         let form = document.getElementById("formId");
-        let url = "";
-        let data = "";
+        let url = "";        
 
         switch (operation) {
             case "new":
@@ -175,16 +179,19 @@
             case "edit":
                 url = "/Course/Create";                
                 break;
+            case "delete":
+                url = "/Delete/DeleteActivity";
+                data["Id"] = parseInt(form.elements["Id"].value);
+                break;
         }
         return { url: url, data: data };
     }
 
 
-    static GetModuleRepostData(operation, token) {
+    static GetModuleRepostData(operation, token, data) {
 
         let form = document.getElementById("formId");
-        let url = "";
-        let data = "";
+        let url = "";        
 
         switch (operation) {
             case "new":
@@ -192,6 +199,10 @@
                 break;
             case "edit":
                 url = "/Course/Create";               
+                break;
+            case "delete":
+                url = "/Delete/DeleteModule";                
+                data["Id"] = parseInt(form.elements["Id"].value);
                 break;
         }
         return { url: url, data: data };

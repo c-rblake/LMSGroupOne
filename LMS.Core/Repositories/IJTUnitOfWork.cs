@@ -15,5 +15,7 @@ namespace LMS.Core.Repositories
 
         IJTDocumentRepository DocumentRepository { get; }
 
+        Task CompleteAsync();
+
     }
 }

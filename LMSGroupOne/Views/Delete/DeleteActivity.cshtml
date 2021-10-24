@@ -1,0 +1,14 @@
+﻿
+@model LMSGroupOne.Models.Delete.DeleteModelView
+
+<form id="formId">
+    <input type="hidden" asp-for="Id">
+    <input type="hidden" asp-for="Success">
+    <input type="hidden" asp-for="ReturnId">
+
+    @Model.Name
+
+    @Model.Message
+
+    Delete this activity?
+</form>

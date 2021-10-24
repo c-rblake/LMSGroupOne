@@ -218,19 +218,19 @@
         switch (parseInt(type)) {
             case TreeFactory.NodeTypes.COURSE:
                 url = "/Course/Create";  // todo correct url, testing with course
-                data = id;
+                data = { Id: id };
                 modal.style.display = "block";
                 title.innerHTML = "Edit Course";
                 break;
             case TreeFactory.NodeTypes.MODULE:
                 url = "/Course/Create";  // todo correct url, testing with course
-                data = id;
+                data = { Id: id };
                 modal.style.display = "block";
                 title.innerHTML = "Edit Module";
                 break;
             case TreeFactory.NodeTypes.ACTIVITY:
                 url = "/Course/Create";  // todo correct url, testing with course
-                data = id;
+                data = { Id: id };
                 modal.style.display = "block";
                 title.innerHTML = "Edit Activity";
                 break;
@@ -370,33 +370,117 @@
 
     #OnDelete() {
         console.log("delete-----------------")
-        console.log("item id" + this.#dragElement.id);
-        console.log("item type" + this.#dragElement.dataset.itemType);
+        console.log("item id " + this.#dragElement.id);
+        console.log("item type " + this.#dragElement.dataset.itemType);
+
+
+
+        let modal = document.getElementById("centerModalId");
+        let button = document.getElementById("centerModalButton");
+        let title = document.getElementById("centerModalTitleId");
+        let data = "";
+        button.innerHTML = "Delete";
+        button.style.display = "block";
+        let url = "";
+        let id = this.#dragElement.id;
+        let type = this.#dragElement.dataset.itemType;
+        modal.dataset.itemType = type;
+        //modal.dataset.itemParentId = event.target.id;
+        modal.dataset.itemOperation = "delete";
+        modal.dataset.itemId = id;
+
+
+        console.log("the id to delete:" + id);
+
+        switch (parseInt(type)) {
+            case TreeFactory.NodeTypes.COURSE:
+                url = "/Delete/DeleteCourse";  
+                data = { Id:id };
+                modal.style.display = "block";
+                title.innerHTML = "Delete Course";
+                break;
+            case TreeFactory.NodeTypes.MODULE:
+                url = "/Delete/DeleteModule";  
+                data = { Id:id };
+                modal.style.display = "block";
+                title.innerHTML = "Delete Module";
+                break;
+            case TreeFactory.NodeTypes.ACTIVITY:
+                url = "/Delete/DeleteActivity";  
+                data = { Id:id };
+                modal.style.display = "block";
+                title.innerHTML = "Delete Activity";
+                break;
+        }
 
         $.ajax({
             type: "GET",
-            url: "/MainNavigation/OnDelete",
-            data: { id: this.#dragElement.id, type: this.#dragElement.dataset.itemType },
+            url: url,
+            data: data,
             cache: false,
             success: result => {
-                let obj = JSON.parse(result);
-                console.log(obj.success);
-                if (obj.success) {
-
-                    this.#removeElement(this.#movedElement);
-                }
+                let modalContent = document.getElementById("centerModalBodyId");
+                modalContent.innerHTML = result;
+                ModalHandler.FixValidation();
             }
         });
 
 
+
+
+
+
+
+        //$.ajax({
+        //    type: "GET",
+        //    url: "/MainNavigation/OnDelete",
+        //    data: { id: this.#dragElement.id, type: this.#dragElement.dataset.itemType },
+        //    cache: false,
+        //    success: result => {
+        //        let obj = JSON.parse(result);
+        //        console.log(obj.success);
+        //        if (obj.success) {
+
+        //            this.#removeElement(this.#movedElement);
+        //        }
+        //    }
+        //});
+
+
     }
 
-    #removeElement(element) {
-        let pNode = element.parentNode;
-        element.remove();
+    UpdateAfterDelete(id, type)
+    {
+        let item = this.#FindItem(type, id).parentNode.parentNode;
+        let pNode = item.parentNode;
+
+        item.remove();
+        
+        console.log(pNode);
+        console.log(pNode.childElementCount);
+        
+        // todo test if last then remove caret and close folder
+        if (pNode.childElementCount===0)
+        {
+            //pNode.remove();
+            this.#CloseNode(pNode.previousSibling);
+            pNode.previousSibling.childNodes[0].hidden = true;
+           
+        }
         this.#SelectionOutline(pNode.parentNode.childNodes[0]);
 
     }
+
+
+
+
+
+    //#removeElement(element) {
+    //    let pNode = element.parentNode;
+    //    element.remove();
+    //    this.#SelectionOutline(pNode.parentNode.childNodes[0]);
+
+    //}
 
     
     #OnNew(event) {
@@ -454,7 +538,7 @@
 
     UpdateAfterEdit(id, type, name)
     {
-        let item = this.#FindItem(type, id, name);
+        let item = this.#FindItem(type, id);
         
         // rename the treenode
         item.childNodes[2].innerHTML = name;
