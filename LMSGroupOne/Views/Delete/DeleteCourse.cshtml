@@ -1,14 +1,19 @@
 ﻿
 @model LMSGroupOne.Models.Delete.DeleteModelView
 
-<form id="formId">
-    <input type="hidden" asp-for="Id">
-    <input type="hidden" asp-for="Success">
-    <input type="hidden" asp-for="ReturnId">
+<div class="container-fluid justify-content-center">
+    <form id="formId">
+        <input type="hidden" asp-for="Id">
+        <input type="hidden" asp-for="Success">
+        <input type="hidden" asp-for="ReturnId">
 
-    @Model.Name
+        <input type="hidden" asp-for="Name">
 
-    @Model.Message
 
-    Delete this course?
-</form>
+        <h4>@Model.Name</h4>
+        <br>
+        <h6>@Model.Message</h6>
+
+
+    </form>
+</div>

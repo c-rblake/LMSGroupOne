@@ -30,14 +30,15 @@ namespace LMSGroupOne.Controllers
 
 
 
-        public IActionResult DeleteCourse(int id)
-        {            
-            
+        public async Task<IActionResult> DeleteCourse(int id)
+        {
+            var course=await uow.CourseRepository.GetCourse(id);
+
             var model = new DeleteModelView
             {
                 Id = id,
-                Name = "courseName",
-                Message = "",
+                Name = course.Name,
+                Message = "Delete this Course?",
                 ReturnId = 0,
                 Success = false
 
@@ -49,10 +50,11 @@ namespace LMSGroupOne.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteCourse(DeleteModelView inp)
         {
-            
+            // todo check for success
             int id = inp.Id;
             await uow.CourseRepository.RemoveAsync(id);
             await uow.CompleteAsync();
+            
             inp.Message = "Course Deleted!";
             inp.ReturnId = id;
             inp.Success = true;
@@ -64,15 +66,15 @@ namespace LMSGroupOne.Controllers
 
 
 
-        public IActionResult DeleteModule(int id)
+        public async Task<IActionResult> DeleteModule(int id)
         {
-            Debug.WriteLine("id from controller entry delete module "+id);
+            var modul = await uow.ModuleRepository.GetModule(id);
 
             var model = new DeleteModelView
             {
                 Id = id,
-                Name = "-",
-                Message = "Hello world",
+                Name = modul.Name,
+                Message = "Delete this Module?",
                 ReturnId = 0,
                 Success = false
 
@@ -85,9 +87,7 @@ namespace LMSGroupOne.Controllers
         public async Task<IActionResult> DeleteModule(DeleteModelView inp)
         {
             int id = inp.Id;
-
-            Debug.WriteLine("id from controller final delete module " + id);
-
+                        
             await uow.ModuleRepository.RemoveAsync(id);
             await uow.CompleteAsync();
             inp.Message = "Module Deleted!";
@@ -101,13 +101,15 @@ namespace LMSGroupOne.Controllers
 
 
 
-        public IActionResult DeleteActivity(int id)
+        public async Task<IActionResult> DeleteActivity(int id)
         {
+            var activity = await uow.ActivityRepository.GetActivity(id);
+
             var model = new DeleteModelView
             {
                 Id=id,
-                Name = "courseName",
-                Message = "Hello world",
+                Name = activity.Name,
+                Message = "Delete this Activity?",
                 ReturnId = 0,
                 Success = false
 
