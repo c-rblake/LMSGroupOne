@@ -1,0 +1,58 @@
+﻿@model AssignmentDetailsViewModel
+
+@{
+    ViewData["Title"] = "Assignment details";
+}
+
+<div>
+    <h3 class="sh2 mb-4" style="clear:both;">Details for @Html.DisplayFor(model => model.ActivityName)</h3>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ActivityDescription)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ActivityDescription)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Module.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Module.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.StartDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.StartDate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.EndDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.EndDate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.IsLate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.IsLate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.IsFinished)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.IsFinished)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DocumentTimeStamp)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.DocumentTimeStamp)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-controller="Document" asp-action="UploadActivityDocument" asp-route-id="@Model.ActivityId">Upload</a> |
+    <a asp-controller="Assignment" asp-action="Index">Back to List</a>
+</div>

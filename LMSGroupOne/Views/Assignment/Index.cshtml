@@ -1,0 +1,44 @@
+﻿@model IEnumerable<AssignmentViewModel>
+
+@{
+    ViewData["Title"] = "My assignments";
+}
+
+
+@if (User.IsInRole("Student"))
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.ActivityName)</th>
+                <th>@Html.DisplayNameFor(model => model.StartDate)</th>
+                <th>@Html.DisplayNameFor(model => model.EndDate)</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr background-color="@(item.IsFinished == true ? "palegreen" : "none")">
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ActivityName)
+                        @if (item.IsLate == true)
+                        {
+                            <span class="badge badge-pill badge-danger">Late</span>
+                        }
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.StartDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EndDate)
+                    </td>
+                    <td>
+                        <a asp-controller="Document" asp-action="UploadActivityDocument" asp-route-id="@item.ActivityId">Upload</a> |
+                        <a asp-controller="Document" asp-action="Details" asp-route-id="@item.ActivityId">Details</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
