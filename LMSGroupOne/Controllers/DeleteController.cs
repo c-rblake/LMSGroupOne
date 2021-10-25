@@ -138,7 +138,7 @@ namespace LMSGroupOne.Controllers
 
         public async Task<IActionResult> DeleteDocument(int id)
         {
-            var activity = await uow.ActivityRepository.GetActivity(id);
+            var activity = await uow.DocumentRepository.GetDocument(id);
 
             var model = new DeleteModelView
             {
