@@ -274,9 +274,9 @@ namespace LMSGroupOne.Controllers
 
                         string documentUrl = Path.Combine(path, documentName);
 
-                        if (DocumentExists(documentName.Split(".")[0]) == true)
+                        if (DocumentExists(documentUrl) == true)
                         {
-                            ModelState.AddModelError("Document", $"A document with file name {postedDocument.FileName} already exists");
+                            ModelState.AddModelError("Document", $"A document with file name {postedDocument.FileName} already exists in this location");
                             return View();
                         }
 
@@ -294,10 +294,6 @@ namespace LMSGroupOne.Controllers
                             Activity = activity,
                             Module = parentModule,
                             Course = parentCourse,
-                            //PersonId = userId,
-                            //ActivityId = activity.Id,
-                            //ModuleId = parentModule.Id,
-                            //CourseId = parentCourse.Id,
                             Description = viewModel.Description
                         };
 
@@ -319,9 +315,9 @@ namespace LMSGroupOne.Controllers
             return View();
         }
 
-        public bool DocumentExists(string name)
+        public bool DocumentExists(string documentUrl)
         {
-            return _db.Documents.Any(c => c.Name == name);
+            return _db.Documents.Any(d => d.DocumentUrl == documentUrl);
         }
     }
 }
