@@ -12,6 +12,7 @@ using LMS.Core.Models.Entities.API;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using LMS.Core.Models.ViewModels.API.Author;
 
 namespace LMSGroupOne.Controllers
 {
@@ -28,7 +29,39 @@ namespace LMSGroupOne.Controllers
         {
             return View();
         }
+        public async Task<ActionResult> GetAuthorAndWorks(int? id)
+        {
+            var client = httpClientFactory.CreateClient("LMSClient");
+            var response = await client.GetAsync("authors/"+ id + "?includeWorks=true");
 
+            //If success received   
+           WorkAuthorDto authorWorks = default;
+            if (response.IsSuccessStatusCode)
+            {
+                authorWorks = await response.Content.ReadAsAsync<WorkAuthorDto>();
+
+            }
+            else
+            {
+                //Error response received   
+                //courses = Enumerable.Empty<CourseViewModel>();
+                ModelState.AddModelError(string.Empty, "Server error.");
+            }
+
+            //Map 
+            var model = mapper.Map<AuthorWorksViewModel>(authorWorks);
+
+            //return View(courses);
+            //var model = courses
+            // //.Where(p => p.Category == searchText || p.Name == searchText)
+            // .Select(p => new CourseViewModel
+            // {
+            //     Title = p.Title,
+            //     StartDate = p.StartDate
+            // });
+
+            return View("GetAuthorAndWorks", model);
+        }
         public async Task<ActionResult> GetAuthors()
         {
             var client = httpClientFactory.CreateClient("LMSClient");
@@ -49,7 +82,7 @@ namespace LMSGroupOne.Controllers
             }
 
             //Map 
-            var model = mapper.Map<IEnumerable<AuthorsViewmodel>>(authors);
+            var model = mapper.Map<IEnumerable<AuthorsViewModel>>(authors);
 
             //return View(courses);
             //var model = courses

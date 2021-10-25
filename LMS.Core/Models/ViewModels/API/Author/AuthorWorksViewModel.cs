@@ -1,23 +1,20 @@
-﻿using LMS.Core.Models.Entities.API;
+﻿//using LMS.Core.Models.ViewModels.API.Work;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LMS.Core.Models.Entities.API;
 
-namespace LMS.Core.Models.Dto
+namespace LMS.Core.Models.ViewModels.API.Author
 {
-    public class WorkAuthorDto
+    public class AuthorWorksViewModel
     {
-        /// <summary>
-        /// A Class to Prevent Circular references. Work *-* Author
-        /// </summary>
         public int Id { get; set; }
         public string Name { get; set; }
         public int Age { get; set; }
 
         //Nav properties
-        public ICollection<Work> Works { get; set; }
+        public ICollection<Entities.API.Work> Works { get; set; }
     }
-
 }

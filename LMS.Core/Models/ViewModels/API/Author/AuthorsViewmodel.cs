@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LMS.Core.Models.ViewModels
+namespace LMS.Core.Models.ViewModels.API.Author
 {
-    public class AuthorsViewmodel
+    public class AuthorsViewModel
     {
         public int Id { get; set; }
         //public string FirstName { get; set; }
