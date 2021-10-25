@@ -425,7 +425,7 @@ class TreeHandler {
                 break;
             case TreeFactory.NodeTypes.MODULE:
                 url = "/Module/CreateModule";
-                data = event.target.dataset.itemParentId;
+                data = { id: event.target.dataset.itemParentId };
                 modal.style.display = "block";
                 title.innerHTML = "Create Module";
                 break;

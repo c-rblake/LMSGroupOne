@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -28,22 +29,22 @@ namespace LMSGroupOne.Controllers
             return View();
         }
 
-        public async Task<IActionResult> CreateModule(int id)
+        public IActionResult CreateModule(int id)
         {
             // Temporary for testing, IRL this will populate from the Course you're creating the Module from
             //var courses = await uow.CourseRepository.GetAsync();
             //ViewBag.Courses = courses;
             var model = new CreateModuleViewModel
             {
-                Id = 1,
-                CourseId=1,
-                Description="hello world",
-                StartDate=DateTime.Now,
-                EndDate=DateTime.Now,
-                Name="hej",
-                Message="",
-                ReturnId=0,
-                Success=false,
+                //Id = 1,
+                CourseId = id,
+                //Description = "hello world",
+                StartDate = DateTime.Now,
+                EndDate = DateTime.Now,
+                //Name = "hej",
+                Message = "",
+                ReturnId = 0,
+                Success = false,
 
             };
 
@@ -79,9 +80,14 @@ namespace LMSGroupOne.Controllers
                 createdModule.Message = "Module created";
 
             }
+            else
+            {
+                createdModule.Success = false;
+                createdModule.Message = "Could not create Module!";
+            }
 
-            var courses = await uow.CourseRepository.GetAsync();
-            ViewBag.Courses = courses;
+            //var courses = await uow.CourseRepository.GetAsync();
+            //ViewBag.Courses = courses;
 
             return PartialView(createdModule);
         }
@@ -112,6 +118,7 @@ namespace LMSGroupOne.Controllers
                 return NotFound();
             }
 
+            Debug.WriteLine("startDate:"+module.StartDate+"    endDate:"+module.EndDate);
             //var modules = await uow.ModuleRepository.GetAsync();
             //ViewBag.modules = modules;
 
@@ -164,18 +171,23 @@ namespace LMSGroupOne.Controllers
                     await uow.CompleteAsync();
                 }
                 catch (DbUpdateConcurrencyException)
-                {
+                {                   
+                    
+                    editedModule.Message = "Failed to edit module!";
+                    editedModule.Success = false;
+                    
                     if (!uow.ModuleRepository.ModuleExistsById(editedModule.Id))
                     {
-                        return NotFound();
+                        editedModule.Message = "ModuleNot found!";
                     }
-                    else
-                    {
-                        throw;
-                    }
+
+                    return PartialView(editedModule);
                 }
-                //return RedirectToAction("Index", "Home");
+                
             }
+            editedModule.Message = "Module edited!";
+            editedModule.Success = true;
+            editedModule.ReturnId = editedModule.Id;
             return PartialView(editedModule);
         }
 
