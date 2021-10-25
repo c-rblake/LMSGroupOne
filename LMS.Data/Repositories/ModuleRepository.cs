@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,9 +20,11 @@ namespace LMS.Data.Repositories
         }
 
 
-        public void AddModule( Module module)
+        public void AddModule(Module module)
         {
-            db.AddAsync(module);
+            db.AddAsync<Module>(module);
+           
+            
         }
 
         public bool ModuleExists(string name)

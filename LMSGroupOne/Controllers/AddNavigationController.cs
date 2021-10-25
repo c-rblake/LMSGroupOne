@@ -36,6 +36,7 @@ namespace LMSGroupOne.Controllers
             Debug.WriteLine("path:"+path);
             Debug.WriteLine("type:"+type);
             Debug.WriteLine("name:"+name);
+            Debug.WriteLine("id:"+id);
             Debug.WriteLine("---------------------------------------------");
 
             int nodeType;
@@ -44,17 +45,17 @@ namespace LMSGroupOne.Controllers
                 switch (nodeType)
                 {
                     case (int)NodeType.student:
-                        return StudentNode(path,"new student id", name);
+                        return StudentNode(path,id.ToString(), name);
                     case (int)NodeType.teacher:
-                        return TeacherNode(path,"new teacher id", name);
+                        return TeacherNode(path,id.ToString(), name);
                     case (int)NodeType.file:
-                        return FileNode(path,"new file id", name);
+                        return FileNode(path,id.ToString(), name);
                     case (int)NodeType.activity:                        
-                        return ActivityNode(path,"new activity id", name);
+                        return ActivityNode(path,id.ToString(), name);
                     case (int)NodeType.module:
-                        return ModuleNode(path, "new module id", name);
+                        return ModuleNode(path, id.ToString(), name);
                     case (int)NodeType.course:                        
-                        return CourseNode(path, "new course id", name);
+                        return CourseNode(path, id.ToString(), name);
                 }
             }            
 

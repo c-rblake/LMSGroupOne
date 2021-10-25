@@ -1,8 +1,13 @@
 ﻿@model LMS.Core.Models.ViewModels.Module.CreateModuleViewModel
 
-<form asp-action="CreateModule">
+<form id="formId" asp-action="CreateModule">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div class="form-group">
+    <input type="hidden" asp-for="CourseId" />
+    <input type="hidden" asp-for="Success">
+    <input type="hidden" asp-for="ReturnId">
+    
+    <div class="form-group">      
+
         <label asp-for="Name" class="control-label"></label>
         <input asp-for="Name" class="form-control" />
         <span asp-validation-for="Name" class="text-danger"></span>
@@ -12,10 +17,10 @@
         <input asp-for="Description" class="form-control" />
         <span asp-validation-for="Description" class="text-danger"></span>
     </div>
-    <div class="form-group">
+    @*<div class="form-group">
         <label asp-for="CourseId" class="control-label"></label>
         <select asp-for="CourseId" class="form-control" asp-items="@(new SelectList(ViewBag.courses,"Id","Name"))"></select>
-    </div>
+    </div>*@
     <div class="form-group">
         <label asp-for="StartDate" class="control-label"></label>
         <input asp-for="StartDate" class="form-control" />
@@ -26,9 +31,9 @@
         <input asp-for="EndDate" class="form-control" />
         <span asp-validation-for="EndDate" class="text-danger"></span>
     </div>
-    <div class="form-group">
+    @*<div class="form-group">
         <input type="submit" value="Create" class="btn btn-primary" />
-    </div>
+    </div>*@
 
     @Html.DisplayFor(model => model.Message)
 

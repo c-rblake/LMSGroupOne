@@ -20,11 +20,16 @@ class ModalHandler {
         
         let type = document.getElementById("centerModalId").dataset.itemType;
         let operation = document.getElementById("centerModalId").dataset.itemOperation;
-                
+
+        console.log("-----on button modalhandler-----------");
+        console.log(type);
+        console.log(operation);
+
         let repostData=ModalHandler.GetRepostData(type, operation);
         let url = repostData.url;
         let data = repostData.data;
 
+        
         // todo check type and switch
         $.ajax({
             type: "POST",
@@ -54,11 +59,12 @@ class ModalHandler {
     {        
         document.getElementById("centerModalButton").style.display = "none";
         let path = document.getElementById("centerModalId").dataset.itemParentId;
-        let returnId = form.elements["ReturnId"].value;        
+        let returnId = parseInt(form.elements["ReturnId"].value);        
         
         switch (operation)
         {
-            case "new":                
+            case "new":
+                console.log("id in succsses:"+returnId)
                 $.ajax({
                     type: "GET",
                     url: "/AddNavigation/OnNew",
@@ -169,10 +175,10 @@ class ModalHandler {
 
         switch (operation) {
             case "new":
-                url = "/Course/Create";                
+                url = "/Module/CreateModule";                
                 break;
             case "edit":
-                url = "/Course/Create";               
+                url = "/Module/EditModule";               
                 break;
             case "delete":
                 url = "/Delete/DeleteModule";                

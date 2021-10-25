@@ -198,23 +198,23 @@ class TreeHandler {
         modal.dataset.itemOperation = "edit";
         modal.dataset.itemId = id;       
 
-
+                
         switch (parseInt(type)) {
             case TreeFactory.NodeTypes.COURSE:
                 url = "/Course/Create";  // todo correct url, testing with course
-                data = { Id: id };
+                data = id;
                 modal.style.display = "block";
                 title.innerHTML = "Edit Course";
                 break;
             case TreeFactory.NodeTypes.MODULE:
-                url = "/Course/Create";  // todo correct url, testing with course
-                data = { Id: id };
+                url = "/Module/EditModule";  // todo correct url, testing with course
+                data = { id: id };
                 modal.style.display = "block";
                 title.innerHTML = "Edit Module";
                 break;
             case TreeFactory.NodeTypes.ACTIVITY:
                 url = "/Course/Create";  // todo correct url, testing with course
-                data = { Id: id };
+                data = Id;
                 modal.style.display = "block";
                 title.innerHTML = "Edit Activity";
                 break;            
