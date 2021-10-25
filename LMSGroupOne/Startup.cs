@@ -38,7 +38,7 @@ namespace LMSGroupOne
             {
                 AutomaticDecompression = System.Net.DecompressionMethods.GZip
             });
-
+            services.AddMvc().AddControllersAsServices();
             services.AddDbContext<ApplicationDbContext>(options =>
                  options.UseSqlServer(
                      Configuration.GetConnectionString("DefaultConnection")));

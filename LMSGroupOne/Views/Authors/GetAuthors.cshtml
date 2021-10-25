@@ -4,7 +4,7 @@
     ViewData["Title"] = "GetAuthors";
 }
 
-<h1>GetAuthors</h1>
+<h1>Authors</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -48,11 +48,13 @@
         <td>
             @Html.DisplayFor(modelItem => item.DateOfDeath)
         </td>*@
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-            </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+            @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+            @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            @Html.ActionLink("Get works", "GetWorks", "Works", new { id=item.Id })
+
+        </td>
         </tr>
 }
     </tbody>
