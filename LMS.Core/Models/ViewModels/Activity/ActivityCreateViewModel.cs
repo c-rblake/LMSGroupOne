@@ -15,12 +15,16 @@ namespace LMS.Core.Models.ViewModels.Activity
         [Required]
         public string Name { get; set; }
         public string Description { get; set; }
-        public int ActivityTypeId { get; set; }
+        public int? ActivityTypeId { get; set; }
         public int ModuleId { get; set; }
         [Required]
         public DateTime StartDate { get; set; }
         [Required]
         [CheckDates]
         public DateTime EndDate { get; set; }
+
+        public bool Success { get; set; }  // creation status
+        public string Message { get; set; }   // returnmessage
+        public int ReturnId { get; set; }    // return id when created
     }
 }

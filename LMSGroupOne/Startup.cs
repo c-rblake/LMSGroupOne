@@ -54,6 +54,8 @@ namespace LMSGroupOne
             services.AddAutoMapper(typeof(MapperProfile));
             services.AddScoped<IRoleSelectService, RoleSelectService>();
             services.AddScoped<ICourseSelectService, CourseSelectService>();
+            services.AddScoped<IActivityTypeSelectService, ActivityTypeSelectService>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

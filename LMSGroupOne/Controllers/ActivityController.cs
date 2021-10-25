@@ -27,29 +27,36 @@ namespace LMSGroupOne.Controllers
         {
             return View();
         }
-
-        public async Task<IActionResult> Create()
+        [Route("/activity/create/moduleid/{moduleid}")]
+        public async Task<IActionResult> Create(int moduleid)
         {
             var activityTypes = await GetActivityTypes();
-            var modules = await GetModules();
+            var module = await uow.ModuleRepository.GetModule(moduleid);
             ViewBag.activityTypes = activityTypes;
-            ViewBag.modules = modules;
-            return View();
+            ViewBag.module = $"{module.Name} {module.StartDate.ToString("yyyy-MM-dd")}--{module.EndDate.Date.ToString("yyyy-MM-dd")}";
+            return PartialView();
         }
 
         [HttpPost]
-        [Route("/activity/create")]
+        [Route("/activity/create/moduleid/{moduleid}")]
         [Authorize(Roles = "Teacher")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(ActivityCreateViewModel model)
+        public async Task<IActionResult> Create(int moduleid,/* int ActivityTypeId,*/ ActivityCreateViewModel model)
         {
-            int moduleId = model.ModuleId;
-            IEnumerable<Activity> activities = await GetAllActivitiesByModuleAsync(moduleId);
+           // int moduleId = model.ModuleId;
+            IEnumerable<Activity> activities = await GetAllActivitiesByModuleAsync(moduleid);
             var activityTypes = await GetActivityTypes();
-            var modules = await GetModules();
+            //model.ActivityTypeId = ActivityTypeId;
+            //var modules = await GetModules();
+            var module = await uow.ModuleRepository.GetModule(moduleid);
             ViewBag.activityTypes = activityTypes;
-            ViewBag.modules = modules;
-
+            ViewBag.module = $"{module.Name} {module.StartDate}--{module.EndDate}" ;
+            if (model.StartDate < module.StartDate || model.EndDate > module.EndDate)
+            {
+                ModelState.AddModelError("Name", $"one part of this activity is outside the period for {module.Name}.");
+                return View(model);
+            }
+            
             foreach (Activity activity in activities)
             {
                 if(model.StartDate<=activity.EndDate && model.EndDate >= activity.StartDate)
@@ -63,8 +70,11 @@ namespace LMSGroupOne.Controllers
             {
                 uow.ActivityRepository.AddActivity(mapper.Map<Activity>(model));
                 await uow.CompleteAsync();
+                model.Success = true;
+                model.Message = "activity was created";
+                model.ReturnId = uow.ActivityRepository.GetActivityId(model.Name);
             }
-            return View(model);
+            return PartialView(model);
         }
 
         [Route("/activity/edit/{id}")]

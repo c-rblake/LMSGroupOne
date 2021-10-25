@@ -321,6 +321,7 @@
         button.style.display = "block"; 
         let url = "";
         let type = event.target.dataset.itemCreates;
+ 
         modal.dataset.itemType = type;
         modal.dataset.itemParentId = event.target.id;
 
@@ -338,8 +339,9 @@
                 title.innerHTML = "Create Module";
                 break;
             case TreeFactory.NodeTypes.ACTIVITY:
-                url = "/Activity/Create";
                 data = event.target.dataset.itemParentId;
+                url = "/Activity/Create/moduleid/"+data;
+                
                 modal.style.display = "block";
                 title.innerHTML = "Create Activity";
                 break;

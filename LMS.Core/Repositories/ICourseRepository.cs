@@ -13,6 +13,7 @@ namespace LMS.Core.Repositories
     {
         void AddCourse(Course course);
         Task<Course> GetCourse(int id);
+        int GetCourseId(string name);
         Task<Course> FindAsync(int? id);
         void Update(Course course);
         bool CourseExist(string name);

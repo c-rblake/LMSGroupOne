@@ -129,13 +129,23 @@
                     StartDate: form.elements["StartDate"].value,
                     EndDate: form.elements["EndDate"].value,
                 };
+                
                 break;
             case TreeFactory.NodeTypes.MODULE:
                 url = "/Module/CreateModule";
                 //todo data
                 break;
             case TreeFactory.NodeTypes.ACTIVITY:
-                url = "/Activity/Create";
+                data =
+                {
+                    __RequestVerificationToken: token,
+                    Name: form.elements["Name"].value,
+                    Description: form.elements["Description"].value,
+                    StartDate: form.elements["StartDate"].value,
+                    EndDate: form.elements["EndDate"].value,
+                    moduleid: form.elements["ModuleId"].value
+                };
+                url = "/Activity/Create/moduleid/" + data.moduleid;
                 // todo data
                 break;
         }

@@ -50,11 +50,11 @@ namespace LMSGroupOne.Controllers
                     case (int)NodeType.file:
                         return FileNode(path,"new file id", name);
                     case (int)NodeType.activity:                        
-                        return ActivityNode(path,"new activity id", name);
+                        return ActivityNode(path,id, name);
                     case (int)NodeType.module:
                         return ModuleNode(path, "new module id", name);
                     case (int)NodeType.course:                        
-                        return CourseNode(path, "new course id", name);
+                        return CourseNode(path, id, name);
                 }
             }            
 

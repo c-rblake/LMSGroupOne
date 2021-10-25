@@ -56,5 +56,10 @@ namespace LMS.Data.Repositories
         {
             db.Update(course);
         }
+
+        public int GetCourseId(string name)
+        {
+            return db.Courses.FirstOrDefault(c => c.Name == name).Id;
+        }
     }
 }

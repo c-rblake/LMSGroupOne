@@ -43,5 +43,10 @@ namespace LMS.Data.Repositories
             return await db.Activities.Where(a => a.ModuleId == moduleId).ToListAsync();
 
         }
+
+        public int GetActivityId(string name)
+        {
+            return db.Activities.FirstOrDefault(c => c.Name == name).Id;
+        }
     }
 }
