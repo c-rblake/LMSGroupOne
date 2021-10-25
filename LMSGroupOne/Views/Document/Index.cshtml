@@ -1,13 +1,13 @@
 ﻿@model IEnumerable<LMS.Core.Models.Entities.Document>
 
 @{
-    ViewData["Title"] = "Download";
+    ViewData["Title"] = "Index for documents";
 }
 
 <h1>Download</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a class="ml-1" asp-action="Upload">Upload new File</a>
 </p>
 <table class="table">
     <thead>
@@ -67,11 +67,8 @@
                 @Html.DisplayFor(modelItem => item.Person.Id)
             </td>
             <td>
-
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> |
                 <a asp-action="DownloadFile" asp-route-id="@item.Id">DownloadFile</a>
-                @Html.ActionLink("Download", "Download", new { id = item.Id })
+
             </td>
         </tr>
 }

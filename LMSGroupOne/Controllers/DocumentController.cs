@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -63,9 +64,9 @@ namespace LMSGroupOne.Controllers
 
                     string documentUrl = Path.Combine(documentsDirectoryPath, fileName);
 
-                    using (FileStream stream = new FileStream(documentUrl, FileMode.Create))
+                    using (FileStream stream = new FileStream(documentUrl, FileMode.Create)) //less safe.
                     {
-                        postedDocument.CopyTo(stream);
+                        postedDocument.CopyTo(stream); //Iform copy to stream
                     }
                                         
                     var document = new Document
@@ -83,12 +84,19 @@ namespace LMSGroupOne.Controllers
             return RedirectToAction(nameof(Index), "Home");
         }
 
-        public async Task<IActionResult> Download()
-        {
-            var model = _db.Documents.Select(row => row);
 
-            return View(nameof(Download), model);
+        //Authorize Todo
+        public async Task<IActionResult> Index()
+        {
+            var model = await _db.Documents.ToListAsync();
+
+            //Query IF teacher.... Todo
+            //Query If student.... Where Course ID/Activity Id etc. Todo
+            //Include Module Activity Course Info. Person (?)Not Necessary 
+
+            return View("Index", model);
         }
+
 
         public async Task<IActionResult> DownloadFile(int? id)
         {
@@ -96,18 +104,18 @@ namespace LMSGroupOne.Controllers
             {
                 return NotFound();
             }
-            var file = _db.Documents.FirstOrDefault(d => d.Id == id);
+
+            var file = await _db.Documents.FirstOrDefaultAsync(d => d.Id == id);
             string filePath = file.DocumentUrl;
 
-            string contentType = "application/pdf";
+            //string contentType = "application/pdf";
 
             byte[] fileBytes = GetFile(filePath);
 
+            
+
             return File(
         fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, filePath);
-
-
-            //return View(DownloadFile);
 
         }
 
