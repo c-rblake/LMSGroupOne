@@ -30,6 +30,10 @@ namespace LMSGroupOne.Controllers
 
             var modules = await _db.Persons
                 .Where(p => p.Id == userId)
+                .Include(p => p.Course)
+                .ThenInclude(c => c.Modules)
+                .ThenInclude(m => m.Activities)
+                .ThenInclude(a => a.ActivityType)
                 .Select(p => p.Course)
                 .Select(c => c.Modules)
                 .FirstOrDefaultAsync();
@@ -38,6 +42,13 @@ namespace LMSGroupOne.Controllers
                 .Select(a => a.Activities
                     .Where(t => t.ActivityType.Name == "Assignment"))
                 .FirstOrDefault();
+
+            //query = query.Where(q => q.Authors.Any(a => authors.Contains(a)));
+
+            var activites2 = modules.SelectMany(m => m.Activities);
+
+            activites2 = activites2.Where(at => at.Name == "Assignment");
+
 
             var viewModels = new List<AssignmentViewModel>();
 
