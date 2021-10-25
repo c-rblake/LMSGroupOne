@@ -33,37 +33,37 @@ namespace LMSGroupOne.Controllers
             var courses = await uow.CourseRepository.GetAsync();
             ViewBag.Courses = courses;
 
-            return View();
+            return PartialView();
         }
 
         [HttpPost]
         [Authorize(Roles = "Teacher")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateModule(CreateModuleViewModel model)
+        public async Task<IActionResult> CreateModule(CreateModuleViewModel createdModule)
         {
-            int courseId = model.CourseId;
+            int courseId = createdModule.CourseId;
             IEnumerable<Module> modules = await GetAllModulesByCourseAsync(courseId);
-           
-            foreach (Module module in modules)
+
+            foreach (Module existingModule in modules)
             {
-                if (model.StartDate <= module.EndDate && model.EndDate >= module.StartDate)
+                if (createdModule.StartDate <= existingModule.StartDate && createdModule.EndDate >= existingModule.StartDate)
                 {
                     ModelState.AddModelError("Name", "This Module overlaps with current Modules");
 
-                    return PartialView(model);
+                    return PartialView(createdModule);
                 }
             }
 
             if (ModelState.IsValid)
             {
-                uow.ModuleRepository.AddModule(mapper.Map<Module>(model));
+                uow.ModuleRepository.AddModule(mapper.Map<Module>(createdModule));
                 await uow.CompleteAsync();
             }
 
             var courses = await uow.CourseRepository.GetAsync();
             ViewBag.Courses = courses;
 
-            return View(model);
+            return PartialView(createdModule);
         }
 
         public IActionResult VerifyModuleName(string Name)
@@ -91,21 +91,48 @@ namespace LMSGroupOne.Controllers
             {
                 return NotFound();
             }
-            
+
             var modules = await uow.ModuleRepository.GetAsync();
             ViewBag.modules = modules;
 
-            return View(module);
+            return PartialView(module);
         }
 
         [HttpPost]
         [Route("/module/edit/{id}")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditModule(int id, EditModuleViewModel viewModel)
+        public async Task<IActionResult> EditModule(int id, EditModuleViewModel editedModule)
         {
-            if (id != viewModel.Id)
+            if (id != editedModule.Id)
             {
                 return NotFound();
+            }
+
+            // Verify that Dates on this Module don't start earlier or end later than its Course
+            var course = await uow.CourseRepository.GetCourse(id);
+
+            if (editedModule.StartDate < course.StartDate || editedModule.EndDate > course.EndDate)
+            {
+                ModelState.AddModelError("Name", $"Please keep dates within Course Dates ({course.StartDate}-{course.EndDate})");
+                return PartialView(editedModule);
+            }
+
+            // Get all modules on course except this one being edited
+            IEnumerable<Module> modules = await GetAllModulesByCourseAsync(course.Id);
+            modules = modules.Where(a => a.Id != id);
+
+            // Verify Module Dates to existing Module Dates
+            foreach (Module existingModule in modules)
+            {
+                if (editedModule.StartDate <= existingModule.StartDate && editedModule.EndDate > existingModule.StartDate)
+                {
+                    String moduleWithDates = $"Module {existingModule.Name} ({existingModule.StartDate.ToString("yyyy-MM-dd")} - {existingModule.EndDate.ToString("yyyy-MM-dd")})";
+                    ModelState.AddModelError("Description", $"1 This module overlaps dates with {moduleWithDates}");
+                }
+
+                var entity = await uow.ModuleRepository.FindAsync(id);
+                ViewBag.moduleName = entity.Name;
+                return PartialView(editedModule);
             }
 
             if (ModelState.IsValid)
@@ -113,12 +140,12 @@ namespace LMSGroupOne.Controllers
                 try
                 {
                     var module = await uow.ModuleRepository.FindAsync(id);
-                    mapper.Map(viewModel, module);
+                    mapper.Map(editedModule, module);
                     await uow.CompleteAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!uow.ModuleRepository.ModuleExistsById(viewModel.Id))
+                    if (!uow.ModuleRepository.ModuleExistsById(editedModule.Id))
                     {
                         return NotFound();
                     }
@@ -129,9 +156,8 @@ namespace LMSGroupOne.Controllers
                 }
                 return RedirectToAction("Index", "Home");
             }
-            return View(viewModel);
+            return PartialView(editedModule);
         }
-
 
         private async Task<IEnumerable<Module>> GetAllModulesByCourseAsync(int courseId)
         {
@@ -139,4 +165,5 @@ namespace LMSGroupOne.Controllers
         }
 
     }
-}
+
+ }
