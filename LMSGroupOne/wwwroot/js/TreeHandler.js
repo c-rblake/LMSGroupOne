@@ -201,40 +201,7 @@
 
     }
 
-    //// triggered by the submit
-    //static OnSearch(event)
-    //{
-
-    //    console.log("search submitted");
-    //    //console.log(event.target);
-
-
-    //    $.ajax({
-    //        type: "GET",
-    //        url: "/Search/Search",
-    //        data: {  },
-    //        cache: false,
-    //        success: result => {
-    //            console.log(result);
-
-    //            document.getElementById("contentDivId").innerHTML = result;
-                                
-
-    //            let searchForm = document.getElementById("searchFormId");
-    //            if (searchForm) {
-    //                searchForm.onsubmit = function (event) {
-    //                    TreeHandler.OnSearch(event);
-    //                    return false;
-    //                };
-    //            }
-                
-    //        }
-    //    });
-
-
-
-    //}
-
+   
 
     #OnEdit(event)
     {
@@ -278,7 +245,7 @@
                 data = { Id: id };
                 modal.style.display = "block";
                 title.innerHTML = "Edit Activity";
-                break;
+                break;            
         }
 
         $.ajax({
@@ -448,6 +415,12 @@
                 modal.style.display = "block";
                 title.innerHTML = "Delete Activity";
                 break;
+            case TreeFactory.NodeTypes.FILE:
+                url = "/Delete/DeleteDocument";
+                data = { Id: id };
+                modal.style.display = "block";
+                title.innerHTML = "Delete Document";
+                break;
         }
 
         $.ajax({
@@ -520,6 +493,11 @@
                 data = event.target.dataset.itemParentId;
                 modal.style.display = "block";
                 title.innerHTML = "Create Activity";
+                break;
+            case TreeFactory.NodeTypes.FILE:
+                url = "/Course/Create";
+                modal.style.display = "block";
+                title.innerHTML = "Create Document";
                 break;
         }        
 

@@ -13,5 +13,7 @@ namespace LMS.Core.Repositories
 
         Task<DocumentDto> GetDocument(int id, CancellationToken cancellationToken = default);
 
+        Task RemoveAsync(int id);
+
     }
 }

@@ -133,6 +133,8 @@
                 return ModalHandler.GetModuleRepostData(operation, token, data);
             case TreeFactory.NodeTypes.ACTIVITY:
                 return ModalHandler.GetActivityRepostData(operation, token, data);
+            case TreeFactory.NodeTypes.FILE:
+                return ModalHandler.GetDocumentRepostData(operation, token, data);
         }
 
     }
@@ -202,6 +204,27 @@
                 break;
             case "delete":
                 url = "/Delete/DeleteModule";                
+                data["Id"] = parseInt(form.elements["Id"].value);
+                break;
+        }
+        return { url: url, data: data };
+    }
+
+
+    static GetDocumentRepostData(operation, token, data) {
+
+        let form = document.getElementById("formId");
+        let url = "";
+
+        switch (operation) {
+            case "new":
+                url = "/Course/Create";
+                break;
+            case "edit":
+                url = "/Course/Create";
+                break;
+            case "delete":
+                url = "/Delete/DeleteDocument";
                 data["Id"] = parseInt(form.elements["Id"].value);
                 break;
         }

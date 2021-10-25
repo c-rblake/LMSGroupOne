@@ -131,5 +131,40 @@ namespace LMSGroupOne.Controllers
             return PartialView(inp);
         }
 
+
+
+
+
+
+        public async Task<IActionResult> DeleteDocument(int id)
+        {
+            var activity = await uow.ActivityRepository.GetActivity(id);
+
+            var model = new DeleteModelView
+            {
+                Id = id,
+                Name = activity.Name,
+                Message = "Delete this Document?",
+                ReturnId = 0,
+                Success = false
+
+            };
+            return PartialView(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteDocument(DeleteModelView inp)
+        {
+            int id = inp.Id;
+            await uow.DocumentRepository.RemoveAsync(id);
+            await uow.CompleteAsync();
+            inp.Message = "Document Deleted!";
+            inp.ReturnId = id;
+            inp.Success = true;
+
+            return PartialView(inp);
+        }
+
     }
 }
