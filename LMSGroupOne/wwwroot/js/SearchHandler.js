@@ -1,4 +1,6 @@
-﻿class SearchHandler
+﻿
+// an example class to handle a search view in the "contentDivId"
+class SearchHandler
 {
 
     // triggered by the submit

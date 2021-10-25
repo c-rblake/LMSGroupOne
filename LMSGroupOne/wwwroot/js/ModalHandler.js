@@ -1,4 +1,5 @@
-﻿class ModalHandler {
+﻿// a class to handle the modal views
+class ModalHandler {
 
     constructor() {
         document.getElementById("centerModalClose").addEventListener("click", this.OnCloseButton);
@@ -16,23 +17,10 @@
     }
 
     #OnButton() {
-        console.log("clicked on the modal button");
-
         
-
-
-
         let type = document.getElementById("centerModalId").dataset.itemType;
         let operation = document.getElementById("centerModalId").dataset.itemOperation;
-        console.log("receiving type");
-        console.log("----------------------");
-        console.log(type);
-        console.log(operation);
-        
-
-        //let form = document.getElementById("formId");
-
-        
+                
         let repostData=ModalHandler.GetRepostData(type, operation);
         let url = repostData.url;
         let data = repostData.data;
@@ -50,14 +38,10 @@
 
                 let form = document.getElementById("formId");
                 let success = JSON.parse((form.elements["Success"].value).toLowerCase());
-
-                console.log(form.elements);
-                console.log("returning id " + (form.elements["ReturnId"].value));
-                console.log(form);
+                               
 
                 console.log(success);
-                if (success) {
-                    console.log("success--from afterpost");
+                if (success) {                    
                     ModalHandler.OnSuccess(form, type, operation);
                 }
             }
@@ -67,13 +51,10 @@
     }
 
     static OnSuccess(form, type, operation)
-    {
-        console.log("success--from afterpost-onsuccwess op:"+operation);
+    {        
         document.getElementById("centerModalButton").style.display = "none";
         let path = document.getElementById("centerModalId").dataset.itemParentId;
-
-        let returnId = form.elements["ReturnId"].value;
-        //let name = form.elements["Name"].value;
+        let returnId = form.elements["ReturnId"].value;        
         
         switch (operation)
         {
@@ -92,11 +73,8 @@
                 });
                 break;
             case "edit":                
-                let id = document.getElementById("centerModalId").dataset.itemId;
-                
-                treeHandler.UpdateAfterEdit(id, type, form.elements["Name"].value);
-                // todo metod to update node name, reload page
-
+                let id = document.getElementById("centerModalId").dataset.itemId;                
+                treeHandler.UpdateAfterEdit(id, type, form.elements["Name"].value);               
                 break;
             case "delete":
                 console.log("deleted");
@@ -136,13 +114,7 @@
             case TreeFactory.NodeTypes.FILE:
                 return ModalHandler.GetDocumentRepostData(operation, token, data);
         }
-
     }
-
-    
-
-  
-
 
 
     static GetCourseRepostData(operation, token, data)
