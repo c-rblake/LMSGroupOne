@@ -1,4 +1,6 @@
-﻿window.addEventListener("load", (event) =>
+﻿// a function to resize the screen on windows rezize event
+
+window.addEventListener("load", (event) =>
 {
     window.addEventListener("resize", ResizeMainView);
     ResizeMainView(this);

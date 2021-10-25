@@ -1,4 +1,6 @@
-﻿class TreeHandler {
+﻿
+// a class to handle the tree navigations
+class TreeHandler {
     #dragElement;
     #pressPositionX;
     #pressPositionY;
@@ -65,14 +67,11 @@
         let e = document.elementFromPoint(event.clientX, event.clientY);
         console.log("dragged to>>" + e.id + ": " + e.dataset.itemType);
         console.log("belongs to parent" + e.dataset.itemParentId + ": " + e.dataset.itemParentType);
-
         
-
 
         // dragto
 
-        if (this.#draging) {
-            
+        if (this.#draging) {            
             switch (e.dataset.itemType)
             {
                 case "trash":
@@ -87,19 +86,13 @@
                 case String(TreeFactory.NodeTypes.ACTIVITY):
                     console.log("dragged to activity");
                     break;
-
             }
-            
-
         }
-
 
         clearTimeout(this.#pressTimer);
         this.#longPress = false;
         this.#initialMove = false;
-        this.#draging = false;
-
-        
+        this.#draging = false;        
     }
 
     #OnMouseMove(event) {
@@ -112,24 +105,19 @@
                     this.#draging = true;
                 }
                 this.#initialMove = true;
-            }
-
-            //console.log("distance:" + dist);
+            }           
 
         }
         if (this.#draging) {
             this.#dragElement.style.top = event.pageY + "px";
             this.#dragElement.style.left = event.pageX + "px";
-
-            let e = document.elementFromPoint(event.clientX, event.clientY);
-            //console.log("mosemove-" + e.id + ": " + e.dataset.itemType);
+            let e = document.elementFromPoint(event.clientX, event.clientY);            
 
         }
 
     }
 
     #OnClick(event) {
-
         
         if (this.#longPress) {
             return;
@@ -141,12 +129,10 @@
         console.log("type:" + event.target.dataset.itemExtra);
         console.log("ypos:" + event.clientY);
 
-
         if (event.target.dataset.itemType != TreeFactory.NodeTypes.FOLDER)
         {
             this.#LoadMainContent(event.target.id, event.target.dataset.itemType);                       
-        }
-         
+        }         
 
         if (event.target.dataset.itemExtra == "caret") {
 
@@ -173,8 +159,7 @@
             url: "/MainNavigation/OnTreeClick",
             data: { id: id, type: type },
             cache: false,
-            success: result => {
-                console.log(result);
+            success: result => {                
 
                 document.getElementById("contentDivId").innerHTML = result;
 
@@ -192,24 +177,14 @@
                         return false;
                     };
                 }
-
                 this.#currentDisplayId = id;
                 this.#currentDisplayType = type;
             }
-        });       
-
-
-    }
-
-   
+        }); 
+    }   
 
     #OnEdit(event)
-    {
-        console.log("------------------edit------------------")
-        console.log(event);
-
-        
-
+    {        
         let modal = document.getElementById("centerModalId");
         let button = document.getElementById("centerModalButton");
         let title = document.getElementById("centerModalTitleId");
@@ -219,12 +194,9 @@
         let url = "";
         let type = event.target.dataset.itemType;
         let id = event.target.dataset.itemId;
-        modal.dataset.itemType = type;
-        //modal.dataset.itemParentId = event.target.id;
+        modal.dataset.itemType = type;        
         modal.dataset.itemOperation = "edit";
-        modal.dataset.itemId = id;
-
-        
+        modal.dataset.itemId = id;       
 
 
         switch (parseInt(type)) {
@@ -259,8 +231,6 @@
                 ModalHandler.FixValidation();
             }
         });
-
-
     }
 
     #OnDblClick(event) {
@@ -324,10 +294,8 @@
         let tRect = document.getElementById("toolBarId").getBoundingClientRect();
         let tOffset = tRect.height;
 
-
         // new current
-        if (this.#currentElement != node) {
-            console.log("new current");
+        if (this.#currentElement != node) {            
             this.#currentElement = node;
         }
 
@@ -345,40 +313,25 @@
         this.#selectSelection.style.height = (rect2.height - marginal * 2) + "px";
     }
 
-
-
-
-
-
     #OnDown(event) {
         this.#pressPositionX = event.clientX;
         this.#pressPositionY = event.clientY;
-        console.log("on down:" + event.clientY);
-
+        
         this.#longPress = false;
         this.#pressTimer = window.setTimeout(() => {
-            // your code here
-            console.log("timer");
+                        
             this.#dragElement.innerHTML = event.target.parentNode.innerHTML;
             this.#dragElement.id = event.target.id;
             this.#dragElement.dataset.itemType = event.target.dataset.itemType;
-
             this.#movedElement = event.target.parentNode.parentNode.parentNode;
-
-            this.#longPress = true; //if run hold function, longpress is true
-
+            this.#longPress = true; 
 
         }, 100);
     }
 
 
     #OnDelete() {
-        console.log("delete-----------------")
-        console.log("item id " + this.#dragElement.id);
-        console.log("item type " + this.#dragElement.dataset.itemType);
-
-
-
+        
         let modal = document.getElementById("centerModalId");
         let button = document.getElementById("centerModalButton");
         let title = document.getElementById("centerModalTitleId");
@@ -388,14 +341,10 @@
         let url = "";
         let id = this.#dragElement.id;
         let type = this.#dragElement.dataset.itemType;
-        modal.dataset.itemType = type;
-        //modal.dataset.itemParentId = event.target.id;
+        modal.dataset.itemType = type;        
         modal.dataset.itemOperation = "delete";
         modal.dataset.itemId = id;
-
-
-        console.log("the id to delete:" + id);
-
+         
         switch (parseInt(type)) {
             case TreeFactory.NodeTypes.COURSE:
                 url = "/Delete/DeleteCourse";  
@@ -443,13 +392,8 @@
 
         item.remove();
         
-        console.log(pNode);
-        console.log(pNode.childElementCount);
-        
-        // todo test if last then remove caret and close folder
         if (pNode.childElementCount===0)
-        {
-            //pNode.remove();
+        {            
             this.#CloseNode(pNode.previousSibling);
             pNode.previousSibling.childNodes[0].hidden = true;
            
@@ -458,10 +402,7 @@
 
     }
         
-    #OnNew(event) {
-
-        console.log("-------------parent id-----------------------");
-        console.log(event.target.dataset.itemParentId);
+    #OnNew(event) {        
 
         let modal = document.getElementById("centerModalId");        
         let button = document.getElementById("centerModalButton");
@@ -496,6 +437,7 @@
                 break;
             case TreeFactory.NodeTypes.FILE:
                 url = "/Course/Create";
+                data = event.target.dataset.itemParentId;
                 modal.style.display = "block";
                 title.innerHTML = "Create Document";
                 break;
@@ -511,8 +453,7 @@
                 modalContent.innerHTML = result;                                
                 ModalHandler.FixValidation();               
             }
-        });
-             
+        });             
 
     }
 
@@ -529,37 +470,26 @@
         }
     }
 
-
     AddSubTree(subTree, type, path) {
 
         let elmer = this.#FindListGroup(subTree.Type, path);
         let item = TreeFactory.GenerateSubTree(subTree, (item) => this.#AddEventListener(item));
         elmer.appendChild(item);
-
-        //console.log("the item");
-        //console.log(item);
-        //console.log("elmer");
-        let caret = elmer.previousSibling.childNodes[0].hidden = false;
         
-
+        let caret = elmer.previousSibling.childNodes[0].hidden = false;
         this.#SelectionOutline(elmer.previousSibling);
     }
 
     #AddEventListener(item) {
         item.addEventListener("click", (event) => this.#OnClick(event));
         item.addEventListener("dblclick", (event) => this.#OnDblClick(event));
-        item.addEventListener("mousedown", (event) => this.#OnDown(event));
-
-        
+        item.addEventListener("mousedown", (event) => this.#OnDown(event));        
     }
 
     GenerateTree(node)
     {
         this.#menuDiv.appendChild(TreeFactory.GenerateSubTree(node, (item) => this.#AddEventListener(item)));        
-    }
-
-
-   
+    }   
 
     // finds the place to put created items in  
     #FindListGroup(type, id) {
@@ -572,10 +502,6 @@
 
     #FindItem(type, id)
     {
-        console.log("find item");
-        console.log("type:" + type);
-        console.log("id:"+id);
-
         let gstr = "[id='" + id + "']";
         let bstr = '[data-item-type="' + type + '"]';
         let q = document.querySelectorAll(gstr + bstr);
