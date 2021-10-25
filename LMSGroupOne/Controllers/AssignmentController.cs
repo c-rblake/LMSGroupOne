@@ -5,8 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -39,38 +37,25 @@ namespace LMSGroupOne.Controllers
                 .SelectMany(m => m.Activities)
                 .Where(a => a.ActivityType.Name == "Assignment")
                 .Select(activity => new AssignmentViewModel
-                    {
-                        ActivityId = activity.Id,
-                        ActivityName = activity.Name,
-                        StartDate = activity.StartDate,
-                        EndDate = activity.EndDate,
-                        IsFinished = activity.Documents.FirstOrDefault(d => d.PersonId == userId) != null ? true : false ,
-                        IsLate = activity.Documents.FirstOrDefault(d => d.PersonId == userId).TimeStamp > activity.EndDate ? true : false
+                {
+                    ActivityId = activity.Id,
+                    ActivityName = activity.Name,
+                    StartDate = activity.StartDate,
+                    EndDate = activity.EndDate,
+                    IsFinished = activity.Documents.FirstOrDefault(d => d.PersonId == userId) != null ? true : false,
+                    IsLate = activity.Documents.FirstOrDefault(d => d.PersonId == userId).TimeStamp > activity.EndDate ? true : false
                 })
                 .ToListAsync();
-
-            /*var viewModels = activities
-                                .Where(a => a.ActivityType.Name == "Assignment")
-                                .Select(activity => new AssignmentViewModel
-                                {
-                                    ActivityId = activity.Id,
-                                    ActivityName = activity.Name,
-                                    StartDate = activity.StartDate,
-                                    EndDate = activity.EndDate,
-                                    IsFinished = GetIsFinished(activity.Id, userId),
-                                    IsLate = GetIsLate(activity.Id, userId, activity.EndDate)
-                                })
-                                .ToList();*/
 
             return View(viewModels);
 
         }
-        
+
         [Authorize]
         public async Task<IActionResult> Details(int id)
         {
             var userId = _userManager.GetUserId(User);
-          
+
             var viewModel = await _db.Activities
                                     .Select(a => new AssignmentDetailsViewModel
                                     {
