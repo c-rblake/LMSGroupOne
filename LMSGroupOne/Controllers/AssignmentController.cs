@@ -28,101 +28,68 @@ namespace LMSGroupOne.Controllers
         {
             var userId = _userManager.GetUserId(User);
 
-            var modules = await _db.Persons
+            var viewModels = await _db.Persons
                 .Where(p => p.Id == userId)
                 .Include(p => p.Course)
                 .ThenInclude(c => c.Modules)
                 .ThenInclude(m => m.Activities)
                 .ThenInclude(a => a.ActivityType)
                 .Select(p => p.Course)
-                .Select(c => c.Modules)
-                .FirstOrDefaultAsync();
+                .SelectMany(c => c.Modules)
+                .SelectMany(m => m.Activities)
+                .Where(a => a.ActivityType.Name == "Assignment")
+                .Select(activity => new AssignmentViewModel
+                    {
+                        ActivityId = activity.Id,
+                        ActivityName = activity.Name,
+                        StartDate = activity.StartDate,
+                        EndDate = activity.EndDate,
+                        IsFinished = activity.Documents.FirstOrDefault(d => d.PersonId == userId) != null ? true : false ,
+                        IsLate = activity.Documents.FirstOrDefault(d => d.PersonId == userId).TimeStamp > activity.EndDate ? true : false
+                })
+                .ToListAsync();
 
-            var activities = modules
-                .Select(a => a.Activities
-                    .Where(t => t.ActivityType.Name == "Assignment"))
-                .FirstOrDefault();
-
-            //query = query.Where(q => q.Authors.Any(a => authors.Contains(a)));
-
-            var activites2 = modules.SelectMany(m => m.Activities);
-
-            activites2 = activites2.Where(at => at.Name == "Assignment");
-
-
-            var viewModels = new List<AssignmentViewModel>();
-
-            foreach (var activity in activities)
-            {
-                var viewModel = new AssignmentViewModel
-                {
-                    ActivityId = activity.Id,
-                    ActivityName = activity.Name,
-                    StartDate = activity.StartDate,
-                    EndDate = activity.EndDate,
-                    IsFinished = GetIsFinished(activity.Id, userId),
-                    IsLate = GetIsLate(activity.Id, userId, activity.EndDate)
-                };
-                viewModels.Add(viewModel);
-            }
+            /*var viewModels = activities
+                                .Where(a => a.ActivityType.Name == "Assignment")
+                                .Select(activity => new AssignmentViewModel
+                                {
+                                    ActivityId = activity.Id,
+                                    ActivityName = activity.Name,
+                                    StartDate = activity.StartDate,
+                                    EndDate = activity.EndDate,
+                                    IsFinished = GetIsFinished(activity.Id, userId),
+                                    IsLate = GetIsLate(activity.Id, userId, activity.EndDate)
+                                })
+                                .ToList();*/
 
             return View(viewModels);
+
         }
         
         [Authorize]
-        [Route("/assignment/details/{id}")]
         public async Task<IActionResult> Details(int id)
         {
             var userId = _userManager.GetUserId(User);
+          
+            var viewModel = await _db.Activities
+                                    .Select(a => new AssignmentDetailsViewModel
+                                    {
+                                        ActivityId = a.Id,
+                                        ActivityName = a.Name,
+                                        ActivityDescription = a.Description,
+                                        Module = a.Module,
+                                        StartDate = a.StartDate,
+                                        EndDate = a.EndDate,
+                                        DocumentTimeStamp = a.Documents.FirstOrDefault(d => d.PersonId == userId).TimeStamp,
+                                    })
+                                    .FirstOrDefaultAsync(a => a.ActivityId == id);
 
-            var documentTimeStamp = await _db.Documents
-                                            .Where(d => d.Id == id)
-                                            .Where(d => d.PersonId == userId)
-                                            .Select(t => t.TimeStamp)
-                                            .FirstOrDefaultAsync();
+            viewModel.IsFinished = viewModel.DocumentTimeStamp != null ? true : false;
 
-            var activity = await _db.Activities
-                                .Where(a => a.Id == id)
-                                .FirstOrDefaultAsync();
-
-            var module = await _db.Modules
-                                .Where(a => a.Id == activity.ModuleId)
-                                .FirstOrDefaultAsync();
-
-            var viewModel = new AssignmentDetailsViewModel
-            {
-                ActivityId = activity.Id,
-                ActivityName = activity.Name,
-                ActivityDescription = activity.Description,
-                Module = module,
-                StartDate = activity.StartDate,
-                EndDate = activity.EndDate,
-                IsFinished = GetIsFinished(activity.Id, userId),
-                IsLate = GetIsLate(activity.Id, userId, activity.EndDate)
-            };
-
-            if (viewModel.IsFinished == true)
-            {
-                viewModel.DocumentTimeStamp = documentTimeStamp;
-            };
+            viewModel.IsLate = viewModel.DocumentTimeStamp > viewModel.EndDate ? true : false;
 
             return View(viewModel);
 
-        }
-
-        public bool GetIsLate(int id, string userId, DateTime endDate)
-        {
-            return _db.Documents
-                    .Where(a => a.ActivityId == id)
-                    .Where(p => p.PersonId == userId)
-                    .Any(u => u.TimeStamp > endDate);
-        }
-
-        public bool GetIsFinished(int id, string userId)
-        {
-            return _db.Documents
-                    .Where(a => a.ActivityId == id)
-                    .Any(p => p.PersonId == userId);
         }
     }
 }

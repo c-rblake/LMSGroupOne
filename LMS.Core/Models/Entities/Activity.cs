@@ -20,6 +20,7 @@ namespace LMS.Core.Models.Entities
 
         //Nav Prop
         public ActivityType ActivityType { get; set; }
+        public Module Module { get; set; }
         public ICollection<Document> Documents { get; set; }
     }
 }
