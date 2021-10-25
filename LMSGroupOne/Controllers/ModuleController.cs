@@ -50,7 +50,7 @@ namespace LMSGroupOne.Controllers
                 {
                     ModelState.AddModelError("Name", "This Module overlaps with current Modules");
 
-                    return View(model);
+                    return PartialView(model);
                 }
             }
 
