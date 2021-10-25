@@ -66,18 +66,33 @@
         console.log("dragged to>>" + e.id + ": " + e.dataset.itemType);
         console.log("belongs to parent" + e.dataset.itemParentId + ": " + e.dataset.itemParentType);
 
+        
+
+
+        // dragto
+
         if (this.#draging) {
-            if (e.dataset.itemType == "trash") {
-                clearTimeout(this.#pressTimer);
-                this.#longPress = false;
-                this.#initialMove = false;
-                this.#draging = false;
+            
+            switch (e.dataset.itemType)
+            {
+                case "trash":
+                    this.#OnDelete(event);
+                    break;
+                case String(TreeFactory.NodeTypes.COURSE):
+                    console.log("dragged to course");
+                    break;
+                case String(TreeFactory.NodeTypes.MODULE):
+                    console.log("dragged to module");
+                    break;
+                case String(TreeFactory.NodeTypes.ACTIVITY):
+                    console.log("dragged to activity");
+                    break;
 
-
-                this.#OnDelete(event);
-                //return;
             }
+            
+
         }
+
 
         clearTimeout(this.#pressTimer);
         this.#longPress = false;
@@ -127,24 +142,11 @@
         console.log("ypos:" + event.clientY);
 
 
-
-        //let node = event.target.parentNode;
-        //if (this.#currentElement != node) {
-        //    console.log("new current------jjj-jj-jj-j");
-        //    this.#currentElement = node;
-        //}
-
-
-
-
-
         if (event.target.dataset.itemType != TreeFactory.NodeTypes.FOLDER)
         {
             this.#LoadMainContent(event.target.id, event.target.dataset.itemType);                       
         }
-                
-        
-
+         
 
         if (event.target.dataset.itemExtra == "caret") {
 
@@ -178,7 +180,17 @@
 
                 let editButton = document.getElementById("editButtonId");
                 if (editButton) {
-                    editButton.addEventListener("click", (event) => { this.#OnEdit(event); });
+                    editButton.addEventListener("click", (event) => { this.#OnEdit(event) });
+                }
+
+                let searchForm = document.getElementById("searchFormId");
+                if (searchForm)
+                {                    
+                    searchForm.onsubmit = function(event)
+                    {                        
+                        SearchHandler.OnSearch(event);
+                        return false;
+                    };
                 }
 
                 this.#currentDisplayId = id;
@@ -189,6 +201,39 @@
 
     }
 
+    //// triggered by the submit
+    //static OnSearch(event)
+    //{
+
+    //    console.log("search submitted");
+    //    //console.log(event.target);
+
+
+    //    $.ajax({
+    //        type: "GET",
+    //        url: "/Search/Search",
+    //        data: {  },
+    //        cache: false,
+    //        success: result => {
+    //            console.log(result);
+
+    //            document.getElementById("contentDivId").innerHTML = result;
+                                
+
+    //            let searchForm = document.getElementById("searchFormId");
+    //            if (searchForm) {
+    //                searchForm.onsubmit = function (event) {
+    //                    TreeHandler.OnSearch(event);
+    //                    return false;
+    //                };
+    //            }
+                
+    //        }
+    //    });
+
+
+
+    //}
 
 
     #OnEdit(event)
@@ -249,15 +294,6 @@
         });
 
 
-
-
-
-
-
-
-
-
-
     }
 
     #OnDblClick(event) {
@@ -297,6 +333,7 @@
             caret.classList.add("fa-caret-down");
         }
     }
+
     #CloseNode(node) {
         node.dataset.itemOpen = false;
         node.nextSibling.hidden = true;
@@ -424,29 +461,6 @@
                 ModalHandler.FixValidation();
             }
         });
-
-
-
-
-
-
-
-        //$.ajax({
-        //    type: "GET",
-        //    url: "/MainNavigation/OnDelete",
-        //    data: { id: this.#dragElement.id, type: this.#dragElement.dataset.itemType },
-        //    cache: false,
-        //    success: result => {
-        //        let obj = JSON.parse(result);
-        //        console.log(obj.success);
-        //        if (obj.success) {
-
-        //            this.#removeElement(this.#movedElement);
-        //        }
-        //    }
-        //});
-
-
     }
 
     UpdateAfterDelete(id, type)
@@ -470,19 +484,7 @@
         this.#SelectionOutline(pNode.parentNode.childNodes[0]);
 
     }
-
-
-
-
-
-    //#removeElement(element) {
-    //    let pNode = element.parentNode;
-    //    element.remove();
-    //    this.#SelectionOutline(pNode.parentNode.childNodes[0]);
-
-    //}
-
-    
+        
     #OnNew(event) {
 
         console.log("-------------parent id-----------------------");

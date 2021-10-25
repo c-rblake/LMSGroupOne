@@ -659,12 +659,12 @@ namespace LMSGroupOne.Controllers
 
         private IActionResult Search(string id)
         {
-            var model = new PlaceholderModelView
-            {
-                Id = id
-            };
+            //var model = new PlaceholderModelView
+            //{
+            //    Id = id
+            //};
 
-            return PartialView("Search", model);
+            return PartialView("../Search/Search");
         }
 
 
