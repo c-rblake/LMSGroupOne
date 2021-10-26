@@ -18,6 +18,7 @@ namespace LMSGroupOne.Models.MainNavigation
         search=8,
         none=9,
         trash=10,
+        author=11,
 
     }
 }

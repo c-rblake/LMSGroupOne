@@ -1,5 +1,5 @@
 ﻿@model IEnumerable<LMS.Core.Models.ViewModels.AuthorsViewmodel>
-
+@using LMSGroupOne.Models.MainNavigation
 @{
     ViewData["Title"] = "GetAuthors";
 }
@@ -11,6 +11,8 @@
     <a asp-action="Create">Create New</a>
 </p>
 
+
+<button id="createAuthorId" data-item-id="1" data-item-type=@((int)NodeType.author) class="btn btn-outline-primary">Create</button>
 
 <table class="table">
     <thead>

@@ -518,7 +518,7 @@ namespace LMSGroupOne.Controllers
             //    Id = id
             //};
 
-            return PartialView("../Search/Search");
+            return PartialView("../Authors/Search");
         }
 
 

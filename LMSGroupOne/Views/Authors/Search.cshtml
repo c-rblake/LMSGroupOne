@@ -20,17 +20,17 @@
                         </ul>
                         <i class="fa fa-book fa-5x"></i>
                         <div>
-                            <form id="formId" asp-controller="Authors" asp-action="GetAuthor">
+                            <form id="searchFormId">
                                 <div asp-validation-summary="All" class="text-danger"></div>
                                 <div class="form-group">
                                     <label asp-for="Name" class="control-label"></label>
                                     <input asp-for="Name" vale="Nero" class="form-control" />
                                     <span asp-validation-for="Name" class="text-danger"></span>
-                                <div class="form-group">
-                                    <input type="submit" value="Search on Name" class="btn btn-primary" />
+                                    <div class="form-group">
+                                        <input type="submit" value="Search on Name" class="btn btn-primary" />
+                                    </div>
                                 </div>
-                                </div>
-                                <button class="btn btn-primary btn-lg" onclick="window.location.href='/Authors/GetAuthor'"><h1 class="my-0 font-weight-normal mx-3">Get All Authors</h1></button>
+                                @*<button class="btn btn-primary btn-lg" onclick="window.location.href='/Authors/GetAuthor'"><h1 class="my-0 font-weight-normal mx-3">Get All Authors</h1></button>*@
                                 @*@Html.DisplayFor(model => model.Message)*@
 
                             </form>
@@ -43,3 +43,7 @@
 </div>
 
 
+<div id="authorsListId">
+
+
+</div>

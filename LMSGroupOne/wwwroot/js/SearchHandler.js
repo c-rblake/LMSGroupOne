@@ -13,27 +13,37 @@ class SearchHandler
 
         $.ajax({
             type: "GET",
-            url: "/Search/Search",
+            url: "/Authors/List",
             data: { Name:form.elements["Name"].value},      //reposts values, numbers etc might need some manipulation
             cache: false,
             success: result => {
                 console.log(result);
 
                 // dynamically adds the loaded the return from /Search/Search
-                document.getElementById("contentDivId").innerHTML = result;
+                document.getElementById("authorsListId").innerHTML = result;
+
+
+                document.getElementById("createAuthorId").addEventListener("click", (event) =>
+                {
+                    console.log("create author test id------");
+                    console.log(event.target.dataset.itemId);
+                    SearchHandler.OnCreateAuthor();
+                });
 
 
                 // overrides the submit and calls this function...
-                let searchForm = document.getElementById("searchFormId");
-                if (searchForm) {
-                    searchForm.onsubmit = function (event) {
-                        SearchHandler.OnSearch(event);
-                        return false;
-                    };
-                }
+                //let searchForm = document.getElementById("searchFormId");
+                //if (searchForm) {
+                //    searchForm.onsubmit = function (event) {
+                //        SearchHandler.OnSearch(event);
+                //        return false;
+                //    };
+                //}
 
             }
         });
+
+       
 
 
 
@@ -41,7 +51,51 @@ class SearchHandler
 
     }
 
+    static OnCreateAuthor()
+    {
 
+        let modal = document.getElementById("centerModalId");
+        let button = document.getElementById("centerModalButton");
+        let title = document.getElementById("centerModalTitleId");
+        let data = "";
+        button.innerHTML = "New";
+        button.style.display = "block";
+        let url = "";
+        let type = event.target.dataset.itemCreates;
+        modal.dataset.itemType = type;
+        modal.dataset.itemParentId = event.target.id;
+        modal.dataset.itemOperation = "new";
+
+               
+            
+        url = "/Authors/Create";
+        //data = event.target.dataset.itemParentId;
+        modal.style.display = "block";
+        title.innerHTML = "Create Author";
+        
+
+
+
+        $.ajax({
+            type: "GET",
+            url: url,
+            //data: 
+            cache: false,
+            success: result => {
+                let modalContent = document.getElementById("centerModalBodyId");
+                modalContent.innerHTML = result;
+                ModalHandler.FixValidation();
+            }
+        });
+
+
+
+
+
+
+
+
+    }
 
 
 

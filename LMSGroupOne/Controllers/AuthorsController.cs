@@ -25,8 +25,32 @@ namespace LMSGroupOne.Controllers
             this.httpClientFactory = httpClientFactory;
             this.mapper = mapper;
         }
+
+
+
+        public IActionResult Search()
+        {
+            LibrarySearch model = new LibrarySearch
+            {
+
+            };
+
+            return View(model);
+        }
+
+        public IActionResult Search(LibrarySearch model)
+        {
+
+            return View(model);
+        }
+
+
+
+
         public IActionResult Index()
         {
+            
+
             return View();
         }
         public async Task<ActionResult> GetAuthors()
@@ -62,6 +86,84 @@ namespace LMSGroupOne.Controllers
 
             return View("GetAuthors", model.ToList());
         }
+
+
+
+        public async Task<IActionResult> List(LibrarySearch search)
+        {
+            var client = httpClientFactory.CreateClient("LMSClient");
+            var response2 = await client.GetAsync($"works/?Title={search.Name}"); //Works is a more powerful search but we already have front end author code.
+            //if (!string.IsNullOrWhiteSpace(workResourceParameters.Title)) if (!string.IsNullOrWhiteSpace(workResourceParameters.AuthorName)) Works Controller has both.
+            var response = await client.GetAsync($"Authors/?includeWorks=true&Name={search.Name}");
+
+            //   "Works/?Title={search.Name}
+
+            //If success received   
+            IEnumerable<AuthorDto> authors = default;
+            IEnumerable<WorkDto> works = default;
+            List<AuthorsViewmodel> reWorksAuthorsViewmodel = new();
+
+            if (response.IsSuccessStatusCode)
+            {
+                authors = await response.Content.ReadAsAsync<IEnumerable<AuthorDto>>();
+            }
+            else
+            {
+                //Error response received   
+                //courses = Enumerable.Empty<CourseViewModel>();
+                ModelState.AddModelError(string.Empty, "Server error Authors.");
+            }
+            if (response2.IsSuccessStatusCode)
+            {
+                works = await response2.Content.ReadAsAsync<IEnumerable<WorkDto>>();
+                foreach (var workDto in works)
+                {
+                    foreach (var workAuthorDto in workDto.Authors)
+                    {
+                        var author = new AuthorsViewmodel
+                        {
+                            Name = workAuthorDto.Name,
+                            //Works = mapper.Map<Work>(workDto), //<= does not work well.
+                            Age = workAuthorDto.Age,
+                            Id = workAuthorDto.Id
+                        };
+                        var work = mapper.Map<Work>(workDto);
+                        author.Works.Add(work);
+                        reWorksAuthorsViewmodel.Add(author);
+                    }
+                }
+            }
+            else
+            {
+                //Error response received   
+                //courses = Enumerable.Empty<CourseViewModel>();
+                ModelState.AddModelError(string.Empty, "Server error Works.");
+            }
+
+
+
+
+            //Map 
+            var model = mapper.Map<List<AuthorsViewmodel>>(authors);
+            if (model is not null && reWorksAuthorsViewmodel is not null)
+            {
+                model.AddRange(reWorksAuthorsViewmodel);
+            }
+
+
+
+
+                        
+
+            return PartialView(model);
+        }
+       
+
+
+
+
+
+
         public async Task<ActionResult> GetAuthor(LibrarySearch search)
         {
             var client = httpClientFactory.CreateClient("LMSClient");
@@ -162,7 +264,7 @@ namespace LMSGroupOne.Controllers
         }
         public IActionResult Create()
         {
-            return View();
+            return PartialView();
         }
 
         // POST: Authors/Create
@@ -170,7 +272,7 @@ namespace LMSGroupOne.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FirstName,LastName,DateOfBirth,DateOfDeath")] Author author)
+        public async Task<IActionResult> Create(Author author)
         {
             if (ModelState.IsValid)
             {
@@ -178,7 +280,8 @@ namespace LMSGroupOne.Controllers
             
                 return RedirectToAction(nameof(GetAuthors));
             }
-            return View(author);
+            return PartialView(author);
         }
     }
 }
+//[Bind("FirstName,LastName,DateOfBirth,DateOfDeath")]
