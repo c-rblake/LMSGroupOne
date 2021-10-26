@@ -1,4 +1,5 @@
 ﻿using LMS.Core.Models.Entities;
+using LMS.Core.Models.ViewModels.Course;
 using LMS.Core.Repositories;
 using LMSGroupOne.Models.MainNavigation;
 using Microsoft.AspNetCore.Identity;
@@ -48,11 +49,11 @@ namespace LMSGroupOne.Controllers
                         return TeacherNode(path,"new teacher id", name);
                     case (int)NodeType.file:
                         return FileNode(path,"new file id", name);
-                    case (int)NodeType.activity:
+                    case (int)NodeType.activity:                        
                         return ActivityNode(path,"new activity id", name);
                     case (int)NodeType.module:
                         return ModuleNode(path, "new module id", name);
-                    case (int)NodeType.course:
+                    case (int)NodeType.course:                        
                         return CourseNode(path, "new course id", name);
                 }
             }            
@@ -67,6 +68,50 @@ namespace LMSGroupOne.Controllers
             return jsonData;           
 
         }
+
+        //public IActionResult InitAddView(CourseModelView input)
+        //{
+            
+
+        //    var model = new CreateCourseViewModel
+        //    {
+        //        Name=input.Name,
+        //        Description=input.Description,
+        //        StartDate=DateTime.Now,
+        //        EndDate=DateTime.Now
+                
+        //    };
+            
+        //    return PartialView("../MainNavigation/Create/CreateCourse", model);
+            
+        //}
+
+
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public IActionResult LoadAddView(CreateCourseViewModel inp)
+        //{
+        //    Debug.WriteLine("model------------");
+        //    Debug.WriteLine(inp.Name);
+
+        //    //if (ModelState.IsValid)
+        //    //{
+        //    //    Debug.WriteLine("Modelstate is valid");
+        //    //}
+        //    var model = new CreateCourseViewModel
+        //    {
+        //        Name = inp.Name,
+        //        Description = "efg",
+        //        StartDate = DateTime.Now,
+        //        EndDate = DateTime.Now
+
+        //    };
+
+
+        //    return PartialView("../MainNavigation/Create/CreateCourse", model);
+
+        //}
+
 
 
         private TreeNode MakeNode(string id, string name, NodeType type, NodeType creates, TreeNode[] childNodes)

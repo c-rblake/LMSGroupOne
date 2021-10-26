@@ -308,20 +308,74 @@
     }
 
     
-    #OnNew(event) {        
+    #OnNew(event) {
+
+        console.log("-------------parent id-----------------------");
+        console.log(event.target.dataset.itemParentId);
+
+        let modal = document.getElementById("centerModalId");        
+        let button = document.getElementById("centerModalButton");
+        let title = document.getElementById("centerModalTitleId");
+        let data = "";
+        button.innerHTML = "New";
+        button.style.display = "block"; 
+        let url = "";
+        let type = event.target.dataset.itemCreates;
+        modal.dataset.itemType = type;
+        modal.dataset.itemParentId = event.target.id;
+
+        switch (parseInt(type))
+        {
+            case TreeFactory.NodeTypes.COURSE:
+                url = "/Course/Create";                
+                modal.style.display = "block";
+                title.innerHTML = "Create Course";
+                break;
+            case TreeFactory.NodeTypes.MODULE:
+                url = "/Module/CreateModule";
+                data = event.target.dataset.itemParentId;
+                modal.style.display = "block";
+                title.innerHTML = "Create Module";
+                break;
+            case TreeFactory.NodeTypes.ACTIVITY:
+                url = "/Activity/Create";
+                data = event.target.dataset.itemParentId;
+                modal.style.display = "block";
+                title.innerHTML = "Create Activity";
+                break;
+        }
+
+        
 
         $.ajax({
             type: "GET",
-            url: "/AddNavigation/OnNew",
-            data: { path: event.target.id, id: "hello_id", type: event.target.dataset.itemCreates, name: "hello world"},
+            url: url,
+            data: data,
             cache: false,
             success: result => {
-                let obj = JSON.parse(result);                
-                if (obj.success) {                    
-                    this.AddSubTree(obj.subTree, obj.type, obj.path);                    
-                } 
+                let modalContent = document.getElementById("centerModalBodyId");
+                modalContent.innerHTML = result;                                
+                fixvalidation();               
             }
         });
+
+        
+
+
+
+
+        //$.ajax({
+        //    type: "GET",
+        //    url: "/AddNavigation/OnNew",
+        //    data: { path: event.target.id, id: "hello_id", type: event.target.dataset.itemCreates, name: "hello world"},
+        //    cache: false,
+        //    success: result => {
+        //        let obj = JSON.parse(result);                
+        //        if (obj.success) {                    
+        //            this.AddSubTree(obj.subTree, obj.type, obj.path);                    
+        //        } 
+        //    }
+        //});
     }
 
     AddSubTree(subTree, type, path) {
