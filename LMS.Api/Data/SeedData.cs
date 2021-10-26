@@ -47,6 +47,8 @@ namespace LMS.Api.Data
 
         }
 
+
+
         private static List<Work> GetWorkAndAuthors(List<Core.Entities.Type> types, List<Genre> genres)
         {
             var works = new List<Work>();
@@ -62,6 +64,10 @@ namespace LMS.Api.Data
                     PublicationDate = DateTime.Now.AddYears(fake.Random.Int(-15, 0)),
                     Authors = GetAuthors()
                 };
+                if(i%5==0)
+                {
+                    work.Title += " Swans";
+                }
             works.Add(work);
                         
             }
@@ -87,6 +93,11 @@ namespace LMS.Api.Data
             {
                 Name = "Non-Fiction",
                 Description = "Based not on Fiction but real events."
+            };
+            var myNewType = new Core.Entities.Type //Todo <-- Get this ID is not possible. But It can be a Variable? Reference type works or not... lets find out. WORKS
+            {
+                Name = "HardCover",
+                Description = "Cover made of wood, steel or rock."
             };
 
             var nerosWorks = new List<Work>();
@@ -115,9 +126,21 @@ namespace LMS.Api.Data
             {
                 Name = "Paperback",
                 Description = "Not Digital"
-            }
-
+            }});
+            nerosWorks.Add(new Work
+            {
+                Title = "Predictable Random",
+                PublicationDate = new DateTime(2002, 10, 18),
+                Description = "Mapped but not charted",
+                Level = "Beginner",
+                Genre = myNewGenre,
+                Type = new Core.Entities.Type // This is undesireable but good to know about. Should be a variable like Genre
+                {
+                    Name = "Paperback",
+                    Description = "Not Digital"
+                }
             });
+
             return nerosWorks;
 
         }
@@ -138,6 +161,10 @@ namespace LMS.Api.Data
                     LastName = fake.Name.LastName(),                  
                     DateOfBirth = DateTime.Now.AddYears(fake.Random.Int(-65, -25)), 
                 };
+                if(fake.Random.Int(1, 100) > 75)
+                {
+                    author.LastName = "Tulip";
+                }
                 if(fake.Random.Int(1, 100) > 75)
                 {
                     author.DateOfDeath = DateTime.Now.AddYears(fake.Random.Int(-10, -2));
