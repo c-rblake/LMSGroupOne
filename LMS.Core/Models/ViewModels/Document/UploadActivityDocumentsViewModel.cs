@@ -21,8 +21,8 @@ namespace LMS.Core.Models.ViewModels.Document
         public int ModuleId { get; set; }
         public int CourseId { get; set; }
         public Person Person { get; set; }
-        public Activity Activity { get; set; }
-        public Module Module { get; set; }
+        public Entities.Activity Activity { get; set; }
+        public Entities.Module Module { get; set; }
         public Entities.Course Course { get; set; }
 
         [Display(Name = "Document(s) to upload")]
