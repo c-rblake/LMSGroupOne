@@ -108,11 +108,6 @@ body {
     height: 100%;
 }
 
-
-
-
-
-
 /* The Modal (background) */
 .centerModal {
     display: none; /* Hidden by default */
@@ -133,8 +128,20 @@ body {
     background-color: #fefefe;
     max-width: 500px;
 }
-}
 
 #postedDocuments {
     border: none;
+}
+
+/* Collapsed accordion icon*/
+.accordion-button::after {
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    content: "\f067";
+}
+/* Opened accordion icon*/
+.accordion-button:not(.collapsed)::after {
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    content: "\f068";
 }

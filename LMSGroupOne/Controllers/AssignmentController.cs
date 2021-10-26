@@ -66,6 +66,7 @@ namespace LMSGroupOne.Controllers
                                         StartDate = a.StartDate,
                                         EndDate = a.EndDate,
                                         DocumentTimeStamp = a.Documents.FirstOrDefault(d => d.PersonId == userId).TimeStamp,
+                                        Documents = a.Documents.Where(d => d.PersonId == userId).OrderBy(d => d.Name).ToList()
                                     })
                                     .FirstOrDefaultAsync(a => a.ActivityId == id);
 

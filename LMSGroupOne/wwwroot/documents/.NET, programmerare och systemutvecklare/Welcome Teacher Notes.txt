@@ -1,6 +1,0 @@
-Kan vi inte har Länkar från WElcome Teacher?
-
-Andra Notes:
-Skapa en Fast Lärare och Student för Demo.
-
-Nu måste jag ju titta på en Lärare i DB.

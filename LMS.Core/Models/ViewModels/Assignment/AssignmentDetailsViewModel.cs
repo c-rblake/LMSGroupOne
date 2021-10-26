@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace LMS.Core.Models.ViewModels.Assignment
@@ -22,11 +23,12 @@ namespace LMS.Core.Models.ViewModels.Assignment
         public DateTime EndDate { get; set; }
         [Display(Name = "Finished")]
         public bool IsFinished { get; set; }
-        [Display(Name = "Delivery date")]
+        [Display(Name = "Submission date")]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}")]
         [DataType(DataType.Date)]
         public DateTime? DocumentTimeStamp { get; set; }
         [Display(Name = "Late")]
         public bool IsLate { get; set; }
+        public ICollection<Entities.Document> Documents { get; set; }
     }
 }

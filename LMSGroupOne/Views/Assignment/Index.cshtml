@@ -7,38 +7,45 @@
 
 @if (User.IsInRole("Student"))
 {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>@Html.DisplayNameFor(model => model.ActivityName)</th>
-                <th>@Html.DisplayNameFor(model => model.StartDate)</th>
-                <th>@Html.DisplayNameFor(model => model.EndDate)</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr background-color="@(item.IsFinished == true ? "palegreen" : "none")">
-                    <td>
-                        @Html.DisplayFor(modelItem => item.ActivityName)
-                        @if (item.IsLate == true)
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead class="bg-light">
+                        <tr>
+                            <th>@Html.DisplayNameFor(model => model.ActivityName)</th>
+                            <th>@Html.DisplayNameFor(model => model.StartDate)</th>
+                            <th>@Html.DisplayNameFor(model => model.EndDate)</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
                         {
-                            <span class="badge badge-pill badge-danger">Late</span>
+                            <tr style="background-color: @(item.IsFinished == true ? "#C1FFC1" : "none");">
+                                <td>
+                                    <a asp-controller="Assignment" asp-action="Details" asp-route-id="@item.ActivityId">
+                                        @Html.DisplayFor(modelItem => item.ActivityName)
+                                        @if (item.IsLate == true)
+                                        {
+                                            <span class="badge badge-pill badge-danger">Late</span>
+                                        }
+                                    </a>
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.StartDate)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.EndDate)
+                                </td>
+                                <td>
+                                    <a class="btn btn-outline-primary" asp-controller="Document" asp-action="UploadActivityDocuments" asp-route-id="@item.ActivityId" role="button"><i class="fas fa-upload"></i> Submit</a>
+                                </td>
+                            </tr>
                         }
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.StartDate)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.EndDate)
-                    </td>
-                    <td>
-                        <a asp-controller="Document" asp-action="UploadActivityDocument" asp-route-id="@item.ActivityId">Upload</a> |
-                        <a asp-controller="Assignment" asp-action="Details" asp-route-id="@item.ActivityId">Details</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+ }
