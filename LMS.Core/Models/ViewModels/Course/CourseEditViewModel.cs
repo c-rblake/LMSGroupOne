@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace LMS.Core.Models.ViewModels.Course
 {
-    public class CourseEditViewModel
+    public class CourseEditViewModel: IModalViewModel
     {
         public int Id { get; set; }
         [Required]

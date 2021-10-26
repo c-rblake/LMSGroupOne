@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LMS.Core.Models.ViewModels.Course
 {
-    public class CreateCourseViewModel
+    public class CreateCourseViewModel: IModalViewModel
     {
         [Required]
         [MaxLength(100)]

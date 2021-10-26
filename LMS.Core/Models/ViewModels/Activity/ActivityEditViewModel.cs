@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LMS.Core.Models.ViewModels.Activity
 {
-    public class ActivityEditViewModel
+    public class ActivityEditViewModel: IModalViewModel
     {
         public int Id { get; set; }
         [Required]

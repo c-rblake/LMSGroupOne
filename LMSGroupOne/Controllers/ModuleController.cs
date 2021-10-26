@@ -183,10 +183,14 @@ namespace LMSGroupOne.Controllers
 
                     return PartialView(editedModule);
                 }
-                
+                editedModule.Message = "Module edited!";
+                editedModule.Success = true;
+                editedModule.ReturnId = editedModule.Id;
+                return PartialView(editedModule);
+
             }
-            editedModule.Message = "Module edited!";
-            editedModule.Success = true;
+            editedModule.Message = "Module not edited!";
+            editedModule.Success = false;
             editedModule.ReturnId = editedModule.Id;
             return PartialView(editedModule);
         }

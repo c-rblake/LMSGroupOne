@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace LMS.Core.Models.ViewModels.Activity
 {
-    public class ActivityCreateViewModel
+    public class ActivityCreateViewModel: IModalViewModel
     {
         [Required]
         public string Name { get; set; }

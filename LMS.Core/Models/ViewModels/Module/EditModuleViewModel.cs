@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace LMS.Core.Models.ViewModels.Module
 {
-    public class EditModuleViewModel
+    public class EditModuleViewModel: IModalViewModel
     {
         public int Id { get; set; }
         [Required]
@@ -22,6 +22,7 @@ namespace LMS.Core.Models.ViewModels.Module
         public DateTime StartDate { get; set; }
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-ddTHH:mm}", ApplyFormatInEditMode = true)]
         public DateTime EndDate { get; set; }
+        
 
         // 
         public bool Success { get; set; }  // creation status
