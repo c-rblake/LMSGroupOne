@@ -133,3 +133,8 @@ body {
     background-color: #fefefe;
     max-width: 500px;
 }
+}
+
+#postedDocuments {
+    border: none;
+}

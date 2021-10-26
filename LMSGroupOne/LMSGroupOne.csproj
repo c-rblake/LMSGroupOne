@@ -32,9 +32,4 @@
     </Compile>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="documents\" />
-    <Folder Include="wwwroot\documents\" />
-  </ItemGroup>
-
 </Project>
