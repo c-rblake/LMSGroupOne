@@ -57,17 +57,32 @@ namespace LMSGroupOne.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateModule(CreateModuleViewModel createdModule)
         {
+            // Verify that Dates on this Module don't start earlier or end later than its Course
             int courseId = createdModule.CourseId;
-            IEnumerable<Module> modules = await GetAllModulesByCourseAsync(courseId);
+            var course = await uow.CourseRepository.GetCourse(createdModule.CourseId);
 
+            if (createdModule.StartDate < course.StartDate || createdModule.EndDate > course.EndDate)
+            {
+                ModelState.AddModelError("Name", $"Please keep dates within Course Dates ({course.StartDate.ToString("yyyy-MM-dd")}-{course.EndDate?.ToString("yyyy-MM-dd")})");
+                return PartialView(createdModule);
+            }
+
+            // Get all modules on course except this one being edited
+            IEnumerable<Module> modules = await GetAllModulesByCourseAsync(course.Id);
+            modules = modules.Where(a => a.Id != createdModule.Id);
+
+            // Verify Module Dates to existing Module Dates
             foreach (Module existingModule in modules)
             {
-                if (createdModule.StartDate <= existingModule.StartDate && createdModule.EndDate >= existingModule.StartDate)
+                if (createdModule.StartDate <= existingModule.StartDate && createdModule.EndDate > existingModule.StartDate)
                 {
-                    ModelState.AddModelError("Name", "This Module overlaps with current Modules");
-
-                    return PartialView(createdModule);
+                    String moduleWithDates = $"Module {existingModule.Name} ({existingModule.StartDate.ToString("yyyy-MM-dd")} - {existingModule.EndDate.ToString("yyyy-MM-dd")})";
+                    ModelState.AddModelError("Description", $"1 This module overlaps dates with {moduleWithDates}");
                 }
+
+                var entity = await uow.ModuleRepository.FindAsync(createdModule.Id);
+                ViewBag.moduleName = entity.Name;
+                return PartialView(createdModule);
             }
 
             if (ModelState.IsValid)
