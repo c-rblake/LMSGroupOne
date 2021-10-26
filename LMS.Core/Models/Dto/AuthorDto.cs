@@ -14,5 +14,7 @@ namespace LMS.Core.Models.Dto
 
         public string Name { get; set; }
         public int Age { get; set; }
+
+        public IEnumerable<WorkDto> Works { get; set; }
     }
 }

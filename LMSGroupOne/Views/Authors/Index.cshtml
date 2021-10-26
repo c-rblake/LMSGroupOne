@@ -1,0 +1,43 @@
+﻿@model LMS.Core.Models.ViewModels.API.Author.LibrarySearch
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<div class="container mt-5">
+    <div class="row d-flex justify-content-center mt-5">
+        <div class="col-md-8 md-1">
+            <div class="card-deck mb-3 text-center">
+                <div class="card mb-4 box-shadow">
+                    <div class="card-header">
+                        <button class="btn btn-primary btn-lg" onclick="window.location.href='/Authors/GetAuthors'"><h1 class="my-0 font-weight-normal mx-3">Get All Authors</h1></button>
+                    </div>
+                    <div class="card-body">
+                        <h4 class="card-title pricing-card-title">Find in API library <small class="text-muted">/ External</small></h4>
+                        <ul class="list-unstyled mt-3 mb-4">
+                            <li>Search on Author or Title</li>
+                        </ul>
+                        <i class="fa fa-book fa-5x"></i>
+                        <div>
+                            <form id="formId" asp-controller="Authors" asp-action="GetAuthor">
+                                <div asp-validation-summary="All" class="text-danger"></div>
+                                <div class="form-group">
+                                    <label asp-for="Name" class="control-label"></label>
+                                    <input asp-for="Name" vale="Nero" class="form-control" />
+                                    <span asp-validation-for="Name" class="text-danger"></span>
+                                <div class="form-group">
+                                    <input type="submit" value="Search on Name" class="btn btn-primary" />
+                                </div>
+                                </div>
+                                <button class="btn btn-primary btn-lg" onclick="window.location.href='/Authors/GetAuthor'"><h1 class="my-0 font-weight-normal mx-3">Get All Authors</h1></button>
+                                @*@Html.DisplayFor(model => model.Message)*@
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

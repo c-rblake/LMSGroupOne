@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LMS.Core.Models.Entities.API;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,7 +17,7 @@ namespace LMS.Core.Models.Dto
         public int Age { get; set; }
 
         //Nav properties
-        //public ICollection<Work> Works { get; set; }
+        public ICollection<Work> Works { get; set; }
     }
 
 }
