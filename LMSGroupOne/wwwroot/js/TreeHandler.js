@@ -177,6 +177,15 @@ class TreeHandler {
                         return false;
                     };
                 }
+
+                let createAuthor = document.getElementById("createAuthorId");
+                if (createAuthor)
+                {
+                    createAuthor.addEventListener("click", (event) => {
+                        SearchHandler.OnCreateAuthor();
+                    });
+                }
+
                 this.#currentDisplayId = id;
                 this.#currentDisplayType = type;
             }

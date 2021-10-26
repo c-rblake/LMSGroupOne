@@ -16,5 +16,16 @@ function ResizeMainView(event)
     let height = (window.innerHeight - header.clientHeight - footer.clientHeight);
     menu.style.height = height + "px";
     content.style.height = height + "px";
+
+
+    let authorsHead = document.getElementById("authorSearchHeadId");
+    let authorsList = document.getElementById("authorsListId");
+    if (authorsList)
+    {
+        console.log("resize the searcharo");
+        let aHeight = (content.clientHeight - authorsHead.clientHeight - footer.clientHeight);
+        authorsList.style.height = aHeight + "px";
+    }
+
 }
 

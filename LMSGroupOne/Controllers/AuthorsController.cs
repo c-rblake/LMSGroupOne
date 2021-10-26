@@ -264,24 +264,83 @@ namespace LMSGroupOne.Controllers
         }
         public IActionResult Create()
         {
-            return PartialView();
+            new AuthorCreateViewModel
+            {
+                DateOfBirth = DateTime.Now,
+                DateOfDeath= DateTime.Now,
+            };
+
+            return PartialView(new AuthorCreateViewModel());
         }
 
         // POST: Authors/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Create(Author author)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        var auth = await CreateAuthor(author);
+            
+        //        return RedirectToAction(nameof(GetAuthors));
+        //    }
+        //    return PartialView(author);
+        //}
+
+
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Author author)
+        public IActionResult Create(AuthorCreateViewModel model)
         {
+           
             if (ModelState.IsValid)
             {
-                var auth = await CreateAuthor(author);
-            
-                return RedirectToAction(nameof(GetAuthors));
+
+                try
+                {
+                    Author author = new Author
+                    {
+                        FirstName = model.FirstName,
+                        LastName = model.LastName,
+                        DateOfBirth = model.DateOfBirth,
+                        DateOfDeath = model.DateOfDeath
+
+                    };
+
+                    CreateAuthor(author).Wait();
+                    model.Success = true;
+                    model.Message = "Author created!";
+                    model.ReturnId = author.Id;
+                    return PartialView(model);
+
+                }
+                catch(Exception e)
+                {
+                    throw;
+                }
+
+
+                
+
+
+
             }
-            return PartialView(author);
+            
+           
+
+
+            model.Success = false;
+            model.ReturnId = 0;
+            model.Message = "Could not create author!";            
+            return PartialView(model);
         }
+
+
     }
 }
 //[Bind("FirstName,LastName,DateOfBirth,DateOfDeath")]

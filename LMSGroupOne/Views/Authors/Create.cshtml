@@ -4,7 +4,11 @@
 
 
 <div>
-    <form id="formId">
+    <form id="formId" asp-action="Create">
+        <input type="hidden" asp-for="Success"/>
+        <input type="hidden" asp-for="Message"/>
+        <input type="hidden" asp-for="ReturnId"/>
+
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="form-group">
             <label asp-for="FirstName" class="control-label"></label>
@@ -29,6 +33,8 @@
         @*<div class="form-group">
             <input type="submit" value="Create" class="btn btn-primary" />
         </div>*@
+
+        @Model.Message
     </form>
 </div>
 

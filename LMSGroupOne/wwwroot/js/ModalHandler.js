@@ -21,6 +21,8 @@ class ModalHandler {
         let type = document.getElementById("centerModalId").dataset.itemType;
         let operation = document.getElementById("centerModalId").dataset.itemOperation;
 
+        
+
         console.log("-----on button modalhandler-----------");
         console.log(type);
         console.log(operation);
@@ -119,6 +121,9 @@ class ModalHandler {
                 return ModalHandler.GetActivityRepostData(operation, token, data);
             case TreeFactory.NodeTypes.FILE:
                 return ModalHandler.GetDocumentRepostData(operation, token, data);
+            case TreeFactory.NodeTypes.AUTHOR:
+                return ModalHandler.GetAuthorRepostData(operation, token, data);
+            
         }
     }
 
@@ -209,5 +214,25 @@ class ModalHandler {
         return { url: url, data: data };
     }
 
+
+    static GetAuthorRepostData(operation, token, data) {
+
+        let form = document.getElementById("formId");
+        let url = "";
+
+        switch (operation) {
+            case "new":
+                url = "/Authors/Create";
+                break;
+            case "edit":
+                url = "/Course/Create";
+                break;
+            case "delete":
+                url = "/Delete/DeleteDocument";
+                data["Id"] = parseInt(form.elements["Id"].value);
+                break;
+        }
+        return { url: url, data: data };
+    }
 
 }

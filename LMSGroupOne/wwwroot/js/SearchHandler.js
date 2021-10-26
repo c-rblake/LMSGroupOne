@@ -9,6 +9,10 @@ class SearchHandler
 
         let form = document.getElementById("searchFormId");
 
+        
+
+
+
 
 
         $.ajax({
@@ -22,13 +26,8 @@ class SearchHandler
                 // dynamically adds the loaded the return from /Search/Search
                 document.getElementById("authorsListId").innerHTML = result;
 
-
-                document.getElementById("createAuthorId").addEventListener("click", (event) =>
-                {
-                    console.log("create author test id------");
-                    console.log(event.target.dataset.itemId);
-                    SearchHandler.OnCreateAuthor();
-                });
+                ResizeMainView(event);  // function in windowResizer
+               
 
 
                 // overrides the submit and calls this function...
@@ -61,9 +60,13 @@ class SearchHandler
         button.innerHTML = "New";
         button.style.display = "block";
         let url = "";
-        let type = event.target.dataset.itemCreates;
+        let type = parseInt(TreeFactory.NodeTypes.AUTHOR);
+        //modal.dataset.itemType = type;
+        //modal.dataset.itemParentId = event.target.id;
+        modal.dataset.itemOperation = "new";
+
         modal.dataset.itemType = type;
-        modal.dataset.itemParentId = event.target.id;
+        modal.dataset.itemParentId = "1";
         modal.dataset.itemOperation = "new";
 
                
@@ -79,7 +82,7 @@ class SearchHandler
         $.ajax({
             type: "GET",
             url: url,
-            //data: 
+            data: {},
             cache: false,
             success: result => {
                 let modalContent = document.getElementById("centerModalBodyId");

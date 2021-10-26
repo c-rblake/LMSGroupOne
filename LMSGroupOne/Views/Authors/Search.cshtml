@@ -1,11 +1,9 @@
 ﻿@model LMS.Core.Models.ViewModels.API.Author.LibrarySearch
-@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+@using LMSGroupOne.Models.MainNavigation
 
-<div class="container mt-5">
+
+
+<div id="authorSearchHeadId" class="container m-0 b-0">
     <div class="row d-flex justify-content-center mt-5">
         <div class="col-md-8 md-1">
             <div class="card-deck mb-3 text-center">
@@ -40,10 +38,12 @@
             </div>
         </div>
     </div>
+    <button id="createAuthorId" data-item-id="1" data-item-type=@((int)NodeType.author) class="btn btn-outline-primary">Create</button>
 </div>
 
 
-<div id="authorsListId">
+
+<div id="authorsListId" style="overflow-y:auto;">
 
 
 </div>
