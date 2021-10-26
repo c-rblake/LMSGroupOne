@@ -9,11 +9,14 @@ namespace LMS.Api.Core.Dtos
     public class AuthorDto
     {
         public int Id { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public DateTime DateOfBirth { get; set; }
+        //public string FirstName { get; set; }
+        //public string LastName { get; set; }
+
+        public string Name { get; set; }
+        public int Age { get; set; }
 
         //Nav properties
-        public ICollection<AuthorWorkDto> WorkDtos { get; set; } //ToDo Circular WARNING Works <=> Authors
+        public ICollection<AuthorWorkDto> Works { get; set; } // Circular WARNING Works <=> Authors
+                                                                 // Todo Also change the Parameter Name to something presentable such as Works
     }
 }

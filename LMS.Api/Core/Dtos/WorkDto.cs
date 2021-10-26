@@ -17,7 +17,7 @@ namespace LMS.Api.Core.Dtos
 
         public DateTime PublicationDate { get; set; }
 
-        public ICollection<WorkAuthorDto> Authors { get; set; }
+        public List<WorkAuthorDto> Authors { get; set; }
         public Genre Genre { get; set; }
 
         public Entities.Type Type { get; set; }

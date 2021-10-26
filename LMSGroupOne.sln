@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31402.337
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LMSGroupOne", "LMSGroupOne\LMSGroupOne.csproj", "{42191B61-4704-4460-89A0-CB077E919644}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LMSGroupOne", "LMSGroupOne\LMSGroupOne.csproj", "{42191B61-4704-4460-89A0-CB077E919644}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LMS.Data", "LMS.Data\LMS.Data.csproj", "{BB916478-6421-4FE9-9FF9-D43F1CCA0991}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LMS.Data", "LMS.Data\LMS.Data.csproj", "{BB916478-6421-4FE9-9FF9-D43F1CCA0991}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LMS.Core", "LMS.Core\LMS.Core.csproj", "{E07B32CA-D290-4CE8-87A3-2E80B71B56EA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LMS.Core", "LMS.Core\LMS.Core.csproj", "{E07B32CA-D290-4CE8-87A3-2E80B71B56EA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LMS.Api", "LMS.Api\LMS.Api.csproj", "{3CCAA795-3295-4EAC-AF91-D6D3F524B639}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LMS.Api", "LMS.Api\LMS.Api.csproj", "{3CCAA795-3295-4EAC-AF91-D6D3F524B639}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

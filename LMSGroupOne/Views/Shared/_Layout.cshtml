@@ -7,27 +7,88 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
-<body>
-    <header>
+<body class="container-fluid m-0 p-0">
+    <header id="headerBarId" class="container-fluid m-0 p-0">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-6 bg-primary">
-                    <a asp-area="" asp-controller="Home" asp-action="Index" class="LMSGroupOne">LMS Group One</a>
+                    <a asp-area="" asp-controller="Home" asp-action="Index" class="LMSGroupOne">LMS Group One</a>                    
                 </div>
+                
                 <div class="col-6 bg-primary navbar-collapse collapse d-sm-inline-flex justify-content-end">
                     <partial name="_LoginPartial" />
                 </div>
             </div>
+
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav mr-auto">
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Course
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="course" asp-action="create">Create New</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="course" asp-action="edit" asp-route-id="1">Edit Id1</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#">List</a>
+                            </div>
+                        </li>
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Module
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="module" asp-action="createmodule">Create New</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="module" asp-action="editmodule" asp-route-id="1">Edit Id1</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#">List</a>
+                            </div>
+                        </li>
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Activity
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="activity" asp-action="create">Create New</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="activity" asp-action="edit" asp-route-id="1">Edit Id1</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#">List</a>
+                            </div>
+                        </li>
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Account
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="account" asp-action="create">Create New</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#">List</a>
+                            </div>
+                        </li>
+                    </ul>
+                    <form class="form-inline my-2 my-lg-0">
+                        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Search</button>
+                    </form>
+                </div>
+            </nav>
+
         </div>
     </header>
-    <div class="container-fluid">
-        <main role="main" class="pb-3">
+    <div class="container-fluid m-0 p-0">
+        <main role="main">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-dark">
-        <div class="container-fluid bg-primary">
+    <footer id="footerBarId" class="border-top footer text-dark p-0 m-0">
+        <div class="container-fluid p-0 m-0 bg-primary">
             &copy; 2021 - LMSGroupOne
         </div>
     </footer>

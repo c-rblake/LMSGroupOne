@@ -1,0 +1,47 @@
+﻿@using LMSGroupOne.Models.MainNavigation
+@model LMSGroupOne.Models.MainNavigation.TreeNode
+
+
+@*used for javascripts*@
+<style>
+    treeItem {
+    }
+
+    carretIcon {
+    }
+
+    folderIcon {
+    }
+</style>
+
+<script src="~/js/TreeFactory.js" asp-append-version="true"></script>
+<script src="~/js/TreeHandler.js" asp-append-version="true"></script>
+<script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
+
+
+
+<div id="menuDivId" style="padding: 0px; border: 0px; background-color: none; overflow-y: scroll; overflow-x:auto; position:absolute; width:100%;">
+    <div id="toolBarId">
+        <i id="trashCanId" class="fa fa-trash-alt" data-item-type="@NodeType.trash" style="font-size:48px;color:black; padding:4px;"></i>
+
+    </div>
+    
+    <div id="treeDivId">
+        
+    </div>
+
+    
+
+
+
+</div>
+
+
+
+<script>
+
+     let treeHandler=new TreeHandler("treeDivId", "contentDivId", "thrashCanId");
+     treeHandler.GenerateTree(@(Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model))));
+
+
+</script>

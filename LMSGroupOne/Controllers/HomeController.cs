@@ -1,8 +1,7 @@
-﻿using LMS.Core.Models.Entities;
+﻿using AutoMapper;
+using LMS.Core.Repositories;
 using LMSGroupOne.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -12,26 +11,25 @@ namespace LMSGroupOne.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly UserManager<Person> _userManager;
-        private readonly SignInManager<Person> _signInManager;
+        private readonly IUnitOfWork uow;
+        private readonly IMapper mapper;
 
-        public HomeController(ILogger<HomeController> logger, UserManager<Person> userManager, SignInManager<Person> signInManager, IWebHostEnvironment environment)
+        public HomeController(ILogger<HomeController> logger, IUnitOfWork uow, IMapper mapper)
         {
             _logger = logger;
-            _userManager = userManager;
-            _signInManager = signInManager;
+            this.uow = uow;
+            this.mapper = mapper;
         }
 
         [Authorize]
         public IActionResult Index()
         {
+            //if (User.IsInRole("Teacher"))
+            //{
+            //    return (View("IndexTeacher"));
+            //}
 
-            if (User.IsInRole("Teacher"))
-            {
-                return (View("IndexTeacher"));
-            }
-
-            return (View());
+            return RedirectToAction("Index", "MainNavigation");
 
         }
 
@@ -39,7 +37,6 @@ namespace LMSGroupOne.Controllers
         {
             return View();
         }
-
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

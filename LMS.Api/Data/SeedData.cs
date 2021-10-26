@@ -37,12 +37,20 @@ namespace LMS.Api.Data
             db.AddRange(worksandAuthors);
             
             await db.SaveChangesAsync();
+
+            var neroTulip = GetNeroTulip();
+            var nerosWorks = GetNerosWorks();
+            neroTulip.Works.AddRange(nerosWorks);
+            db.Add(neroTulip);
+            await db.SaveChangesAsync();
+
+
         }
 
         private static List<Work> GetWorkAndAuthors(List<Core.Entities.Type> types, List<Genre> genres)
         {
             var works = new List<Work>();
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 20; i++)
             {
                 var work = new Work
                 {
@@ -60,17 +68,80 @@ namespace LMS.Api.Data
             return works;
         }
 
+        private static Author GetNeroTulip()
+        {
+            var neroTulip = new Author
+            {
+                FirstName = "Nero",
+                LastName = "Tulip",
+                DateOfBirth = new DateTime(1960, 10, 18),
+                //Works = GetNerosWorks()
+            };
+            //ToDo add Nero's works.
+            return neroTulip;
+        }
+        private static List<Work> GetNerosWorks()
+        {
+
+            var myNewGenre = new Genre //Todo <-- Get this ID is not possible. But It can be a Variable? Reference type works or not... lets find out. WORKS
+            {
+                Name = "Non-Fiction",
+                Description = "Based not on Fiction but real events."
+            };
+
+            var nerosWorks = new List<Work>();
+            nerosWorks.Add(new Work
+            {
+                Title = "White Swans",
+                PublicationDate = new DateTime(2000, 10, 18),
+                Description = "On the Dangers of not Preventing and building the complext",
+                Level = "intermediate",
+                Genre = myNewGenre,
+                Type = new Core.Entities.Type
+                {
+                    Name = "Paperback",
+                    Description = "Not Digital"
+                }
+                
+            });
+            nerosWorks.Add(new Work
+            { 
+            Title = "Very Robust",
+            PublicationDate = new DateTime(2002, 10, 18),
+            Description = "Coffee cup made from light is superior",
+            Level = "intermediate",
+            Genre = myNewGenre,
+            Type = new Core.Entities.Type // This is undesireable but good to know about. Should be a variable like Genre
+            {
+                Name = "Paperback",
+                Description = "Not Digital"
+            }
+
+            });
+            return nerosWorks;
+
+        }
+
         private static ICollection<Author> GetAuthors()
         {
             var authors = new List<Author>();
             for (int i = 0; i < 2; i++)
             {
+                //if (i == 0) Several calls are made to here..
+                //{
+                //    var neroTulip = GetNeroTulip();
+                //    authors.Add(neroTulip);
+                //}
                 var author = new Author
                 {
                     FirstName = fake.Name.FirstName(),
                     LastName = fake.Name.LastName(),                  
-                    DateOfBirth = DateTime.Now.AddYears(fake.Random.Int(-65, -25))
+                    DateOfBirth = DateTime.Now.AddYears(fake.Random.Int(-65, -25)), 
                 };
+                if(fake.Random.Int(1, 100) > 75)
+                {
+                    author.DateOfDeath = DateTime.Now.AddYears(fake.Random.Int(-10, -2));
+                }
                 authors.Add(author);
             }
             return authors;
