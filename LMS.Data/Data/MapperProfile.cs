@@ -8,6 +8,7 @@ using LMS.Core.Models.Dto;
 using LMS.Core.Models.ViewModels.API.Work;
 using LMS.Core.Models.Entities.API;
 using LMS.Core.Models.ViewModels.Module;
+using LMS.Core.Models.ViewModels;
 
 namespace LMS.Data.Data
 {
@@ -23,7 +24,7 @@ namespace LMS.Data.Data
 
             CreateMap<Activity, ActivityCreateViewModel>().ReverseMap();
             CreateMap<Activity, ActivityEditViewModel>().ReverseMap();
-            CreateMap<Person, CreateAccountViewModel>().ReverseMap();
+            CreateMap<Person, AccountCreateViewModel>().ReverseMap();
             CreateMap<AuthorsViewmodel, AuthorDto >().ReverseMap();
             CreateMap<WorksViewModel, WorkDto>().ReverseMap();
             CreateMap<Work, WorkDto>().ReverseMap();

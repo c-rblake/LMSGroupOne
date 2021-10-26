@@ -38,7 +38,7 @@ namespace LMSGroupOne.Controllers
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Teacher")]
         [Route("/account/create/")]
-        public async Task<IActionResult> Create(CreateAccountViewModel newAccount)
+        public async Task<IActionResult> Create(AccountCreateViewModel newAccount)
         {
             if (ModelState.IsValid)
             {
