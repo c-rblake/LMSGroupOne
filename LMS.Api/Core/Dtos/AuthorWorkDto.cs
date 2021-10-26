@@ -12,6 +12,7 @@ namespace LMS.Api.Core.Dtos
         public int GenreId { get; set; }
         public int TypeId { get; set; }
 
+        public string Title { get; set; }
         public string Description { get; set; }
 
         public string Level { get; set; }

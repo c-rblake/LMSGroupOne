@@ -13,9 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Net.Http;
 
 namespace LMSGroupOne
 {
@@ -31,6 +29,16 @@ namespace LMSGroupOne
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHttpClient("LMSClient", client =>
+            {
+                client.BaseAddress = new Uri("https://localhost:44308/api/");
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+            }).ConfigurePrimaryHttpMessageHandler(handler => new HttpClientHandler()
+            {
+                AutomaticDecompression = System.Net.DecompressionMethods.GZip
+            });
+            services.AddMvc().AddControllersAsServices();
             services.AddDbContext<ApplicationDbContext>(options =>
                  options.UseSqlServer(
                      Configuration.GetConnectionString("DefaultConnection")));
@@ -50,9 +58,12 @@ namespace LMSGroupOne
             //UserManager RoleManager
             services.AddControllersWithViews();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IJTUnitOfWork, JTUnitOfWork>();            
             services.AddAutoMapper(typeof(MapperProfile));
             services.AddScoped<IRoleSelectService, RoleSelectService>();
             services.AddScoped<ICourseSelectService, CourseSelectService>();
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

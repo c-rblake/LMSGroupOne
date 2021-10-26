@@ -47,8 +47,11 @@ namespace LMS.Api.Migrations
                     b.Property<int?>("AuthorWorkWorkId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("DateOfBirth")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset>("DateOfBirth")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset?>("DateOfDeath")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");

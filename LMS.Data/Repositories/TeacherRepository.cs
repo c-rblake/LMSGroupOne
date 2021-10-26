@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using LMS.Core.Dto;
 using LMS.Core.Models.Entities;
 using LMS.Core.Repositories;
 using LMS.Data.Data;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace LMS.Data.Repositories
@@ -22,5 +25,25 @@ namespace LMS.Data.Repositories
         {
             return await db.Persons.ToListAsync();
         }
+
+
+        public async Task<IEnumerable<TreeDataDto>> GetTreeData(CancellationToken cancellationToken=default)
+        {
+           
+            //todo get users with teacher role?
+
+
+            return null;   
+        
+        }
+
     }
+
+
+      
+
+
+
+
+    
 }

@@ -8,6 +8,7 @@ namespace LMS.Api.ResourceParamaters
 {
     public class WorksResourceParameters
     {
+        const int maxPageSize = 15;
         //Todo Input Params for [FromBody] or [FromQuery]
 
         public string Title { get; set; }
@@ -21,6 +22,15 @@ namespace LMS.Api.ResourceParamaters
         public string GenreName { get; set; }
 
         public string OrderBy { get; set; } = "Title";
+
+        public int PageNumber { get; set; } = 1;
+
+        private int _pageSize { get; set; } = 10;
+        public int PageSize 
+        {
+            get => _pageSize;
+            set => _pageSize = (value > maxPageSize) ? maxPageSize : value;
+        } 
 
         //public Core.Entities.Type Type { get; set; }
     }

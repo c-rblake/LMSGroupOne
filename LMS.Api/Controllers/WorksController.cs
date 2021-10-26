@@ -2,6 +2,7 @@
 using LMS.Api.Core.Dtos;
 using LMS.Api.Core.Entities;
 using LMS.Api.Core.Repositories;
+using LMS.Api.Helpers;
 using LMS.Api.ResourceParamaters;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
@@ -9,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace LMS.Api.Controllers
@@ -57,13 +59,26 @@ namespace LMS.Api.Controllers
             {
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
+            var customHeader = new { text = "text" };
+            Response.Headers.Add("My Custom Header from GetWork", JsonSerializer.Serialize(customHeader));
+
             return Ok(workDto);
         }
+
+        [HttpOptions]
+        public IActionResult GetWorkOptions()
+        {
+            Response.Headers.Add("Allow","GET,OPTIONS,POST,PATCH");
+            return Ok();
+        }
+
 
         [HttpGet(Name = "GetWorks")]
         //[HttpHead]
         public async Task<ActionResult<IEnumerable<WorkDto>>> GetWorks([FromQuery]WorksResourceParameters workResourceParameters)
+            //Async is in the Paged List Object.
         {
+            //var workResults = await uow.WorksRepository.GetAllWorksAsync(workResourceParameters);
             var workResults = await uow.WorksRepository.GetAllWorksAsync(workResourceParameters);
             if (workResults is null) return NotFound();
 
@@ -72,6 +87,28 @@ namespace LMS.Api.Controllers
             {
                 return StatusCode(500);
             }
+            var previousPageLink = workResults.HasPrevious ?
+                CreateWorkResourceUri(workResourceParameters,
+                ResourceUriType.PreviousPage) : null;
+
+            var nextPageLink = workResults.HasNext ?
+                CreateWorkResourceUri(workResourceParameters,
+                ResourceUriType.NextPage) : null;
+
+            var paginationMetadata = new
+            {
+                totalCount = workResults.TotalCount,
+                pagesize = workResults.PageSize,
+                currentPage = workResults.CurrentPage,
+                totalPages = workResults.TotalPages,
+                previousPageLink = previousPageLink,
+                nextPageLink = nextPageLink
+            };
+
+            Response.Headers.Add("X-Pagination", 
+                JsonSerializer.Serialize(paginationMetadata));
+
+
             return Ok(workDtos);
         }
         /// <summary>
@@ -116,6 +153,40 @@ namespace LMS.Api.Controllers
             else return StatusCode(500);
 
 
+        }
+        private string CreateWorkResourceUri(WorksResourceParameters worksResourceParameters, ResourceUriType type)
+        {
+            switch (type)
+            {
+                case ResourceUriType.PreviousPage:
+                    return Url.Link("GetWorks",
+                        new
+                        {
+                            pageNumber = worksResourceParameters.PageNumber - 1,
+                            pageSize = worksResourceParameters.PageSize,
+                            orderBy = worksResourceParameters.OrderBy,
+                            //Todo add more
+                        });
+                case ResourceUriType.NextPage:
+                    return Url.Link("GetWorks",
+                        new 
+                        {
+                            pageNumber = worksResourceParameters.PageNumber + 1,
+                            pageSize = worksResourceParameters.PageSize,
+                            orderBy = worksResourceParameters.OrderBy,
+                        });
+
+                //case ResourceUriType.Current:
+                default:
+                    return Url.Link("GetWorks",
+                        new
+                        {
+                            pageNumber = worksResourceParameters.PageNumber - 1,
+                            pageSize = worksResourceParameters.PageSize,
+                            orderBy = worksResourceParameters.OrderBy,
+                        });
+
+            }
         }
 
 

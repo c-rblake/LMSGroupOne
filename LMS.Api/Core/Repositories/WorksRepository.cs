@@ -1,6 +1,9 @@
-﻿using LMS.Api.Core.Entities;
+﻿using LMS.Api.Core.Dtos;
+using LMS.Api.Core.Entities;
 using LMS.Api.Data;
+using LMS.Api.Helpers;
 using LMS.Api.ResourceParamaters;
+using LMS.Api.Services;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -12,10 +15,12 @@ namespace LMS.Api.Core.Repositories
     public class WorksRepository : IWorksRepository
     {
         private readonly LMSApiContext db;
+        private readonly IPropertyMappingService _propertyMappingService;
 
-        public WorksRepository(LMSApiContext db)
+        public WorksRepository(LMSApiContext db, IPropertyMappingService _propertyMappingService)
         {
             this.db = db ?? throw new ArgumentNullException(nameof(db));
+            this._propertyMappingService = _propertyMappingService ?? throw new ArgumentNullException(nameof(_propertyMappingService));
         }
 
         public async Task AddAsync(Work work)
@@ -33,14 +38,9 @@ namespace LMS.Api.Core.Repositories
             return await db.Works.FirstOrDefaultAsync(w => w.Id == id);
         }
 
-        public async Task<IEnumerable<Work>> GetAllWorksAsync(WorksResourceParameters workResourceParameters)
+        public async Task<PagedList<Work>> GetAllWorksAsync(WorksResourceParameters workResourceParameters)
+            //Todo Turn to ASYNC
         {
-            //var works = await db.Works
-            //    .Include(w => w.Authors)
-            //    .Include(w => w.Genre)
-            //    .Include(w => w.Type)
-            //    .ToListAsync();
-
             var query = db.Works
                 .Include(w => w.Authors)
                 .Include(w => w.Genre)
@@ -58,31 +58,48 @@ namespace LMS.Api.Core.Repositories
                 //query = query.Include(q => q.Authors.Where(a => author.Contains(a))); //Empty Author Lists
                 query = query.Where(q => q.Authors.Any(a => authors.Contains(a)));
                 //var result = lista.Where(a => listb.Any(b => b.Contains(a)));
-
             }
             if (!string.IsNullOrWhiteSpace(workResourceParameters.GenreName))
             {
                 query = query.Where(q => q.Genre.Name == workResourceParameters.GenreName);
 
             }
-            if (!string.IsNullOrWhiteSpace(workResourceParameters.OrderBy)) // On title
-            {
-                if (workResourceParameters.OrderBy.ToLowerInvariant() == "title")
-                {
-                    query = query.OrderBy(q => q.Title);
-                }
-            }
+            //if (!string.IsNullOrWhiteSpace(workResourceParameters.OrderBy)) // On title
+            //{
+            //    if (workResourceParameters.OrderBy.ToLowerInvariant() == "title")
+            //    {
+            //        query = query.OrderBy(q => q.Title);
+            //    }
+            //}
 
-            // query.ApplySort(workResourceParameters.OrderBy, _mappingDictionary)
+            var workPropertyMappingDictionary = _propertyMappingService.GetPropertyMapping<WorkDto, Work>();
 
-            return await query.ToListAsync();
+            query = query.ApplySort(workResourceParameters.OrderBy, workPropertyMappingDictionary); //Missing assignment... Inplace = True anyone?
+
+            //Paging Last. LACK THE ASYNC CODE.
+
+            //var collection = PagedList<Work>.Create(query, 
+            //    workResourceParameters.PageNumber,
+            //    workResourceParameters.PageSize);
+
+            //return collection;
+            //Breaks the Orderer of Items?? But is Async.
+            var count = query.Count();
+            var items = await query
+                .Skip(workResourceParameters.PageSize * (workResourceParameters.PageNumber - 1))
+                .Take(workResourceParameters.PageSize).ToListAsync();
+
+            var pagedList = new PagedList<Work>(items, count, workResourceParameters.PageNumber, workResourceParameters.PageSize);
+
+            return pagedList;
+
         }
 
         public async Task<Work> GetWorkAsync(int id)
         {
             var work = await db.Works
                 .Include(w => w.Genre)
-                .Include(w => w.Authors) //Todo. SelfReference loop.
+                .Include(w => w.Authors)
                 .Include(w => w.Type)
                 .FirstOrDefaultAsync(w => w.Id == id);
 

@@ -8,15 +8,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - LMSGroupOne</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
-<body>
-    <header>
+<body class="container-fluid m-0 p-0">
+    <header id="headerBarId" class="container-fluid m-0 p-0">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-6 bg-primary">
-                    <a asp-area="" asp-controller="Home" asp-action="Index" class="LMSGroupOne">LMS Group One</a>
+                    <a asp-area="" asp-controller="Home" asp-action="Index" class="LMSGroupOne">LMS Group One</a>                    
                 </div>
+                
                 <div class="col-6 bg-primary navbar-collapse collapse d-sm-inline-flex justify-content-end">
                     <partial name="_LoginPartial" />
                 </div>
@@ -64,40 +66,40 @@
                                 </div>
                             </li>
 
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Account
-                                </a>
-                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="home" asp-action="createaccount">Create New</a>
-                                    <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" href="#">List</a>
-                                </div>
-                            </li>
-                        </ul>
-                        <form class="form-inline my-2 my-lg-0">
-                            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                            <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Search</button>
-                        </form>
-                    </div>
-                </nav>
-            }
-            </div>
-        </header>
-        <div class="container-fluid">
-            <main role="main" class="pb-3">
-                @RenderBody()
-            </main>
-        </div>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Account
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="account" asp-action="create">Create New</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#">List</a>
+                            </div>
+                        </li>
+                    </ul>
+                    <form class="form-inline my-2 my-lg-0">
+                        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Search</button>
+                    </form>
+                </div>
+            </nav>
 
-        <footer class="border-top footer text-dark">
-            <div class="container-fluid bg-primary">
-                &copy; 2021 - LMSGroupOne
-            </div>
-        </footer>
-        <script src="~/lib/jquery/dist/jquery.min.js"></script>
-        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="~/js/site.js" asp-append-version="true"></script>
-        @await RenderSectionAsync("Scripts", required: false)
-    </body>
+        </div>
+    </header>
+    <div class="container-fluid m-0 p-0">
+        <main role="main">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer id="footerBarId" class="border-top footer text-dark p-0 m-0">
+        <div class="container-fluid p-0 m-0 bg-primary">
+            &copy; 2021 - LMSGroupOne
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
 </html>

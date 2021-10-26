@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -24,7 +25,7 @@ namespace LMSGroupOne.Controllers
         }
         public IActionResult Index()
         {
-            return View();
+            return PartialView();
         }
 
         [Route("/course/edit/{id}")]
@@ -86,18 +87,29 @@ namespace LMSGroupOne.Controllers
             {
                 uow.CourseRepository.AddCourse(mapper.Map<Course>(course));
                 await uow.CompleteAsync();
+                course.Success = true;
+                course.Message = "Course was created";
+                course.ReturnId = 1234;  // todo return a valid id for the created course
+            }
+            else
+            {
+                course.Success = false;
+                course.Message = "Course creation failed";
             }
 
-            return View(course);
+            return PartialView(course);
         }
 
         public IActionResult Create()
         {
-            return View();
+            
+            return PartialView(new CreateCourseViewModel());
         }
 
+
+        [HttpGet]
         public IActionResult VerifyCourseName(string Name)
-        {
+        {            
             bool courseExists = uow.CourseRepository.CourseExist(Name);
             if (courseExists)
             {

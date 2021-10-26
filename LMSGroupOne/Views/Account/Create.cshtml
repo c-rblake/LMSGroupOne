@@ -10,7 +10,6 @@
 
 <div class="row">
     <div class="col-md-4">
-        <form asp-controller="home" asp-action="Create">
             <h4>Create account</h4>
             <hr />
             <div asp-validation-summary="All" class="text-danger"></div>
@@ -64,8 +63,16 @@
 <div class="modal fade" id="createAccountResult" tabindex="-1" role="dialog" aria-labelledby="aModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header"><h5 class="modal-title" id="aModalLabel">@ViewBag.Email</h5></div>
-            <div class="modal-body">@ViewBag.Result</div>
+            <div class="modal-header"><h5 class="modal-title" id="aModalLabel">@ViewBag.UserName</h5></div>
+            <div class="modal-body">Account was successfully created with role @ViewBag.Role</div>
+            <div class="modal-footer">
+<<<<<<<< HEAD:LMSGroupOne/Views/Account/Create.cshtml
+                <a asp-controller="Account" asp-action="Create">Create another account</a>
+========
+                <a asp-controller="Home" asp-action="CreateAccount">Create another account</a>
+>>>>>>>> Dev:LMSGroupOne/Views/Home/CreateAccount.cshtml
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
         </div>
     </div>
 </div>
