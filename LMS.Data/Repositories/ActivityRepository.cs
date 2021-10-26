@@ -47,6 +47,7 @@ namespace LMS.Data.Repositories
         public int GetActivityId(string name)
         {
             return db.Activities.FirstOrDefault(c => c.Name == name).Id;
+           
         }
     }
 }

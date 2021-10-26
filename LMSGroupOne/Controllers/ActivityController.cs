@@ -25,7 +25,7 @@ namespace LMSGroupOne.Controllers
         }
         public IActionResult Index()
         {
-            return View();
+            return PartialView();
         }
         [Route("/activity/create/moduleid/{moduleid}")]
         public async Task<IActionResult> Create(int moduleid)
@@ -34,14 +34,14 @@ namespace LMSGroupOne.Controllers
             var module = await uow.ModuleRepository.GetModule(moduleid);
             ViewBag.activityTypes = activityTypes;
             ViewBag.module = $"{module.Name} {module.StartDate.ToString("yyyy-MM-dd")}--{module.EndDate.Date.ToString("yyyy-MM-dd")}";
-            return PartialView();
+            return PartialView(new ActivityCreateViewModel());
         }
 
         [HttpPost]
         [Route("/activity/create/moduleid/{moduleid}")]
         [Authorize(Roles = "Teacher")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(int moduleid,/* int ActivityTypeId,*/ ActivityCreateViewModel model)
+        public async Task<IActionResult> Create(int moduleid,ActivityCreateViewModel model)
         {
            // int moduleId = model.ModuleId;
             IEnumerable<Activity> activities = await GetAllActivitiesByModuleAsync(moduleid);
@@ -66,13 +66,14 @@ namespace LMSGroupOne.Controllers
                     return View(model);
                 }
             }
+            //model.Success = true;
+            //model.Message = "activity was created";
+           
             if (ModelState.IsValid)
             {
                 uow.ActivityRepository.AddActivity(mapper.Map<Activity>(model));
                 await uow.CompleteAsync();
-                model.Success = true;
-                model.Message = "activity was created";
-                model.ReturnId = uow.ActivityRepository.GetActivityId(model.Name);
+              //  model.ReturnId = uow.ActivityRepository.GetActivityId(model.Name);
             }
             return PartialView(model);
         }
