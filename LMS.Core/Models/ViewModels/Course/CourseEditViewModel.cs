@@ -24,6 +24,7 @@ namespace LMS.Core.Models.ViewModels.Course
         public bool Success { get; set; }  // creation status
         public string Message { get; set; }   // returnmessage
         public int ReturnId { get; set; }    // return id when created
+        public Guid PersonId { get; set; }
 
     }
 }
