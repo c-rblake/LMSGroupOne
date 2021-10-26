@@ -4,7 +4,7 @@
     ViewData["Title"] = "Create";
 }
 
-
+<h6>Module @ViewBag.module</h6>
 <div >
     <form id="formId" asp-action="Create">
         <input type="hidden" asp-for="ModuleId"/>
@@ -27,10 +27,6 @@
             <label asp-for="ActivityTypeId" class="control-label"> Activity types</label>
             <select asp-for="ActivityTypeId" class="form-control" asp-items="@(new SelectList(ViewBag.activityTypes,"Id","Name"))"></select>
         </div>
-        @*<div class="form-group">
-            <label asp-for="ModuleId"  class="control-label">Modules</label>
-            <select asp-for="ModuleId" class="form-control" asp-items="@(new SelectList(ViewBag.modules,"Id","Name"))"></select>
-        </div>*@
         <div class="form-group">
             <label asp-for="StartDate" class="control-label"></label>
             <input asp-for="StartDate" class="form-control" />
@@ -41,17 +37,10 @@
             <input asp-for="EndDate" class="form-control" />
             <span asp-validation-for="EndDate" class="text-danger"></span>
         </div>
-        @*<div class="form-group">
-            <input type="submit" value="Create" class="btn btn-primary" />
-        </div>*@
         @Model.Message
     </form>
 </div>
 
-
-@*<div>
-    <a asp-action="Index">Back to List</a>
-</div>*@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
