@@ -1,6 +1,9 @@
 ﻿@model LMSGroupOne.Models.MainNavigation.TreeNode
 
-
+<style>
+    editButton {
+    }
+</style>
 
 
 @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" }))
@@ -13,6 +16,9 @@
 }
 <script src="~/js/WindowResizer.js" asp-append-version="true"></script>
 <script src="~/js/LoadHomePage.js" asp-append-version="true"></script>
+<script src="~/js/ModalHandler.js" asp-append-version="true"></script>
+<script src="~/js/SearchHandler.js" asp-append-version="true"></script>
+
 
 <div class="container-fluid p-0 m-0" style="min-height:100%; max-height:100%;">
     <div class="row p-0 m-0">
@@ -30,7 +36,7 @@
             @await Html.PartialAsync("_MainContentPartial")
 
         </div>
-
+        
 
     </div>
 </div>
@@ -60,167 +66,10 @@
 
 
 <script>
-
-
-    class ModalHandler
-    {
-
-        constructor()
-        {
-            document.getElementById("centerModalClose").addEventListener("click", this.OnCloseButton);
-        }
-
-        OnCloseButton()
-        {                           
-            let modal = document.getElementById("centerModalId");
-            modal.style.display = "none";            
-        }
-
-
-
-        OnButton()
-        {
-
-
-
-
-        }
-
-
-
-
-    }
-
     let modalHandler = new ModalHandler();
-
-    
-
-    
-
-
-
-    // 
-    document.getElementById("centerModalButton").addEventListener("click", (event) => {
-        console.log("clicked on the modal button");
-
-
-        var tform = $('#__AjaxAntiForgeryForm');
-        var token = $('input[name="__RequestVerificationToken"]', tform).val();
-
-
-        let type = document.getElementById("centerModalId").dataset.itemType;
-        console.log("receiving type");
-        console.log("----------------------");
-        console.log(type);
-
-        let form = document.getElementById("formId");
-        //console.log(form);
-
-        let url = "";
-        let data = "";
-        switch (parseInt(type)) {
-            case TreeFactory.NodeTypes.COURSE:
-                url = "/Course/Create";
-                data =
-                {
-                    __RequestVerificationToken: token,
-                    Name: form.elements["Name"].value,
-                    Description: form.elements["Description"].value,
-                    StartDate: form.elements["StartDate"].value,
-                    EndDate: form.elements["EndDate"].value,
-                };
-                break;
-            case TreeFactory.NodeTypes.MODULE:
-                url = "/Module/CreateModule";
-                //todo data
-                break;
-            case TreeFactory.NodeTypes.ACTIVITY:
-                url = "/Activity/Create";
-                // todo data
-                break;
-        }
-
-
-        // todo check type and switch
-        $.ajax({
-            type: "POST",
-            url: url,
-            data: data,
-            cache: false,
-            success: result => {
-                let modalContent = document.getElementById("centerModalBodyId");
-                modalContent.innerHTML = result;
-                fixvalidation();
-
-                //const form = target.querySelector('form');
-                //$.validator.unobtrusive.parse(form);
-
-                //const form = document.getElementById('createFormId');
-                //$.validator.unobtrusive.parse(form);
-
-
-
-
-                form = document.getElementById("formId");
-                let success = form.elements["Success"].value;
-                let returnId = form.elements["ReturnId"].value;
-                let name = form.elements["Name"].value;
-
-               
-                console.log(success);
-                if (success == "True")
-                {
-                    console.log("course was created ooooooooooooooooooo");
-                    document.getElementById("centerModalButton").style.display = "none";
-
-                    // success, add stuff to tree
-                    let path = document.getElementById("centerModalId").dataset.itemParentId;
-
-                    $.ajax({
-                        type: "GET",
-                        url: "/AddNavigation/OnNew",
-                        data: { path: path, id: returnId, type: type, name: name},
-                        cache: false,
-                        success: result => {
-                            let obj = JSON.parse(result);                
-                            if (obj.success) {                    
-                                treeHandler.AddSubTree(obj.subTree, obj.type, obj.path);                    
-                            } 
-                        }
-                    });
-
-
-
-                }
-
-
-
-               
-
-
-
-
-            }
-
-
-
-        });
-
-
-
-
-    });
-
-
-
 </script>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
 }
-
-
-
-
-

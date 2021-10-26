@@ -1,0 +1,17 @@
+﻿@model LMSGroupOne.Models.Search.SearchModelView
+
+<form id="searchFormId">
+
+    <input type="text" asp-net-for="Id" asp-for="Name">
+    <button type="submit">button</button>
+
+    <br>
+    @if (Model != null)
+    {
+        @foreach (var item in @Model.Courses)
+        {
+            <span>@item</span><br>
+        }
+    }
+
+</form>

@@ -32,7 +32,8 @@ namespace LMS.Api
         {
 
             services.AddControllers(opt => opt.ReturnHttpNotAcceptable = true)
-                .AddNewtonsoftJson()
+                .AddNewtonsoftJson(opt => opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore)
+
                 .AddXmlSerializerFormatters();
             services.AddSwaggerGen(c =>
             {

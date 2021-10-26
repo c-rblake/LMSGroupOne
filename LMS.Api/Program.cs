@@ -24,8 +24,9 @@ namespace LMS.Api
                 var services = scope.ServiceProvider;
                 var context = services.GetRequiredService<LMSApiContext>();
 
-                context.Database.EnsureDeleted(); //Performance Drag and Source of Errors on testing.
-                context.Database.Migrate();
+                //context.Database.EnsureCreated(); //Performance Drag and Source of Errors on testing.
+                //context.Database.EnsureDeleted();
+                //context.Database.Migrate();
 
                 try
                 {

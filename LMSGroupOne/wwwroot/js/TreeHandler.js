@@ -1,4 +1,6 @@
-﻿class TreeHandler {
+﻿
+// a class to handle the tree navigations
+class TreeHandler {
     #dragElement;
     #pressPositionX;
     #pressPositionY;
@@ -20,6 +22,9 @@
     #movedElement;
 
     #contentDiv;
+
+    #currentDisplayId;
+    #currentDisplayType;
 
     constructor(menuDivId, contentDivId, thrashCanId) {
         this.#pressPositionX = 0;
@@ -62,25 +67,32 @@
         let e = document.elementFromPoint(event.clientX, event.clientY);
         console.log("dragged to>>" + e.id + ": " + e.dataset.itemType);
         console.log("belongs to parent" + e.dataset.itemParentId + ": " + e.dataset.itemParentType);
+        
 
-        if (this.#draging) {
-            if (e.dataset.itemType == "trash") {
-                clearTimeout(this.#pressTimer);
-                this.#longPress = false;
-                this.#initialMove = false;
-                this.#draging = false;
+        // dragto
 
-
-                this.#OnDelete(event);
-                //return;
+        if (this.#draging) {            
+            switch (e.dataset.itemType)
+            {
+                case "trash":
+                    this.#OnDelete(event);
+                    break;
+                case String(TreeFactory.NodeTypes.COURSE):
+                    console.log("dragged to course");
+                    break;
+                case String(TreeFactory.NodeTypes.MODULE):
+                    console.log("dragged to module");
+                    break;
+                case String(TreeFactory.NodeTypes.ACTIVITY):
+                    console.log("dragged to activity");
+                    break;
             }
         }
 
         clearTimeout(this.#pressTimer);
         this.#longPress = false;
         this.#initialMove = false;
-        this.#draging = false;
-
+        this.#draging = false;        
     }
 
     #OnMouseMove(event) {
@@ -93,24 +105,20 @@
                     this.#draging = true;
                 }
                 this.#initialMove = true;
-            }
-
-            //console.log("distance:" + dist);
+            }           
 
         }
         if (this.#draging) {
             this.#dragElement.style.top = event.pageY + "px";
             this.#dragElement.style.left = event.pageX + "px";
-
-            let e = document.elementFromPoint(event.clientX, event.clientY);
-            //console.log("mosemove-" + e.id + ": " + e.dataset.itemType);
+            let e = document.elementFromPoint(event.clientX, event.clientY);            
 
         }
 
     }
 
     #OnClick(event) {
-
+        
         if (this.#longPress) {
             return;
         }
@@ -121,35 +129,10 @@
         console.log("type:" + event.target.dataset.itemExtra);
         console.log("ypos:" + event.clientY);
 
-
-
-        //let node = event.target.parentNode;
-        //if (this.#currentElement != node) {
-        //    console.log("new current------jjj-jj-jj-j");
-        //    this.#currentElement = node;
-        //}
-
-
-
-
         if (event.target.dataset.itemType != TreeFactory.NodeTypes.FOLDER)
         {
-            $.ajax({
-                type: "GET",
-                url: "/MainNavigation/OnTreeClick",
-                data: { id: event.target.id, type: event.target.dataset.itemType },
-                cache: false,
-                success: result => {
-                    console.log(result);
-                    //this.#contentDiv.innerHTML = result;
-                    document.getElementById("contentDivId").innerHTML = result;
-                }
-            });
-
-        }
-                
-        
-
+            this.#LoadMainContent(event.target.id, event.target.dataset.itemType);                       
+        }         
 
         if (event.target.dataset.itemExtra == "caret") {
 
@@ -165,8 +148,89 @@
 
         if (event.target.dataset.itemExtra == "new") {                        
             this.#OnNew(event);
+        }        
+
+    }
+
+    #LoadMainContent(id, type)
+    {        
+        $.ajax({
+            type: "GET",
+            url: "/MainNavigation/OnTreeClick",
+            data: { id: id, type: type },
+            cache: false,
+            success: result => {                
+
+                document.getElementById("contentDivId").innerHTML = result;
+
+                let editButton = document.getElementById("editButtonId");
+                if (editButton) {
+                    editButton.addEventListener("click", (event) => { this.#OnEdit(event) });
+                }
+
+                let searchForm = document.getElementById("searchFormId");
+                if (searchForm)
+                {                    
+                    searchForm.onsubmit = function(event)
+                    {                        
+                        SearchHandler.OnSearch(event);
+                        return false;
+                    };
+                }
+                this.#currentDisplayId = id;
+                this.#currentDisplayType = type;
+            }
+        }); 
+    }   
+
+    #OnEdit(event)
+    {        
+        let modal = document.getElementById("centerModalId");
+        let button = document.getElementById("centerModalButton");
+        let title = document.getElementById("centerModalTitleId");
+        let data = "";
+        button.innerHTML = "Edit";
+        button.style.display = "block";
+        let url = "";
+        let type = event.target.dataset.itemType;
+        let id = event.target.dataset.itemId;
+        modal.dataset.itemType = type;        
+        modal.dataset.itemOperation = "edit";
+        modal.dataset.itemId = id;       
+
+                
+        switch (parseInt(type)) {
+            case TreeFactory.NodeTypes.COURSE:
+                url = "/Course/Edit";  
+                data = { id:id };
+                modal.style.display = "block";
+                title.innerHTML = "Edit Course";
+                break;
+            case TreeFactory.NodeTypes.MODULE:
+                url = "/Module/EditModule";  
+                data = { id: id };
+                modal.style.display = "block";
+                title.innerHTML = "Edit Module";
+                break;
+            case TreeFactory.NodeTypes.ACTIVITY:
+                url = "/Activity/Edit";  
+                data = { id :id };
+                modal.style.display = "block";
+                title.innerHTML = "Edit Activity";
+                break;            
         }
 
+        $.ajax({
+            type: "GET",
+            url: url,
+            data: data,
+            cache: false,
+            success: result => {
+                let modalContent = document.getElementById("centerModalBodyId");
+                modalContent.innerHTML = result;
+                ModalHandler.FixValidation();
+            }
+        });
     }
 
     #OnDblClick(event) {
@@ -206,6 +270,7 @@
             caret.classList.add("fa-caret-down");
         }
     }
+
     #CloseNode(node) {
         node.dataset.itemOpen = false;
         node.nextSibling.hidden = true;
@@ -229,10 +294,8 @@
         let tRect = document.getElementById("toolBarId").getBoundingClientRect();
         let tOffset = tRect.height;
 
-
         // new current
-        if (this.#currentElement != node) {
-            console.log("new current");
+        if (this.#currentElement != node) {            
             this.#currentElement = node;
         }
 
@@ -250,68 +313,101 @@
         this.#selectSelection.style.height = (rect2.height - marginal * 2) + "px";
     }
 
-
-
-
-
-
     #OnDown(event) {
         this.#pressPositionX = event.clientX;
         this.#pressPositionY = event.clientY;
-        console.log("on down:" + event.clientY);
-
+        
         this.#longPress = false;
         this.#pressTimer = window.setTimeout(() => {
-            // your code here
-            console.log("timer");
+                        
             this.#dragElement.innerHTML = event.target.parentNode.innerHTML;
             this.#dragElement.id = event.target.id;
             this.#dragElement.dataset.itemType = event.target.dataset.itemType;
-
             this.#movedElement = event.target.parentNode.parentNode.parentNode;
-
-            this.#longPress = true; //if run hold function, longpress is true
-
+            this.#longPress = true; 
 
         }, 100);
     }
 
 
     #OnDelete() {
-        console.log("delete-----------------")
-        console.log("item id" + this.#dragElement.id);
-        console.log("item type" + this.#dragElement.dataset.itemType);
+        
+        let modal = document.getElementById("centerModalId");
+        let button = document.getElementById("centerModalButton");
+        let title = document.getElementById("centerModalTitleId");
+        let data = "";
+        button.innerHTML = "Delete";
+        button.style.display = "block";
+        let url = "";
+        let id = this.#dragElement.id;
+        let type = this.#dragElement.dataset.itemType;
+        modal.dataset.itemType = type;        
+        modal.dataset.itemOperation = "delete";
+        modal.dataset.itemId = id;
+         
+        switch (parseInt(type)) {
+            case TreeFactory.NodeTypes.COURSE:
+                url = "/Delete/DeleteCourse";  
+                data = { Id:id };
+                modal.style.display = "block";
+                title.innerHTML = "Delete Course";
+                break;
+            case TreeFactory.NodeTypes.MODULE:
+                url = "/Delete/DeleteModule";  
+                data = { Id:id };
+                modal.style.display = "block";
+                title.innerHTML = "Delete Module";
+                break;
+            case TreeFactory.NodeTypes.ACTIVITY:
+                url = "/Delete/DeleteActivity";  
+                data = { Id:id };
+                modal.style.display = "block";
+                title.innerHTML = "Delete Activity";
+                break;
+            case TreeFactory.NodeTypes.FILE:
+                url = "/Delete/DeleteDocument";
+                data = { Id: id };
+                modal.style.display = "block";
+                title.innerHTML = "Delete Document";
+                break;
+        }
 
         $.ajax({
             type: "GET",
-            url: "/MainNavigation/OnDelete",
-            data: { id: this.#dragElement.id, type: this.#dragElement.dataset.itemType },
+            url: url,
+            data: data,
             cache: false,
             success: result => {
-                let obj = JSON.parse(result);
-                console.log(obj.success);
-                if (obj.success) {
-
-                    this.#removeElement(this.#movedElement);
-                }
+                let modalContent = document.getElementById("centerModalBodyId");
+                modalContent.innerHTML = result;
+                ModalHandler.FixValidation();
             }
         });
-
-
     }
 
-    #removeElement(element) {
-        let pNode = element.parentNode;
-        element.remove();
+    UpdateAfterDelete(id, type)
+    {
+        let item = this.#FindItem(type, id).parentNode.parentNode;
+        let pNode = item.parentNode;
+
+        item.remove();
+        
+        if (pNode.childElementCount===0)
+        {            
+            this.#CloseNode(pNode.previousSibling);
+            pNode.previousSibling.childNodes[0].hidden = true;
+           
+        }
         this.#SelectionOutline(pNode.parentNode.childNodes[0]);
 
+        if (this.#currentDisplayId == id && this.#currentDisplayType == type)
+        {
+            document.getElementById("contentDivId").innerHTML = "";            
+        }
+
     }
-
-    
-    #OnNew(event) {
-
-        console.log("-------------parent id-----------------------");
-        console.log(event.target.dataset.itemParentId);
+        
+    #OnNew(event) {        
 
         let modal = document.getElementById("centerModalId");        
         let button = document.getElementById("centerModalButton");
@@ -323,6 +419,7 @@
         let type = event.target.dataset.itemCreates;
         modal.dataset.itemType = type;
         modal.dataset.itemParentId = event.target.id;
+        modal.dataset.itemOperation = "new";
 
         switch (parseInt(type))
         {
@@ -333,19 +430,23 @@
                 break;
             case TreeFactory.NodeTypes.MODULE:
                 url = "/Module/CreateModule";
-                data = event.target.dataset.itemParentId;
+                data = { id : event.target.dataset.itemParentId };
                 modal.style.display = "block";
                 title.innerHTML = "Create Module";
                 break;
             case TreeFactory.NodeTypes.ACTIVITY:
                 url = "/Activity/Create";
-                data = event.target.dataset.itemParentId;
+                data = { id : event.target.dataset.itemParentId };
                 modal.style.display = "block";
                 title.innerHTML = "Create Activity";
                 break;
-        }
-
-        
+            case TreeFactory.NodeTypes.FILE:
+                url = "/Course/Create";
+                data = event.target.dataset.itemParentId;
+                modal.style.display = "block";
+                title.innerHTML = "Create Document";
+                break;
+        }        
 
         $.ajax({
             type: "GET",
@@ -355,27 +456,23 @@
             success: result => {
                 let modalContent = document.getElementById("centerModalBodyId");
                 modalContent.innerHTML = result;                                
-                fixvalidation();               
+                ModalHandler.FixValidation();               
             }
-        });
+        });             
 
+    }
+
+    UpdateAfterEdit(id, type, name)
+    {
+        let item = this.#FindItem(type, id);
         
+        // rename the treenode
+        item.childNodes[2].innerHTML = name;
 
-
-
-
-        //$.ajax({
-        //    type: "GET",
-        //    url: "/AddNavigation/OnNew",
-        //    data: { path: event.target.id, id: "hello_id", type: event.target.dataset.itemCreates, name: "hello world"},
-        //    cache: false,
-        //    success: result => {
-        //        let obj = JSON.parse(result);                
-        //        if (obj.success) {                    
-        //            this.AddSubTree(obj.subTree, obj.type, obj.path);                    
-        //        } 
-        //    }
-        //});
+        // relaod page if current
+        if (this.#currentDisplayId == id && this.#currentDisplayType == type) {            
+            this.#LoadMainContent(id, type);
+        }
     }
 
     AddSubTree(subTree, type, path) {
@@ -383,21 +480,21 @@
         let elmer = this.#FindListGroup(subTree.Type, path);
         let item = TreeFactory.GenerateSubTree(subTree, (item) => this.#AddEventListener(item));
         elmer.appendChild(item);
+        
+        let caret = elmer.previousSibling.childNodes[0].hidden = false;
+        this.#SelectionOutline(elmer.previousSibling);
     }
 
     #AddEventListener(item) {
         item.addEventListener("click", (event) => this.#OnClick(event));
         item.addEventListener("dblclick", (event) => this.#OnDblClick(event));
-        item.addEventListener("mousedown", (event) => this.#OnDown(event));
+        item.addEventListener("mousedown", (event) => this.#OnDown(event));        
     }
 
     GenerateTree(node)
     {
         this.#menuDiv.appendChild(TreeFactory.GenerateSubTree(node, (item) => this.#AddEventListener(item)));        
-    }
-
-
-   
+    }   
 
     // finds the place to put created items in  
     #FindListGroup(type, id) {
@@ -406,6 +503,15 @@
         let bstr = '[data-item-creates="' + type + '"]';        
         let q = document.querySelectorAll(gstr + bstr);       
         return q[0].parentNode.nextSibling;                
+    }
+
+    #FindItem(type, id)
+    {
+        let gstr = "[id='" + id + "']";
+        let bstr = '[data-item-type="' + type + '"]';
+        let q = document.querySelectorAll(gstr + bstr);
+        
+        return q[0].parentNode;
     }
 
 
