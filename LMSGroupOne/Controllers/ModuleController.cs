@@ -36,12 +36,12 @@ namespace LMSGroupOne.Controllers
             //ViewBag.Courses = courses;
             var model = new CreateModuleViewModel
             {
-                //Id = 1,
+                
                 CourseId = id,
-                //Description = "hello world",
+                
                 StartDate = DateTime.Now,
                 EndDate = DateTime.Now,
-                //Name = "hej",
+                
                 Message = "",
                 ReturnId = 0,
                 Success = false,

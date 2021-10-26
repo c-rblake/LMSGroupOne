@@ -201,20 +201,20 @@ class TreeHandler {
                 
         switch (parseInt(type)) {
             case TreeFactory.NodeTypes.COURSE:
-                url = "/Course/Create";  // todo correct url, testing with course
-                data = id;
+                url = "/Course/Edit";  
+                data = { id:id };
                 modal.style.display = "block";
                 title.innerHTML = "Edit Course";
                 break;
             case TreeFactory.NodeTypes.MODULE:
-                url = "/Module/EditModule";  // todo correct url, testing with course
+                url = "/Module/EditModule";  
                 data = { id: id };
                 modal.style.display = "block";
                 title.innerHTML = "Edit Module";
                 break;
             case TreeFactory.NodeTypes.ACTIVITY:
-                url = "/Course/Create";  // todo correct url, testing with course
-                data = Id;
+                url = "/Activity/Edit";  
+                data = { id :id };
                 modal.style.display = "block";
                 title.innerHTML = "Edit Activity";
                 break;            
@@ -400,6 +400,11 @@ class TreeHandler {
         }
         this.#SelectionOutline(pNode.parentNode.childNodes[0]);
 
+        if (this.#currentDisplayId == id && this.#currentDisplayType == type)
+        {
+            document.getElementById("contentDivId").innerHTML = "";            
+        }
+
     }
         
     #OnNew(event) {        
@@ -425,13 +430,13 @@ class TreeHandler {
                 break;
             case TreeFactory.NodeTypes.MODULE:
                 url = "/Module/CreateModule";
-                data = { id: event.target.dataset.itemParentId };
+                data = { id : event.target.dataset.itemParentId };
                 modal.style.display = "block";
                 title.innerHTML = "Create Module";
                 break;
             case TreeFactory.NodeTypes.ACTIVITY:
                 url = "/Activity/Create";
-                data = event.target.dataset.itemParentId;
+                data = { id : event.target.dataset.itemParentId };
                 modal.style.display = "block";
                 title.innerHTML = "Create Activity";
                 break;

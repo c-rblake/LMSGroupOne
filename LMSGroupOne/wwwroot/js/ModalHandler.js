@@ -136,7 +136,7 @@ class ModalHandler {
                 // modify data if needed
                 break;
             case "edit":
-                url = "/Course/Create";                
+                url = "/Course/Edit";                
                 break;
             case "delete":
                 url = "/Delete/DeleteCourse";
@@ -154,10 +154,10 @@ class ModalHandler {
 
         switch (operation) {
             case "new":
-                url = "/Course/Create";                
+                url = "/Activity/Create";                
                 break;
             case "edit":
-                url = "/Course/Create";                
+                url = "/Activity/Edit";                
                 break;
             case "delete":
                 url = "/Delete/DeleteActivity";
