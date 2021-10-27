@@ -31,9 +31,9 @@ namespace LMSGroupOne.Controllers
         public async Task<IActionResult> Create(int id)
         {
             var activityTypes = await GetActivityTypes();
-            //var modules = await GetModules();
             ViewBag.activityTypes = activityTypes;
-            //ViewBag.modules = modules;
+            var module = await uow.ModuleRepository.GetModule(id);
+            ViewBag.module = $"{module.Name} {module.StartDate.ToString("yyyy-MM-dd")}--{module.EndDate.Date.ToString("yyyy-MM-dd")}";
 
             var model = new ActivityCreateViewModel
             {
@@ -61,15 +61,19 @@ namespace LMSGroupOne.Controllers
             var activityTypes = await GetActivityTypes();
             var modules = await GetModules();
             ViewBag.activityTypes = activityTypes;
-            //ViewBag.modules = modules;
-
+            var module = await uow.ModuleRepository.GetModule(moduleId);
+            ViewBag.module = $"{module.Name} {module.StartDate}--{module.EndDate}";
+            if (model.StartDate < module.StartDate || model.EndDate > module.EndDate)
+            {
+                ModelState.AddModelError("Name", $"one part of this activity is outside the period for {module.Name}.");
+            }
             foreach (Activity activity in activities)
             {
                 if(model.StartDate<=activity.EndDate && model.EndDate >= activity.StartDate)
                 {
                     ModelState.AddModelError("Name", "this activity overlaps with current activities");
                     model.Success = false;
-                    return PartialView(model);
+                    break;
                 }
             }
             if (ModelState.IsValid)
@@ -97,12 +101,11 @@ namespace LMSGroupOne.Controllers
                 model.Success = false;
                 model.ReturnId = 0;
                 model.Message = "Activity not found!";
-                //model.ModuleId = id;
                 model.Id = id;
                 return PartialView(model);
             }
-
-            //model.ModuleId = id;
+            var module = await uow.ModuleRepository.GetModule(model.ModuleId);
+            ViewBag.module = $"{module.Name} {module.StartDate.ToString("yyyy-MM-dd")}--{module.EndDate.Date.ToString("yyyy-MM-dd")}";
             model.Id = id;
             model.Message = "";
             model.Success = false;
@@ -110,9 +113,7 @@ namespace LMSGroupOne.Controllers
 
 
             var activityTypes = await GetActivityTypes();
-            //var modules = await GetModules();
             ViewBag.activityTypes = activityTypes;
-            //ViewBag.modules = modules;
             return PartialView(model);
         }
 
@@ -130,18 +131,21 @@ namespace LMSGroupOne.Controllers
             IEnumerable<Activity> activities = await GetAllActivitiesByModuleAsync(moduleId);
             
             var activityTypes = await GetActivityTypes();
-            //var modules = await GetModules();
             ViewBag.activityTypes = activityTypes;
-            //ViewBag.modules = modules;
-            
-            
-            foreach (Activity activity in activities)  //  todo exclude self
+            var module = await uow.ModuleRepository.GetModule(moduleId);
+            ViewBag.module = $"{module.Name} {module.StartDate.ToString("yyyy-MM-dd")}--{module.EndDate.Date.ToString("yyyy-MM-dd")}";
+            if (viewModel.StartDate < module.StartDate || viewModel.EndDate > module.EndDate)
+            {
+                ModelState.AddModelError("Name", $"one part of this activity is outside {module.Name} period");
+            }
+
+            activities = activities.Where(a => a.Id != viewModel.Id);
+            foreach (Activity activity in activities) 
             {
                 if (viewModel.StartDate <= activity.EndDate && viewModel.EndDate >= activity.StartDate)
                 {
-                    //ModelState.AddModelError("Name", "this activity overlaps with current activities");
-                   
-                    //return PartialView(viewModel);
+                    ModelState.AddModelError("Name", "this activity overlaps with current activities");
+                    break;
                 }
             }
 
