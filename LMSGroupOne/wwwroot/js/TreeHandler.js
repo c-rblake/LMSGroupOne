@@ -46,8 +46,8 @@ class TreeHandler {
         let tempdoc = document.getElementById("treeDivId");
         tempdoc.appendChild(this.#selectBar);
         tempdoc.appendChild(this.#selectSelection);
-        this.#selectBar.style = "top:-4096px; left:0px; width:100%; height:32px; position:absolute; background-color:#ffff0055; z-index: -1;";
-        this.#selectSelection.style = "top:-4096px;left:0px;width:100%;height:32px;position:absolute;background-color:#ff000033; z-index: -1;";
+        this.#selectBar.style = "top:-4096px; left:0px; width:100%; height:32px; position:absolute; background-color:#f7f7003f; z-index: -1;";
+        this.#selectSelection.style = "top:-4096px;left:0px;width:100%;height:32px;position:absolute;background-color:#5500000f; z-index: -1;";
 
         // the draggable element
         this.#dragElement = document.createElement("nobr");

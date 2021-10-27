@@ -65,11 +65,11 @@ class TreeFactory {
             case this.NodeTypes.FOLDER:
                 if (isOpen) {
                     classList = "folderIcon fas fa-folder-open";
-                    style = "color:yellow;";
+                    style = "color:gold;";
                 }
                 else {
                     classList = "folderIcon fas fa-folder";
-                    style = "color:yellow;";
+                    style = "color:gold;";
                 }
                 break;
             case this.NodeTypes.ROOT:
@@ -121,12 +121,12 @@ class TreeFactory {
 
     static Recurse(node, parentNode, AddEventListener) {
         let list = document.createElement("ul");
-        list.classList = "list-group";
+        list.classList = "list-group border-0";
         list.style = "user-select:none;";
         list.hidden = false;
 
         let listItem = document.createElement("li");
-        listItem.classList = "list-group-item";
+        listItem.classList = "list-group-item border-0";
         listItem.style = "background:none;";
 
         let hasChildren = node.Nodes != null;
@@ -139,7 +139,7 @@ class TreeFactory {
         }
         
         let childList = document.createElement("ul");
-        childList.classList = "list-group";
+        childList.classList = "list-group border-0";
         childList.hidden = !node.Open;
 
         if (hasChildren) {
