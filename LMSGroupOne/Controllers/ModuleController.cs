@@ -29,13 +29,14 @@ namespace LMSGroupOne.Controllers
             return View();
         }
 
+        // Create Module GET
         public async Task<IActionResult> CreateModule(int id)
         {
             // Get Course Name + Dates to display on Module Form to make it easier for user to set Module Dates
             var course = await uow.CourseRepository.GetCourse(id);
             ViewBag.courseName = $"{course.Name}";
             ViewBag.courseDates = $"{ course.StartDate.ToString("yyyy-MM-dd")} - { course.EndDate?.Date.ToString("yyyy-MM-dd")}";
-            
+           
             var model = new CreateModuleViewModel
             {
                 
@@ -54,18 +55,27 @@ namespace LMSGroupOne.Controllers
             return PartialView(model);
         }
 
+        // Create Module POST
         [HttpPost]
         [Authorize(Roles = "Teacher")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateModule(CreateModuleViewModel createdModule)
         {
-            // Verify that Dates on this Module don't start earlier or end later than its Course
-            int courseId = createdModule.CourseId;
+            // Get Course Name + Dates to display on Module Form to make it easier for user to set Module Dates
             var course = await uow.CourseRepository.GetCourse(createdModule.CourseId);
+            ViewBag.courseName = $"{course.Name}";
+            ViewBag.courseDates = $"{ course.StartDate.ToString("yyyy-MM-dd")} - { course.EndDate?.Date.ToString("yyyy-MM-dd")}";
 
-            if (createdModule.StartDate < course.StartDate || createdModule.EndDate > course.EndDate)
+            // Verify Modules dates vs Courses dates
+            if (createdModule.StartDate.Date < course.StartDate.Date)
             {
-                ModelState.AddModelError("Name", $"Please keep dates within Course Dates ({course.StartDate.ToString("yyyy-MM-dd")}-{course.EndDate?.ToString("yyyy-MM-dd")})");
+                ModelState.AddModelError("StartDate", $"This Modules Start Date is earlier than the Course Start Date");
+                return PartialView(createdModule);
+            }
+
+            if (createdModule.EndDate.Date > course.EndDate?.Date)
+            {
+                ModelState.AddModelError("EndDate", $"This Modules End Date is later than the Course End Date");
                 return PartialView(createdModule);
             }
 
@@ -76,15 +86,20 @@ namespace LMSGroupOne.Controllers
             // Verify Module Dates to existing Module Dates
             foreach (Module existingModule in modules)
             {
-                if (createdModule.StartDate <= existingModule.StartDate && createdModule.EndDate > existingModule.StartDate)
+                if (createdModule.StartDate.Date < existingModule.EndDate.Date && createdModule.EndDate.Date > existingModule.StartDate.Date)
                 {
                     String moduleWithDates = $"Module {existingModule.Name} ({existingModule.StartDate.ToString("yyyy-MM-dd")} - {existingModule.EndDate.ToString("yyyy-MM-dd")})";
-                    ModelState.AddModelError("Description", $"1 This module overlaps dates with {moduleWithDates}");
+                    ModelState.AddModelError("StartDate", $"This modules dates overlaps existing {moduleWithDates}");
+                    return PartialView(createdModule);
+                }
+     
+                if (createdModule.EndDate.Date > existingModule.StartDate.Date)
+                {
+                    String moduleWithDates = $"Module {existingModule.Name} ({existingModule.StartDate.ToString("yyyy-MM-dd")} - {existingModule.EndDate.ToString("yyyy-MM-dd")})";
+                    ModelState.AddModelError("EndDate", $"This modules End Date is later than the Start Date of existing {moduleWithDates}");
+                    return PartialView(createdModule);
                 }
 
-                var entity = await uow.ModuleRepository.FindAsync(createdModule.Id);
-                ViewBag.moduleName = entity.Name;
-                return PartialView(createdModule);
             }
 
             if (ModelState.IsValid)
@@ -120,8 +135,7 @@ namespace LMSGroupOne.Controllers
         }
 
 
-
-        //[Route("/module/edit/{id}")]
+        // Edit Module GET
         [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> EditModule(int id)
         {
@@ -139,22 +153,26 @@ namespace LMSGroupOne.Controllers
             return PartialView(module);
         }
 
+        // Edit Module POST
         [HttpPost]
-        //[Route("/module/edit/{id}")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditModule(EditModuleViewModel editedModule)
         {
-            //if (id != editedModule.Id)
-            //{
-            //    return NotFound();
-            //}
+            // Get Course Name + Dates to display on Module Form to make it easier for user to set Module Dates
+            var course = await uow.CourseRepository.GetCourse(editedModule.Id);
+            ViewBag.courseName = $"{course.Name}";
+            ViewBag.courseDates = $"{ course.StartDate.ToString("yyyy-MM-dd")} - { course.EndDate?.Date.ToString("yyyy-MM-dd")}";
 
-            // Verify that Dates on this Module don't start earlier or end later than its Course
-            var course = await uow.CourseRepository.GetCourse(editedModule.CourseId);
-
-            if (editedModule.StartDate < course.StartDate || editedModule.EndDate > course.EndDate)
+            // Verify Modules dates vs Courses dates
+            if (editedModule.StartDate.Date < course.StartDate.Date)
             {
-                ModelState.AddModelError("Name", $"Please keep dates within Course Dates ({course.StartDate}-{course.EndDate})");
+                ModelState.AddModelError("StartDate", $"This Modules Start Date is earlier than the Course Start Date");
+                return PartialView(editedModule);
+            }
+
+            if (editedModule.EndDate.Date > course.EndDate?.Date)
+            {
+                ModelState.AddModelError("EndDate", $"This Modules End Date is later than the Course End Date");
                 return PartialView(editedModule);
             }
 
@@ -165,15 +183,20 @@ namespace LMSGroupOne.Controllers
             // Verify Module Dates to existing Module Dates
             foreach (Module existingModule in modules)
             {
-                if (editedModule.StartDate <= existingModule.StartDate && editedModule.EndDate > existingModule.StartDate)
+                if (editedModule.StartDate.Date < existingModule.EndDate.Date && editedModule.EndDate.Date > existingModule.StartDate.Date)
                 {
                     String moduleWithDates = $"Module {existingModule.Name} ({existingModule.StartDate.ToString("yyyy-MM-dd")} - {existingModule.EndDate.ToString("yyyy-MM-dd")})";
-                    ModelState.AddModelError("Description", $"1 This module overlaps dates with {moduleWithDates}");
+                    ModelState.AddModelError("StartDate", $"This modules dates overlaps existing {moduleWithDates}");
+                    return PartialView(editedModule);
                 }
 
-                var entity = await uow.ModuleRepository.FindAsync(editedModule.Id);
-                ViewBag.moduleName = entity.Name;
-                return PartialView(editedModule);
+                if (editedModule.EndDate.Date > existingModule.StartDate.Date)
+                {
+                    String moduleWithDates = $"Module {existingModule.Name} ({existingModule.StartDate.ToString("yyyy-MM-dd")} - {existingModule.EndDate.ToString("yyyy-MM-dd")})";
+                    ModelState.AddModelError("EndDate", $"This modules End Date is later than the Start Date of existing {moduleWithDates}");
+                    return PartialView(editedModule);
+                }
+
             }
 
             if (ModelState.IsValid)
@@ -192,7 +215,7 @@ namespace LMSGroupOne.Controllers
                     
                     if (!uow.ModuleRepository.ModuleExistsById(editedModule.Id))
                     {
-                        editedModule.Message = "ModuleNot found!";
+                        editedModule.Message = "Module Not found!";
                     }
 
                     return PartialView(editedModule);

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LMSGroupOne.Validations;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -20,7 +21,9 @@ namespace LMS.Core.Models.ViewModels.Module
         [Required]
         [DataType(DataType.Date)]
         public DateTime StartDate { get; set; }
+
         [DataType(DataType.Date)]
+        [CheckModuleDates]
         public DateTime EndDate { get; set; }
         
 
