@@ -14,9 +14,10 @@
             {
                 <div class="card">
                     <h3 class="card-header" id="headingOne">
-                        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                            @Html.DisplayFor(model => item.DocumentName)
-                        </button>
+                                <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    @Html.DisplayFor(model => item.DocumentName)
+                                    <a class="btn btn-outline-primary float-lg-left" asp-controller="Document" asp-action="DownloadFile" asp-route-id="@item.DocumentId" role="button">Download</a>
+                                </button>
                     </h3>
                     <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionAssignment">
                         <div class="card-body">

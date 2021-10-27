@@ -22,7 +22,7 @@ namespace LMSGroupOne.Controllers
         }
 
         [Authorize(Roles="Student")]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> IndexStudent()
         {
             var userId = _userManager.GetUserId(User);
 
@@ -98,6 +98,7 @@ namespace LMSGroupOne.Controllers
                     ActivityStartDate = document.Activity.StartDate,
                     ActivityEndDate = document.Activity.EndDate,
                     ActivityDescription = document.Activity.Description,
+                    DocumentId = document.Id,
                     DocumentName = document.Name,
                     ModuleName = document.Module.Name,
                     CourseName = document.Person.Course.Name,

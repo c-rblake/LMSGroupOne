@@ -17,6 +17,7 @@ namespace LMS.Core.Models.ViewModels.Assignment
         public DateTime ActivityEndDate { get; set; }
         [Display(Name = "Description")]
         public string ActivityDescription { get; set; }
+        public int DocumentId { get; set; }
         [Display(Name = "Assignment document name ")]
         public string DocumentName { get; set; }
         [Display(Name = "Module")]
