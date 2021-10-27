@@ -521,9 +521,9 @@ class TreeHandler {
 
     UpdateAfterEdit(id, type, name)
     {
-        if (type == TreeFactory.NodeTypes.TEACHER) {
-            window.location.reload(true);  //JP
-        }
+        //if (type == TreeFactory.NodeTypes.TEACHER) {
+        //    location.reload();   //JP
+        //}
 
         let item = this.#FindItem(type, id);
         
