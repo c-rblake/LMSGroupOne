@@ -21,7 +21,7 @@ namespace LMSGroupOne.Controllers
             _userManager = userManager;
         }
 
-        [Authorize]
+        [Authorize(Roles="Student")]
         public async Task<IActionResult> Index()
         {
             var userId = _userManager.GetUserId(User);
@@ -36,7 +36,7 @@ namespace LMSGroupOne.Controllers
                 .SelectMany(c => c.Modules)
                 .SelectMany(m => m.Activities)
                 .Where(a => a.ActivityType.Name == "Assignment")
-                .Select(activity => new AssignmentViewModel
+                .Select(activity => new AssignmentIndexStudentViewModel
                 {
                     ActivityId = activity.Id,
                     ActivityName = activity.Name,
@@ -51,7 +51,7 @@ namespace LMSGroupOne.Controllers
 
         }
 
-        [Authorize]
+        [Authorize(Roles = "Student")]
         public async Task<IActionResult> Details(int id)
         {
             var userId = _userManager.GetUserId(User);
@@ -76,6 +76,39 @@ namespace LMSGroupOne.Controllers
 
             return View(viewModel);
 
+        }
+
+        [Authorize(Roles = "Teacher")]
+        public async Task<IActionResult> IndexTeacher()
+        {
+            var userId = _userManager.GetUserId(User);
+
+            var viewModels = await _db.Documents
+                .Include(d => d.Person)
+                .ThenInclude(p => p.Course)
+                .ThenInclude(c => c.Modules)
+                .ThenInclude(m => m.Activities)
+                .ThenInclude(a => a.ActivityType)                
+                .Select(d => d.Activity)
+                .Where(a => a.ActivityType.Name == "Assignment")
+                .SelectMany(a => a.Documents)
+                .Select(document => new AssignmentIndexTeacherViewModel
+                {
+                    ActivityName = document.Activity.Name,
+                    ActivityStartDate = document.Activity.StartDate,
+                    ActivityEndDate = document.Activity.EndDate,
+                    ActivityDescription = document.Activity.Description,
+                    DocumentName = document.Name,
+                    ModuleName = document.Module.Name,
+                    CourseName = document.Person.Course.Name,
+                    PersonName = $"{document.Person.FirstName} {document.Person.LastName}",
+                    DocumentTimeStamp = document.TimeStamp,
+                    IsFinished = document != null ? true : false,
+                    IsLate = document.TimeStamp > document.Activity.EndDate ? true : false
+                })
+                .ToListAsync();
+
+            return View(viewModels);
         }
     }
 }

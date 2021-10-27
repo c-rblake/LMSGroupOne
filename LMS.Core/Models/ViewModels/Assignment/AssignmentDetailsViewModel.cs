@@ -21,7 +21,7 @@ namespace LMS.Core.Models.ViewModels.Assignment
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}")]
         [DataType(DataType.Date)]
         public DateTime EndDate { get; set; }
-        [Display(Name = "Finished")]
+        [Display(Name = "Submitted")]
         public bool IsFinished { get; set; }
         [Display(Name = "Submission date")]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}")]

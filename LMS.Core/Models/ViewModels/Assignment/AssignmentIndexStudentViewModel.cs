@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace LMS.Core.Models.ViewModels.Assignment
 {
-    public class AssignmentViewModel
+    public class AssignmentIndexStudentViewModel
     {
         public int ActivityId { get; set; }
         [Display(Name = "Assignment")]

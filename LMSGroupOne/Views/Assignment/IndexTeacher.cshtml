@@ -1,0 +1,129 @@
+﻿@model IEnumerable<AssignmentIndexTeacherViewModel>
+
+@{
+    ViewData["Title"] = "Submitted assignment documents";
+}
+
+
+@if (User.IsInRole("Teacher"))
+{
+    <div class="accordion" id="accordionAssignment">
+        @{
+            foreach (var item in Model)
+            {
+                <div class="accordion-item">
+                    <h3 class="accordion-header" id="headingOne">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            @Html.DisplayFor(model => item.DocumentName)
+                        </button>
+                    </h3>
+                    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionAssignment">
+                        <div class="accordion-body">
+                            <dl class="row">
+                                <dt class="col-sm-2">
+                                    @Html.DisplayNameFor(model => item.PersonName)
+                                </dt>
+                                <dd class="col-sm-10">
+                                    @Html.DisplayFor(model => item.PersonName)
+                                </dd>
+                                <dt class="col-sm-2">
+                                    @Html.DisplayNameFor(model => item.CourseName)
+                                </dt>
+                                <dd class="col-sm-10">
+                                    @Html.DisplayFor(model => item.CourseName)
+                                </dd>
+                                <dt class="col-sm-2">
+                                    @Html.DisplayNameFor(model => item.ModuleName)
+                                </dt>
+                                <dd class="col-sm-10">
+                                    @Html.DisplayFor(model => item.ModuleName)
+                                </dd>
+                                <dt class="col-sm-2">
+                                    @Html.DisplayNameFor(model => item.ActivityName)
+                                </dt>
+                                <dd class="col-sm-10">
+                                    @Html.DisplayFor(model => item.ActivityName)
+                                </dd>
+                                <dt class="col-sm-2">
+                                    @Html.DisplayNameFor(model => item.ActivityDescription)
+                                </dt>
+                                <dd class="col-sm-10">
+                                    @Html.DisplayFor(model => item.ActivityDescription)
+                                </dd>
+                                <dt class="col-sm-2">
+                                    @Html.DisplayNameFor(model => item.ActivityStartDate)
+                                </dt>
+                                <dd class="col-sm-10">
+                                    @Html.DisplayFor(model => item.ActivityStartDate)
+                                </dd>
+                                <dt class="col-sm-2">
+                                    @Html.DisplayNameFor(model => item.ActivityEndDate)
+                                </dt>
+                                <dd class="col-sm-10">
+                                    @Html.DisplayFor(model => item.ActivityEndDate)
+                                </dd>
+                                <dt class="col-sm-2">
+                                    @Html.DisplayNameFor(model => item.DocumentTimeStamp)
+                                </dt>
+                                <dd class="col-sm-10">
+                                    @Html.DisplayFor(model => item.DocumentTimeStamp)
+                                </dd>
+                                <dt class="col-sm-2">
+                                    @Html.DisplayNameFor(model => item.IsLate)
+                                </dt>
+                                <dd class="col-sm-10">
+                                    @Html.DisplayFor(model => item.IsLate)
+                                </dd>
+                                <dt class="col-sm-2">
+                                    @Html.DisplayNameFor(model => item.ActivityEndDate)
+                                </dt>
+                                <dd class="col-sm-10">
+                                    @Html.DisplayFor(model => item.ActivityEndDate)
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+
+    <div class="accordion" id="accordionExample">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    Accordion Item #1
+                </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    <strong>This is the first item's accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingTwo">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    Accordion Item #2
+                </button>
+            </h2>
+            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    <strong>This is the second item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingThree">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                    Accordion Item #3
+                </button>
+            </h2>
+            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    <strong>This is the third item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                </div>
+            </div>
+        </div>
+    </div>
+}
