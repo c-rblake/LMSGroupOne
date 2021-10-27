@@ -2,16 +2,13 @@
 @inject IRoleSelectService roleSelectService
 @inject ICourseSelectService courseSelectService
 
-
 <div>
-    <input type="hidden" asp-for="Success" />
-    <input type="hidden" asp-for="ReturnId" />
-    <input type="hidden" asp-for="Message" />
-    <input type="hidden" asp-for="PersonReturnId" />
-
-    <form id="formId" asp-controller="Home" asp-action="EditAccount">
-        <h4>Edit account</h4>
-        <hr />
+    <form id="formId" asp-controller="Account" asp-action="Edit">
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="Success" />
+        <input type="hidden" asp-for="ReturnId" />
+        <input type="hidden" asp-for="Message" />
+        <input type="hidden" asp-for="PersonReturnId" />
         <div asp-validation-summary="All" class="text-danger"></div>
         <div class="form-group">
             <label asp-for="FirstName"></label>
@@ -20,6 +17,10 @@
         <div class="form-group">
             <label asp-for="LastName"></label>
             <input asp-for="LastName" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label asp-for="UserName"></label>
+            <input asp-for="UserName" class="form-control" />
         </div>
         <div class="form-group">
             <label asp-for="Email"></label>
@@ -32,11 +33,12 @@
             </select>
         </div>
         <div class="form-group" id="course">
-            <label asp-for="CourseId">Add to course (not required)</label>
+            <label asp-for="CourseId"></label>
             <select asp-for="CourseId" asp-items="@await courseSelectService.GetCoursesAsync()" class="form-control" id="course-select">
                 <option value="" hidden disabled selected>Select a course</option>
             </select>
         </div>
+        @Model.Message
     </form>
 </div>
 
@@ -44,15 +46,17 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 
-    <script type="text/javascript">
-        $(function hideOnLoad() {
-            $("#course").hide();
-        });
-        $(function () {
-            $("#role").change(function () {
-                if ($(this).val() == "Student") { $("#course").toggle(); }
-                else if ($(this).val() == "Teacher") { $("#course-select")[0].selectedIndex = -1; $("#course").hide('slow'); }
+    <div id="scriptId">
+        <script type="text/javascript">
+            $(function hideOnLoad() {
+                if ($("#role").val() == "Teacher") { $("#course").hide(); }
             });
-        });
-    </script>
+            $(function () {
+                $("#role").change(function () {
+                    if ($(this).val() == "Student") { $("#course").toggle(); }
+                    else if ($(this).val() == "Teacher") { $("#course-select")[0].selectedIndex = -1; $("#course").hide('slow'); }
+                });
+            });
+        </script>
+    </div>
 }

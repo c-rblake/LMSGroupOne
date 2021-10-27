@@ -4,6 +4,7 @@ using LMS.Core.Models.ViewModels.Account;
 using LMS.Core.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -74,18 +75,6 @@ namespace LMSGroupOne.Controllers
             }
             return View();
         }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         [Authorize(Roles = "Teacher")]
@@ -164,9 +153,6 @@ namespace LMSGroupOne.Controllers
         }
 
 
-
-
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Teacher")]
@@ -216,43 +202,87 @@ namespace LMSGroupOne.Controllers
         }
 
 
-
-
-
-
-
-        public IActionResult Edit(string id)
+        [Authorize(Roles = "Teacher")]
+        public async Task<IActionResult> Edit(string id)
         {
-            AccountEditViewModel model = new AccountEditViewModel
+            if (id == null)
             {
+                return NotFound();
+            }
 
-            };
+            var accountRole = await uow.AccountRepository.RoleFindAsync(id);
 
+            var account = mapper.Map<AccountEditViewModel>(await uow.AccountRepository.FindByIdAsync(id));
 
-            return PartialView(model);
+            account.Role = accountRole.Name;
+
+            account.Id = id;
+
+            if (account == null)
+            {
+                return NotFound();
+            }
+
+            return PartialView(account);
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Teacher")]
-        public IActionResult Edit(AccountEditViewModel input)
+        public async Task<IActionResult> Edit(AccountEditViewModel editAccount)
         {
-            
-            AccountEditViewModel model = new AccountEditViewModel
+            if (editAccount.Role == "Student" && editAccount.CourseId == null)
+            {
+                ModelState.AddModelError("Course", "Course is required for Student");
+                return PartialView(editAccount);
+            }
+
+            if (editAccount.Role == "Teacher")
+            {
+                editAccount.CourseId = null;
+            }
+
+            if (ModelState.IsValid)
             {
 
-            };
+                try
+                {
+                    var account = await uow.AccountRepository.FindByIdAsync(editAccount.Id);
+                    mapper.Map(editAccount, account);
+                    await uow.AccountRepository.UpdateRangePerson(account);
+                    await uow.CompleteAsync();
 
+                    var oldRole = await uow.AccountRepository.RoleFindAsync(editAccount.Id);
 
-            return PartialView(input);
+                    var oldRoleName = oldRole.Name;
+
+                    var newRoleName = editAccount.Role;
+
+                    if (oldRoleName != newRoleName)
+                    {
+                        await uow.AccountRepository.RoleUpdateAsync(account, oldRoleName, newRoleName);
+                    }
+
+                    editAccount.Success = true;
+                    editAccount.PersonReturnId = editAccount.Id;
+                    editAccount.Message = "Account was edited!";
+
+                    return PartialView(editAccount);
+
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    throw;
+                }
+            }
+
+            editAccount.Success = false;
+            editAccount.PersonReturnId = editAccount.Id;
+            editAccount.Message = "Could not edit account!";
+
+            return PartialView(editAccount);
         }
-
-
-
     }
-
-
 }
 
 

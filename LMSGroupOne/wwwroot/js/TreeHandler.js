@@ -231,7 +231,7 @@ class TreeHandler {
                 url = "/Account/Edit";
                 data = { id: id };
                 modal.style.display = "block";
-                title.innerHTML = "Edit Activity";
+                title.innerHTML = "Edit Account";
                 break;
             case TreeFactory.NodeTypes.TEACHER:
                 url = "/Activity/Edit";
@@ -239,6 +239,13 @@ class TreeHandler {
                 modal.style.display = "block";
                 title.innerHTML = "Edit Activity";
                 break;
+            case TreeFactory.NodeTypes.STUDENT:
+                url = "/Account/Edit";
+                data = { id: id };
+                modal.style.display = "block";
+                title.innerHTML = "Edit Account";
+                break;
+
             
         }
 
@@ -251,6 +258,7 @@ class TreeHandler {
                 let modalContent = document.getElementById("centerModalBodyId");
                 modalContent.innerHTML = result;
                 ModalHandler.FixValidation();
+                ModalHandler.FixValidation2();
             }
         });
     }
