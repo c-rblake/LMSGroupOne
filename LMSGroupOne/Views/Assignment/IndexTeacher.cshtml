@@ -1,0 +1,92 @@
+﻿@model IEnumerable<AssignmentIndexTeacherViewModel>
+
+@{
+    ViewData["Title"] = "Submitted assignment documents";
+}
+
+
+@if (User.IsInRole("Teacher"))
+{
+    <h4>@ViewData["Title"]</h4>
+    <div class="accordion" id="accordionAssignment">
+        @{
+            foreach (var item in Model)
+            {
+                <div class="card">
+                    <h3 class="card-header" id="headingOne">
+                                <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    @Html.DisplayFor(model => item.DocumentName)
+                                    <a class="btn btn-outline-primary float-lg-left" asp-controller="Document" asp-action="DownloadFile" asp-route-id="@item.DocumentId" role="button">Download</a>
+                                </button>
+                    </h3>
+                    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionAssignment">
+                        <div class="card-body">
+                            <dl class="row">
+                                <dt class="col-sm-2">
+                                    @Html.DisplayNameFor(model => item.PersonName)
+                                </dt>
+                                <dd class="col-sm-10">
+                                    @Html.DisplayFor(model => item.PersonName)
+                                </dd>
+                                <dt class="col-sm-2">
+                                    @Html.DisplayNameFor(model => item.CourseName)
+                                </dt>
+                                <dd class="col-sm-10">
+                                    @Html.DisplayFor(model => item.CourseName)
+                                </dd>
+                                <dt class="col-sm-2">
+                                    @Html.DisplayNameFor(model => item.ModuleName)
+                                </dt>
+                                <dd class="col-sm-10">
+                                    @Html.DisplayFor(model => item.ModuleName)
+                                </dd>
+                                <dt class="col-sm-2">
+                                    @Html.DisplayNameFor(model => item.ActivityName)
+                                </dt>
+                                <dd class="col-sm-10">
+                                    @Html.DisplayFor(model => item.ActivityName)
+                                </dd>
+                                <dt class="col-sm-2">
+                                    @Html.DisplayNameFor(model => item.ActivityDescription)
+                                </dt>
+                                <dd class="col-sm-10">
+                                    @Html.DisplayFor(model => item.ActivityDescription)
+                                </dd>
+                                <dt class="col-sm-2">
+                                    @Html.DisplayNameFor(model => item.ActivityStartDate)
+                                </dt>
+                                <dd class="col-sm-10">
+                                    @Html.DisplayFor(model => item.ActivityStartDate)
+                                </dd>
+                                <dt class="col-sm-2">
+                                    @Html.DisplayNameFor(model => item.ActivityEndDate)
+                                </dt>
+                                <dd class="col-sm-10">
+                                    @Html.DisplayFor(model => item.ActivityEndDate)
+                                </dd>
+                                <dt class="col-sm-2">
+                                    @Html.DisplayNameFor(model => item.DocumentTimeStamp)
+                                </dt>
+                                <dd class="col-sm-10">
+                                    @Html.DisplayFor(model => item.DocumentTimeStamp)
+                                </dd>
+                                <dt class="col-sm-2">
+                                    @Html.DisplayNameFor(model => item.IsLate)
+                                </dt>
+                                <dd class="col-sm-10">
+                                    @Html.DisplayFor(model => item.IsLate)
+                                </dd>
+                                <dt class="col-sm-2">
+                                    @Html.DisplayNameFor(model => item.ActivityEndDate)
+                                </dt>
+                                <dd class="col-sm-10">
+                                    @Html.DisplayFor(model => item.ActivityEndDate)
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+}
