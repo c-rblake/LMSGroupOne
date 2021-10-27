@@ -132,9 +132,15 @@ body {
 .centerModalContent {
     background-color: #fefefe;
     max-width: 500px;
+    top:10%;
+    right:10%;
 }
 }
 
 #postedDocuments {
     border: none;
+}
+
+.btn{
+    font-weight:800;
 }
