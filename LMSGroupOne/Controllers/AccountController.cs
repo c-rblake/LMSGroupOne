@@ -217,6 +217,39 @@ namespace LMSGroupOne.Controllers
 
 
 
+
+
+
+
+        public IActionResult Edit(string id)
+        {
+            AccountEditViewModel model = new AccountEditViewModel
+            {
+
+            };
+
+
+            return PartialView(model);
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Teacher")]
+        public IActionResult Edit(AccountEditViewModel input)
+        {
+            
+            AccountEditViewModel model = new AccountEditViewModel
+            {
+
+            };
+
+
+            return PartialView(input);
+        }
+
+
+
     }
 
 

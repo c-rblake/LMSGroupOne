@@ -226,7 +226,20 @@ class TreeHandler {
                 data = { id :id };
                 modal.style.display = "block";
                 title.innerHTML = "Edit Activity";
-                break;            
+                break;
+            case TreeFactory.NodeTypes.TEACHER:
+                url = "/Account/Edit";
+                data = { id: id };
+                modal.style.display = "block";
+                title.innerHTML = "Edit Activity";
+                break;
+            case TreeFactory.NodeTypes.TEACHER:
+                url = "/Activity/Edit";
+                data = { id: id };
+                modal.style.display = "block";
+                title.innerHTML = "Edit Activity";
+                break;
+            
         }
 
         $.ajax({

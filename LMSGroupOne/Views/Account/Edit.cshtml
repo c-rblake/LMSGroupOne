@@ -2,49 +2,44 @@
 @inject IRoleSelectService roleSelectService
 @inject ICourseSelectService courseSelectService
 
-@{
-    ViewData["Title"] = "Edit Account";
-}
 
-<h1>@ViewData["Title"]</h1>
+<div>
+    <input type="hidden" asp-for="Success" />
+    <input type="hidden" asp-for="ReturnId" />
+    <input type="hidden" asp-for="Message" />
+    <input type="hidden" asp-for="PersonReturnId" />
 
-<div class="row">
-    <div class="col-md-4">
-        <form asp-controller="Home" asp-action="EditAccount">
-            <h4>Edit account</h4>
-            <hr />
-            <div asp-validation-summary="All" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="FirstName"></label>
-                <input asp-for="FirstName" class="form-control" />
-            </div>
-            <div class="form-group">
-                <label asp-for="LastName"></label>
-                <input asp-for="LastName" class="form-control" />
-            </div>
-            <div class="form-group">
-                <label asp-for="Email"></label>
-                <input asp-for="Email" class="form-control" />
-            </div>
-            <div class="form-group">
-                <label asp-for="Role"></label>
-                <select id="role" asp-for="Role" asp-items="@await roleSelectService.GetRolesAsync()" class="form-control">
-                    <option value="" hidden disabled selected>Select a role</option>
-                </select>
-            </div>
-            <div class="form-group" id="course">
-                <label asp-for="CourseId">Add to course (not required)</label>
-                <select asp-for="CourseId" asp-items="@await courseSelectService.GetCoursesAsync()" class="form-control" id="course-select">
-                    <option value="" hidden disabled selected>Select a course</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Update account" class="btn btn-primary" />
-                <a asp-controller="Home" asp-action="Index" class="btn btn-primary">Cancel</a>
-            </div>
-        </form>
-    </div>
+    <form id="formId" asp-controller="Home" asp-action="EditAccount">
+        <h4>Edit account</h4>
+        <hr />
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="FirstName"></label>
+            <input asp-for="FirstName" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label asp-for="LastName"></label>
+            <input asp-for="LastName" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label asp-for="Email"></label>
+            <input asp-for="Email" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label asp-for="Role"></label>
+            <select id="role" asp-for="Role" asp-items="@await roleSelectService.GetRolesAsync()" class="form-control">
+                <option value="" hidden disabled selected>Select a role</option>
+            </select>
+        </div>
+        <div class="form-group" id="course">
+            <label asp-for="CourseId">Add to course (not required)</label>
+            <select asp-for="CourseId" asp-items="@await courseSelectService.GetCoursesAsync()" class="form-control" id="course-select">
+                <option value="" hidden disabled selected>Select a course</option>
+            </select>
+        </div>
+    </form>
 </div>
+
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
