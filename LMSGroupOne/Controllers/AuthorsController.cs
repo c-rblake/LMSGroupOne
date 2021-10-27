@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using AutoMapper;
 using LMS.Core.Models.Dto;
-using LMS.Core.Models.ViewModels;
+using LMS.Core.Models.ViewModels.API.Work;
 using LMS.Core.Models.ViewModels.API;
 using LMS.Core.Models.Entities.API;
 using Newtonsoft.Json;
@@ -134,7 +134,7 @@ namespace LMSGroupOne.Controllers
             //If success received   
             IEnumerable<AuthorDto> authors = default;
             IEnumerable<WorkDto> works = default;
-            List<AuthorsViewmodel> reWorksAuthorsViewmodel = new();
+            List<AuthorsViewModel> reWorksAuthorsViewmodel = new();
 
             if (response.IsSuccessStatusCode)
             {
@@ -153,7 +153,7 @@ namespace LMSGroupOne.Controllers
                 {
                     foreach (var workAuthorDto in workDto.Authors)
                     {
-                        var author = new AuthorsViewmodel
+                        var author = new AuthorsViewModel
                         {
                             Name = workAuthorDto.Name,
                             //Works = mapper.Map<Work>(workDto), //<= does not work well.
@@ -177,7 +177,7 @@ namespace LMSGroupOne.Controllers
 
 
             //Map 
-            var model = mapper.Map<List<AuthorsViewmodel>>(authors);
+            var model = mapper.Map<List<AuthorsViewModel>>(authors);
             if (model is not null && reWorksAuthorsViewmodel is not null)
             {
                 model.AddRange(reWorksAuthorsViewmodel);
@@ -209,7 +209,7 @@ namespace LMSGroupOne.Controllers
             //If success received   
             IEnumerable<AuthorDto> authors = default;
             IEnumerable<WorkDto> works = default;
-            List<AuthorsViewmodel> reWorksAuthorsViewmodel = new();
+            List<AuthorsViewModel> reWorksAuthorsViewmodel = new();
 
             if (response.IsSuccessStatusCode)
             {
@@ -228,7 +228,7 @@ namespace LMSGroupOne.Controllers
                 {
                     foreach (var workAuthorDto in workDto.Authors)
                     {
-                        var author = new AuthorsViewmodel
+                        var author = new AuthorsViewModel
                         {
                             Name = workAuthorDto.Name,
                             //Works = mapper.Map<Work>(workDto), //<= does not work well.
@@ -252,7 +252,7 @@ namespace LMSGroupOne.Controllers
 
 
             //Map 
-            var model = mapper.Map<List<AuthorsViewmodel>>(authors);
+            var model = mapper.Map<List<AuthorsViewModel>>(authors);
             if (model is not null && reWorksAuthorsViewmodel is not null)
             {
                 model.AddRange(reWorksAuthorsViewmodel);

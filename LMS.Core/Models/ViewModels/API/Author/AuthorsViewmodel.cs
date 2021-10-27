@@ -20,6 +20,6 @@ namespace LMS.Core.Models.ViewModels.API.Author
         public DateTimeOffset DateOfBirth { get; set; }
         public DateTimeOffset? DateOfDeath { get; set; }
 
-        public List<Work> Works { get; set; } = new List<Work>();
+        public List<Entities.API.Work> Works { get; set; } = new List<Entities.API.Work>();
     }
 }

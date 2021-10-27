@@ -26,8 +26,6 @@ namespace LMS.Data.Data
             CreateMap<Activity, ActivityCreateViewModel>().ReverseMap();
             CreateMap<Activity, ActivityEditViewModel>().ReverseMap();
             CreateMap<Person, AccountCreateViewModel>().ReverseMap();
-            CreateMap<AuthorsViewmodel, AuthorDto >().ReverseMap();
-            CreateMap<Person, CreateAccountViewModel>().ReverseMap();
             CreateMap<AuthorsViewModel, AuthorDto >().ReverseMap();
             CreateMap<WorksViewModel, WorkDto>().ReverseMap();
             CreateMap<Work, WorkDto>().ReverseMap();
