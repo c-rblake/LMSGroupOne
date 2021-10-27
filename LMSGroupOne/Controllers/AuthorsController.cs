@@ -150,7 +150,7 @@ namespace LMSGroupOne.Controllers
                 model.AddRange(reWorksAuthorsViewmodel);
             }
 
-
+            TempData["SearchTerm"] = search.Name;
 
 
                         
