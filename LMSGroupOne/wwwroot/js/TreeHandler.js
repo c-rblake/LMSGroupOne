@@ -521,6 +521,10 @@ class TreeHandler {
 
     UpdateAfterEdit(id, type, name)
     {
+        if (type == TreeFactory.NodeTypes.TEACHER) {
+            window.location.reload(true);  //JP
+        }
+
         let item = this.#FindItem(type, id);
         
         // rename the treenode

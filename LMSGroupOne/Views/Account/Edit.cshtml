@@ -9,6 +9,7 @@
         <input type="hidden" asp-for="ReturnId" />
         <input type="hidden" asp-for="Message" />
         <input type="hidden" asp-for="PersonReturnId" />
+        <input type="hidden" name="Name" value="@(Model.FirstName+" "+Model.LastName)">
         <div asp-validation-summary="All" class="text-danger"></div>
         <div class="form-group">
             <label asp-for="FirstName"></label>
