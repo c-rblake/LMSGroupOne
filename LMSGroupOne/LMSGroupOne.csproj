@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Views\Document\Upload.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
     <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.7" />
@@ -30,11 +34,6 @@
     <Compile Update="Areas\Identity\Pages\Account\ForgotPassword - Copy.cshtml.cs">
       <DependentUpon>ForgotPassword.cshtml.cs</DependentUpon>
     </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="documents\" />
-    <Folder Include="wwwroot\documents\" />
   </ItemGroup>
 
 </Project>

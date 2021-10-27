@@ -1,9 +1,20 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Text;
 
 namespace LMS.Core.Models.ViewModels.Account
 {
-    public class CreateAccountViewModel
+    public class AccountEditViewModel
     {
+        [Required]
+        public string Id { get; set; }
+
+        [Required(ErrorMessage = "Please enter user name")]
+        [MaxLength(100, ErrorMessage = "Max length for user name is 100 characters")]
+        [Display(Name = "User name")]
+        public string UserName { get; set; }
+
         [Required(ErrorMessage = "Please enter first name")]
         [MaxLength(40, ErrorMessage = "Max length for first name is 40 characters")]
         [Display(Name = "First name")]
@@ -14,14 +25,13 @@ namespace LMS.Core.Models.ViewModels.Account
         [Display(Name = "Last name")]
         public string LastName { get; set; }
 
-        [Required(ErrorMessage = "Please enter an e-mail address"), EmailAddress]
-        [Display(Name = "E-mail address (this will be the user name)")]
+        [Required, EmailAddress]
+        [Display(Name = "E-mail address")]
         public string Email { get; set; }
-
-        [Required(ErrorMessage = "Please choose a role")]
+        [Required]
         public string Role { get; set; }
 
-        [Display(Name = "Add student to course")]
+        [Display(Name = "Course")]
         public int? CourseId { get; set; }
     }
 }

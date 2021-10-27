@@ -20,7 +20,7 @@ namespace LMS.Core.Models.Dto
 
         public DateTime PublicationDate { get; set; }
 
-        //public List<WorkAuthorDto> Authors { get; set; }
+        public List<WorkAuthorDto> Authors { get; set; }
         //public Genre Genre { get; set; }
 
         //public Entities.API.Type Type { get; set; }

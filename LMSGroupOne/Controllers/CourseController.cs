@@ -28,37 +28,47 @@ namespace LMSGroupOne.Controllers
             return PartialView();
         }
 
-        [Route("/course/edit/{id}")]
-        public async Task<IActionResult> Edit(int? id)
+        //[Route("/course/edit/{id}")]
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null)
+            //if (id == null)
+            //{
+            //    return NotFound();
+            //}
+            var model = mapper.Map<CourseEditViewModel>(await uow.CourseRepository.FindAsync(id));
+            if (model == null)
             {
-                return NotFound();
+                model = new CourseEditViewModel
+                {
+                    Id = id,
+                    Success=false,
+                    Message="Could not edit Course!"
+                };
+
+                return PartialView(model);
             }
-            var course = mapper.Map<CourseEditViewModel>(await uow.CourseRepository.FindAsync(id));
-            if (course == null)
-            {
-                return NotFound();
-            }
-            return View(course);
+
+            model.Id = id;
+
+            return PartialView(model);
         }
 
         [Authorize(Roles = "Teacher")]
         [HttpPost]
-        [Route("/course/edit/{id}")]
+        //[Route("/course/edit/{id}")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, CourseEditViewModel viewModel)
+        public async Task<IActionResult> Edit(CourseEditViewModel viewModel)
         {
-            if (id != viewModel.Id)
-            {
-                return NotFound();
-            }
+            //if (id != viewModel.Id)
+            //{
+            //    return NotFound();
+            //}
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var course = await uow.CourseRepository.FindAsync(id);
+                    var course = await uow.CourseRepository.FindAsync(viewModel.Id);
                     mapper.Map(viewModel, course);
                     await uow.CompleteAsync();
                 }
@@ -66,54 +76,72 @@ namespace LMSGroupOne.Controllers
                 {
                     if (!uow.CourseRepository.CourseExistById(viewModel.Id))
                     {
-                        return NotFound();
+
+                        viewModel.Message = "Course not edited!";
+                        viewModel.Success = false;
+                        return PartialView(viewModel);
+                        
                     }
                     else
                     {
                         throw;
                     }
                 }
-                return RedirectToAction("Index","Home");
+
+                viewModel.Success = true;
+                viewModel.ReturnId = viewModel.Id;
+                viewModel.Message = "Course was edited!";
+                return PartialView(viewModel); // success
+                
             }
-            return View(viewModel);
+            viewModel.Message = "Course not edited!";
+            viewModel.Success = false;
+            return PartialView(viewModel);
         }
 
         [Authorize(Roles = "Teacher")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create( CreateCourseViewModel course)
+        public IActionResult Create(CreateCourseViewModel model)
         {
             if (ModelState.IsValid)
             {
+                Course course = mapper.Map<Course>(model);
                 uow.CourseRepository.AddCourse(mapper.Map<Course>(course));
-                await uow.CompleteAsync();
-                course.Success = true;
-                course.Message = "Course was created";
-                course.ReturnId = 1234;  // todo return a valid id for the created course
+                uow.CompleteAsync().Wait();
+                model.Success = true;
+                model.Message = "Course was created";
+                model.ReturnId = course.Id;  
             }
             else
             {
-                course.Success = false;
-                course.Message = "Course creation failed";
+                model.Success = false;
+                model.Message = "Course creation failed";
             }
 
-            return PartialView(course);
+            return PartialView(model);
         }
 
         public IActionResult Create()
         {
-            
-            return PartialView(new CreateCourseViewModel());
+            var model = new CreateCourseViewModel
+            {
+                StartDate = DateTime.Now,
+                EndDate=DateTime.Now
+            };
+
+            return PartialView(model);
         }
 
 
         [HttpGet]
-        public IActionResult VerifyCourseName(string Name)
+        public JsonResult VerifyCourseName(string Name)
         {            
             bool courseExists = uow.CourseRepository.CourseExist(Name);
             if (courseExists)
             {
                 return Json($"A Course with name {Name} already exists.");
+                //return Json(false);
             }
             return Json(true);
         }

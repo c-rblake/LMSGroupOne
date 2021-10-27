@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LMS.Core.Models.ViewModels.Activity
 {
-    public class ActivityEditViewModel
+    public class ActivityEditViewModel: IModalViewModel
     {
         public int Id { get; set; }
         [Required]
@@ -18,9 +18,17 @@ namespace LMS.Core.Models.ViewModels.Activity
         public int ActivityTypeId { get; set; }
         public int ModuleId { get; set; }
         [Required]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-ddTHH:mm}", ApplyFormatInEditMode = true)]
         public DateTime StartDate { get; set; }
         [Required]
         [CheckDates]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-ddTHH:mm}", ApplyFormatInEditMode = true)]
         public DateTime EndDate { get; set; }
+
+
+        public bool Success { get; set; }  // creation status
+        public string Message { get; set; }   // returnmessage
+        public int ReturnId { get; set; }    // return id when created
+        public string PersonReturnId { get; set; }
     }
 }

@@ -18,6 +18,10 @@ namespace LMS.Data.Repositories
 
         public IJTDocumentRepository DocumentRepository { get; }
 
+        public IJTPersonRepository PersonRepository { get; }
+
+        
+
         public JTUnitOfWork(ApplicationDbContext db)
         {
             this.db = db;
@@ -26,8 +30,13 @@ namespace LMS.Data.Repositories
             ModuleRepository = new JTModuleRepository(db);
             ActivityRepository = new JTActivityRepository(db);
             DocumentRepository = new JTDocumentRepository(db);
+            PersonRepository = new JTPersonRepository(db);
         }
 
-       
+        public async Task CompleteAsync()
+        {
+            await db.SaveChangesAsync();
+        }
+
     }
 }

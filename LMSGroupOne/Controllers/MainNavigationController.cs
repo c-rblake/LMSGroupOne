@@ -2,6 +2,7 @@
 using LMS.Core.Models.Entities;
 using LMS.Core.Repositories;
 using LMSGroupOne.Models.MainNavigation;
+using LMSGroupOne.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -29,7 +30,27 @@ namespace LMSGroupOne.Controllers
 
         }
 
-       
+        //private string MakeChildId(string path, NodeType type, string parentId)
+        //{
+        //    return $"{path}|{type}={parentId}";
+        //}
+
+        //private TreeNode MakeNode(string id, string name, NodeType type, bool isOpen, NodeType creates, bool editable, IEnumerable<TreeNode> childNodes)
+        //{
+        //    return new TreeNode
+        //    {
+        //        Id = id,
+        //        Type = type,
+        //        Name = name,
+        //        Open = isOpen,
+        //        CanCreate = creates,
+        //        Editable = editable,
+        //        Nodes = childNodes
+                
+        //    };
+        //}
+
+
         public async Task<IActionResult> Index()
         {
             var user = await userManager.GetUserAsync(User);
@@ -38,30 +59,13 @@ namespace LMSGroupOne.Controllers
 
             if (User.IsInRole("Teacher"))
             {
-                var model = new TreeNode
+                TreeNode[] children = new TreeNode[]
                 {
-                    Id = "root",
-                    Name = "LMS(Teacher)",
-                    Type = NodeType.root,
-                    CanCreate = NodeType.none,
-                    Editable = true,
-                    Nodes = new TreeNode[]
-                    {
-                        await TeacherCourses("root"),
-                        await Teachers("root"),
-                        new TreeNode
-                        {
-                            Id="root",
-                            Name="literature Search",
-                            Type=NodeType.search,
-                            CanCreate=NodeType.none,
-                            Editable=false,
-                            Open=false,
-                            Nodes=null
-                        }
-                    }
-
+                    await TeacherCourses("root"),
+                    await Teachers("root"),
+                    TreeNodeFactory.MakeNode("root", "literature Search", NodeType.search, false, NodeType.none,false,null)
                 };
+                var model = TreeNodeFactory.MakeNode("root", "LMS(Teacher)", NodeType.root, true, NodeType.none, false, children);                
                 return View(model);
 
 
@@ -69,32 +73,15 @@ namespace LMSGroupOne.Controllers
             else if(User.IsInRole("Student")) 
             {
                 string userId=userManager.GetUserId(User);
-                Debug.WriteLine("user id:"+userId);
 
-                var model = new TreeNode
+                TreeNode[] children = new TreeNode[]
                 {
-                    Id = "root",
-                    Name = "LMS(Student)",
-                    Type = NodeType.root,
-                    CanCreate = NodeType.none,
-                    Editable = false,
-                    Nodes = new TreeNode[]
-                    {
-                        await StudentCourses("root", userId),
-                        await Teachers("root"),
-                        new TreeNode
-                        {
-                            Id="root",
-                            Name="literature Search",
-                            Type=NodeType.search,
-                            CanCreate=NodeType.none,
-                            Editable=false,
-                            Open=false,
-                            Nodes=null
-                        }
-                    }
+                    await StudentCourses("root", userId),
+                    await Teachers("root"),
+                    TreeNodeFactory.MakeNode("root", "literature Search", NodeType.search, false, NodeType.none,false,null)
 
                 };
+                var model = TreeNodeFactory.MakeNode("root", "LMS(Student)", NodeType.root, true, NodeType.none,false, children);                
                 return View(model);                
             }
                         
@@ -107,33 +94,16 @@ namespace LMSGroupOne.Controllers
             List<TreeNode> courses = new List<TreeNode>();
             foreach (var item in await uow.CourseRepository.GetTreeDataForStudent(studentId))
             {
-                courses.Add(new TreeNode
+                TreeNode[] children = new TreeNode[]
                 {
-                    Id = item.Id,
-                    Name = item.Name,
-                    Type = NodeType.course,
-                    CanCreate = NodeType.none,
-                    Editable = true,
-                    Open = false,
-                    Nodes = new TreeNode[]
-                    {
-                        Modules(item.Id, item.Nodes, path+"|"+NodeType.course+"="+item.Id),
-                        Documents(item.Id, item.Documents, path+"|"+NodeType.course+"="+item.Id, false),
-                        Students(item.Id, item.Persons, path+"|"+NodeType.course+"="+item.Id)
-                    }
-                });
+                    Modules(item.Id, item.Nodes, TreeNodeFactory.MakeChildId(path,NodeType.course,item.Id)),
+                    Documents(item.Id, item.Documents, TreeNodeFactory.MakeChildId(path,NodeType.course,item.Id), false),
+                    Students(item.Id, item.Persons, TreeNodeFactory.MakeChildId(path,NodeType.course,item.Id))
+                };
+                courses.Add(TreeNodeFactory.MakeNode(item.Id, item.Name,NodeType.course, false, NodeType.none, true, children));                
             }
 
-            var model = new TreeNode
-            {
-                Id = path,
-                Name = "Courses",
-                Type = NodeType.folder,
-                CanCreate = NodeType.none,
-                Editable = true,
-                Nodes = courses
-            };
-
+            var model = TreeNodeFactory.MakeNode(path, "Your Course", NodeType.folder, false, NodeType.none, true, courses);
             return model;
         }
 
@@ -143,76 +113,35 @@ namespace LMSGroupOne.Controllers
             List<TreeNode> courses = new List<TreeNode>();
             foreach (var item in await uow.CourseRepository.GetTreeData())
             {
-                courses.Add(new TreeNode
+                TreeNode[] children = new TreeNode[]
                 {
-                    Id = item.Id,
-                    Name = item.Name,
-                    Type = NodeType.course,
-                    CanCreate = NodeType.none,
-                    Editable = true,                    
-                    Open = false,
-                    Nodes = new TreeNode[]
-                    {
-                        Modules(item.Id, item.Nodes, path+"|"+NodeType.course+"="+item.Id),
-                        Documents(item.Id, item.Documents, path+"|"+NodeType.course+"="+item.Id, true),
-                        Students(item.Id, item.Persons, path+"|"+NodeType.course+"="+item.Id)
-                    }
-                });
+                    Modules(item.Id, item.Nodes, TreeNodeFactory.MakeChildId(path,NodeType.course,item.Id)),
+                    Documents(item.Id, item.Documents, TreeNodeFactory.MakeChildId(path,NodeType.course,item.Id), true),
+                    Students(item.Id, item.Persons, TreeNodeFactory.MakeChildId(path,NodeType.course,item.Id))
+                };
+                courses.Add(TreeNodeFactory.MakeNode(item.Id, item.Name, NodeType.course, false, NodeType.none, true, children));                
             }
-
-            var model = new TreeNode
-            {
-                Id = path,
-                Name = "Courses",
-                Type = NodeType.folder,
-                CanCreate = NodeType.course,
-                Editable = true,
-                Nodes = courses
-            };
-
+            var model = TreeNodeFactory.MakeNode(path, "Courses", NodeType.folder, false, NodeType.course, true, courses);
             return model;
         }
 
 
         private async Task<TreeNode> Teachers(string path)
         {
+            
+
             var persons=await userManager.GetUsersInRoleAsync("Teacher");
+            
             List<TreeNode> teachers = new List<TreeNode>();
 
             bool isTeacher=User.IsInRole("Teacher");
-
             foreach (var item in persons)
             {
-                teachers.Add(new TreeNode
-                {
-                    Id = item.Id,
-                    Name = $"{item.FirstName} {item.LastName}",
-                    Type = NodeType.teacher,
-                    CanCreate = NodeType.none,
-                    Editable = true,
-                    Open = false,
-                    Nodes = null                    
-                });
+                teachers.Add(TreeNodeFactory.MakeNode(item.Id, $"{item.FirstName} {item.LastName}", NodeType.teacher, false, NodeType.none, true, null));                
             }
-
-            var model = new TreeNode
-            {
-                Id = path,
-                Name = "Teachers",
-                Type = NodeType.folder,
-                CanCreate = isTeacher?NodeType.teacher:NodeType.none,
-                Editable = true,
-                Open=false,
-                Nodes = teachers                
-            };
-
-            return model;
-            
+            var model = TreeNodeFactory.MakeNode(path, "Teachers", NodeType.folder, false, isTeacher ? NodeType.teacher : NodeType.none, true, teachers);
+            return model;            
         }
-
-        
-
-
 
 
         private TreeNode Documents(string parentId, IEnumerable<TreeDataDto> nodes, string path, bool canAdd)
@@ -222,29 +151,11 @@ namespace LMSGroupOne.Controllers
             {
                 foreach (var item in nodes)
                 {
-                    nodeList.Add(new TreeNode
-                    {
-                        Id = item.Id,
-                        Name = item.Name,
-                        Type = NodeType.file,
-                        CanCreate = NodeType.none,
-                        Editable = true,
-                        Open = false,
-                        Nodes = null
-
-                    });
+                    nodeList.Add(TreeNodeFactory.MakeNode(item.Id, item.Name, NodeType.file, false, NodeType.none, true, null));                    
                 }
             }
-            var model = new TreeNode
-            {
-                Id = path,
-                Name = "Documents",
-                Type = NodeType.folder,
-                CanCreate = canAdd?NodeType.file:NodeType.none,
-                Editable = true,
-                Nodes = nodeList
 
-            };
+            var model = TreeNodeFactory.MakeNode(path, "Documents", NodeType.folder, false, canAdd ? NodeType.file : NodeType.none, true, nodeList);            
             return model;
         }
 
@@ -258,28 +169,10 @@ namespace LMSGroupOne.Controllers
             {
                 foreach (var item in nodes)
                 {
-                    nodeList.Add(new TreeNode
-                    {
-                        Id = item.Id,
-                        Name = item.Name,
-                        Type = NodeType.student,
-                        CanCreate = NodeType.none,
-                        Editable = true,
-                        Open = false,
-                        Nodes = null
-
-                    });
+                    nodeList.Add(TreeNodeFactory.MakeNode(item.Id, item.Name, NodeType.student, false, NodeType.none, true, null));                    
                 }
             }
-            var model = new TreeNode
-            {
-                Id = path,
-                Name = "Students",
-                Type = NodeType.folder,
-                CanCreate = isTeacher?NodeType.student:NodeType.none,
-                Editable = true,
-                Nodes = nodeList
-            };
+            var model = TreeNodeFactory.MakeNode(path, "Students", NodeType.folder, false, isTeacher ? NodeType.student : NodeType.none, true, nodeList);            
             return model;
         }
 
@@ -296,33 +189,15 @@ namespace LMSGroupOne.Controllers
             {
                 foreach (var item in nodes)
                 {
-                    nodeList.Add(new TreeNode
+                    var children = new TreeNode[]
                     {
-                        Id = item.Id,
-                        Name = item.Name,
-                        Type = NodeType.module,
-                        CanCreate = NodeType.none,
-                        Editable = true,
-                        Open = false,
-                        Nodes = new TreeNode[]
-                        {
-                        Activities(item.Id, item.Nodes, path+"|"+NodeType.module+"="+item.Id),
-                        Documents(item.Id, item.Documents, path+"|"+NodeType.module+"="+item.Id, isTeacher)
-                        }
-
-                    });
+                        Activities(item.Id, item.Nodes, TreeNodeFactory.MakeChildId(path,NodeType.module,item.Id)),
+                        Documents(item.Id, item.Documents, TreeNodeFactory.MakeChildId(path,NodeType.module,item.Id), isTeacher)
+                    };
+                    nodeList.Add(TreeNodeFactory.MakeNode(item.Id, item.Name, NodeType.module, false, NodeType.none, true, children));                    
                 }
             }
-            var model = new TreeNode
-            {
-                Id = path,
-                Name = "Modules",
-                Type = NodeType.folder,
-                CanCreate = isTeacher?NodeType.module:NodeType.none,
-                Editable = true,
-                Nodes = nodeList
-
-            };
+            var model= TreeNodeFactory.MakeNode(path, "Modules", NodeType.folder, false, isTeacher ? NodeType.module : NodeType.none, true, nodeList);            
             return model;
         }
 
@@ -339,32 +214,14 @@ namespace LMSGroupOne.Controllers
             {
                 foreach (var item in nodes)
                 {
-                    nodeList.Add(new TreeNode
+                    TreeNode[] children = new TreeNode[]
                     {
-                        Id = item.Id,
-                        Name = item.Name,
-                        Type = NodeType.activity,
-                        CanCreate = NodeType.none,
-                        Editable = true,
-                        Open = false,
-                        Nodes = new TreeNode[] 
-                        { 
-                            Documents(item.Id, item.Documents, path+"|"+NodeType.activity+"="+item.Id, true)
-                        }
-                    });
+                        Documents(item.Id, item.Documents, TreeNodeFactory.MakeChildId(path,NodeType.activity,item.Id), true)
+                    };
+                    nodeList.Add(TreeNodeFactory.MakeNode(item.Id, item.Name,NodeType.activity, false, NodeType.none, true, children));                   
                 }
             }
-
-            var model = new TreeNode
-            {
-                Id = path,
-                Name = "Activities",
-                Type = NodeType.folder,
-                CanCreate = isTeacher?NodeType.activity:NodeType.none,
-                Editable = true,
-                Nodes = nodeList
-
-            };
+            var model = TreeNodeFactory.MakeNode(path, "Activities", NodeType.folder, false, isTeacher ? NodeType.activity : NodeType.none, true, nodeList);          
             return model;
         }
 
@@ -659,12 +516,12 @@ namespace LMSGroupOne.Controllers
 
         private IActionResult Search(string id)
         {
-            var model = new PlaceholderModelView
-            {
-                Id = id
-            };
+            //var model = new PlaceholderModelView
+            //{
+            //    Id = id
+            //};
 
-            return PartialView("Search", model);
+            return PartialView("../Authors/Search");
         }
 
 
