@@ -9,6 +9,7 @@ using LMS.Core.Repositories;
 using Microsoft.EntityFrameworkCore;
 using LMS.Data.Data;
 using Microsoft.AspNetCore.Identity;
+using System.Diagnostics;
 
 namespace LMS.Data.Repositories
 {
@@ -27,19 +28,6 @@ namespace LMS.Data.Repositories
 
             
 
-            //return new ActivityDto
-            //{
-            //    Id = activity.Id,
-            //    Name = activity.Name,
-            //    Description = activity.Description,
-            //    StartDate = activity.StartDate,
-            //    EndDate = activity.EndDate,
-            //    //TypeId=activity.ActivityType.Id,
-            //    //TypeName = activity.ActivityType.Name,
-            //    //TypeDescription=activity.ActivityType.Description
-            //};
-
-
             var ak=db.Activities.Where(i => i.Id == id).Select(a => new ActivityDto
             {
                 Id = a.Id,
@@ -53,6 +41,18 @@ namespace LMS.Data.Repositories
             });
 
             return await ak.FirstOrDefaultAsync();
+        }
+
+        public async Task RemoveAsync(int id)
+        {
+            var activity = await db.Activities.FindAsync(id);
+
+            var doc = db.Documents.Where(z => z.ActivityId == id);
+            db.Documents.RemoveRange(doc);
+
+
+            db.Remove(activity);
+
         }
     }
 }

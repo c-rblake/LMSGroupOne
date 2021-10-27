@@ -38,5 +38,26 @@ namespace LMS.Data.Repositories
                 EndDate=module.EndDate
             };
         }
+
+        public async Task RemoveAsync(int id)
+        {
+            var module = await db.Modules.FindAsync(id);
+
+            var activities = db.Activities.Where(m => m.ModuleId == id);
+
+            foreach (var act in activities)
+            {
+                var adoc = db.Documents.Where(z => z.ActivityId == act.Id);
+                db.Documents.RemoveRange(adoc);
+                db.Activities.Remove(act);
+            }
+
+
+            var doc = db.Documents.Where(z => z.ModuleId == id);
+            db.Documents.RemoveRange(doc);
+
+            db.Modules.Remove(module);
+
+        }
     }
 }

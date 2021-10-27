@@ -41,6 +41,16 @@ namespace LMS.Data.Repositories
 
             return await model;
         }
+
+
+        public async Task RemoveAsync(int id)
+        {
+            var document = await db.Documents.FindAsync(id);
+                        
+
+            db.Remove(document);
+
+        }
     }
         
 }

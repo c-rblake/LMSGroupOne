@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LMS.Core.Models.Entities.API;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,5 +20,6 @@ namespace LMS.Core.Models.ViewModels
         public DateTimeOffset DateOfBirth { get; set; }
         public DateTimeOffset? DateOfDeath { get; set; }
 
+        public List<Work> Works { get; set; } = new List<Work>();
     }
 }

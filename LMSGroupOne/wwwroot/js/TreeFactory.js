@@ -13,7 +13,7 @@
 //trash = 10,
 
 
-
+// a class to generate the navigation tree and its nodes
 
 class TreeFactory {
     static NodeTypes =
@@ -28,7 +28,8 @@ class TreeFactory {
             FILE: 7,
             SEARCH: 8,
             NONE: 9,
-            TRASH: 10
+            TRASH: 10,
+            AUTHOR: 11
         }
 
     static GetIconClass(type, isOpen)
@@ -93,7 +94,6 @@ class TreeFactory {
         
         let classList = temp.classList;
         let style = temp.style;
-
 
         if (hasChildren)
         {

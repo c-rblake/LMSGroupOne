@@ -27,6 +27,63 @@ namespace LMS.Data.Repositories
         }
 
 
+        public async Task RemoveAsync(int id)
+        {
+            var course = await db.Courses.FindAsync(id);
+
+            var modules = db.Modules.Where(m => m.CourseId == course.Id);
+            foreach (var mod in modules)
+            {
+                var activities = db.Activities.Where(a => a.ModuleId == mod.Id);
+                foreach (var act in activities)
+                {
+                    var adoc = db.Documents.Where(z => z.ActivityId == act.Id);
+                    db.Documents.RemoveRange(adoc);
+                    db.Activities.Remove(act);
+                }
+                var mdoc = db.Documents.Where(z => z.ModuleId == mod.Id);
+                db.Documents.RemoveRange(mdoc);
+
+            }
+            var cdoc = db.Documents.Where(z => z.CourseId == course.Id);
+            db.Documents.RemoveRange(cdoc);
+
+
+            // remove students
+            var peps=db.Persons.Where(p => p.CourseId == course.Id);
+            db.Persons.RemoveRange(peps);
+
+
+
+            db.Courses.Remove(course);
+
+
+
+
+
+            //var activities = db.Activities.Where(m => m.ModuleId == id);
+
+            //foreach (var act in activities)
+            //{
+            //    var adoc = db.Documents.Where(z => z.ActivityId == act.Id);
+            //    db.Documents.RemoveRange(adoc);
+            //    db.Activities.Remove(act);
+            //}
+
+
+            //var doc = db.Documents.Where(z => z.ModuleId == id);
+            //db.Documents.RemoveRange(doc)
+
+
+
+        }
+
+
+
+
+
+
+
         public async Task<IEnumerable<TreeDataDto>> GetTreeData(CancellationToken cancellationToken = default)
         {
             // todo refactor with below

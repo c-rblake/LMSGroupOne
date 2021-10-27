@@ -24,8 +24,8 @@ namespace LMSGroupOne
 
                 var context = services.GetRequiredService<ApplicationDbContext>();
 
-               context.Database.EnsureCreated(); 
-               context.Database.Migrate();
+               // context.Database.EnsureDeleted(); 
+               // context.Database.Migrate();
 
                 try
                 {

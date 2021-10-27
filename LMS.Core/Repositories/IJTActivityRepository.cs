@@ -11,5 +11,7 @@ namespace LMS.Core.Repositories
     public interface IJTActivityRepository
     {
         Task<ActivityDto> GetActivity(int id, CancellationToken cancellationToken = default);
+
+        Task RemoveAsync(int id);
     }
 }
