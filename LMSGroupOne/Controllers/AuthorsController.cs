@@ -149,6 +149,10 @@ namespace LMSGroupOne.Controllers
             {
                 model.AddRange(reWorksAuthorsViewmodel);
             }
+            if(search.OrderOnAge)
+            {
+                model = model.OrderBy(a => a.Age).ToList();
+            }
 
             TempData["SearchTerm"] = search.Name;
 

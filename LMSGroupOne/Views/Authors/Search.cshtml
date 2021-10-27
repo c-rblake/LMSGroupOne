@@ -17,25 +17,28 @@
                     }
                 </div>
             </div>
-                <form class="card card-sm box-shadow" id="searchFormId">
-                    <div asp-validation-summary="All" class="text-danger"></div>
-                    <div class="card-body row no-gutters align-items-center">
-                        <div class="col-auto">
-                            <i class="fas fa-search h4 text-body"></i>
-                        </div>
-                        <!--end of col-->
-                        <div class="col">
-                            <input asp-for="Name" class="form-control form-control-lg form-control-borderless" type="search" placeholder="Search title or name">
-                            <span asp-validation-for="Name" class="text-danger"></span>
-                        </div>
-                        <!--end of col-->
-                        <div class="col-auto">
-                            <button class="btn btn-lg btn-success" type="submit">Search</button>
-                        </div>
-                        <!--end of col-->
+            <form class="card card-sm box-shadow" id="searchFormId">
+                @*<form class="card card-sm box-shadow"> HAVE TO OVERRIDE JAVASCRIPT FOR ORDERONAGE TO WORK*@
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <div class="card-body row no-gutters align-items-center">
+                    <div class="col-auto">
+                        <i class="fas fa-search h4 text-body"></i>
                     </div>
-                </form>
-                
+                    <!--end of col-->
+                    <div class="col">
+                        <input asp-for="Name" class="form-control form-control-lg form-control-borderless" type="search" placeholder="Search title or name">
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <!--end of col-->
+                    <div class="col-auto">
+                        <button class="btn btn-lg btn-success" type="submit">Search</button>
+                        @*<input type="submit" value="Search 2" class="btn btn-primary" />*@
+                    </div>
+                    <!--end of col-->
+                </div>
+                <div class="ml-1">Order on Age?<input class="ml-1" type="checkbox" id="ageOrdered" value="TRUE"></div>
+            </form>
+                @*<p>Order on Age? @Html.CheckBoxFor(s=>s.OrderOnAge) </p>*@
 
             </div>
         </div>

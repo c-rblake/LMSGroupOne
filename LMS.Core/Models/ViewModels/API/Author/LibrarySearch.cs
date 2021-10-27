@@ -9,5 +9,6 @@ namespace LMS.Core.Models.ViewModels.API.Author
     public class LibrarySearch
     {
         public string Name { get; set; } = "Tulip";
+        public bool OrderOnAge { get; set; }
     }
 }
