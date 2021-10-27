@@ -379,6 +379,18 @@ class TreeHandler {
                 modal.style.display = "block";
                 title.innerHTML = "Delete Document";
                 break;
+            case TreeFactory.NodeTypes.TEACHER:
+                url = "/Delete/DeleteTeacher";
+                data = { Id: id };
+                modal.style.display = "block";
+                title.innerHTML = "Delete Teacher";
+                break;
+            case TreeFactory.NodeTypes.STUDENT:
+                url = "/Delete/DeleteStudent";
+                data = { Id: id };
+                modal.style.display = "block";
+                title.innerHTML = "Delete Teacher";
+                break;
         }
 
         $.ajax({

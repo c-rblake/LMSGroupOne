@@ -166,5 +166,75 @@ namespace LMSGroupOne.Controllers
             return PartialView(inp);
         }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        public async Task<IActionResult> DeleteTeacher(string id)
+        {
+            var person = await uow.PersonRepository.GetPerson(id);
+
+            var model = new DeletePersonModelView
+            {
+                Id = id,
+                Name = $"{person.FirstName} {person.LastName}",
+                Message = "Delete this Teacher?",
+                ReturnId = "",
+                Success = false
+
+            };
+            return PartialView(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteTeacher(DeletePersonModelView inp)
+        {
+            string id = inp.Id;
+            await uow.PersonRepository.RemoveAsync(id);
+            await uow.CompleteAsync();
+            inp.Message = "Teacher Deleted!";
+            inp.ReturnId = id;
+            inp.Success = true;
+
+            return PartialView(inp);
+        }
+
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
+
+
+
+
+
+
+
+
+

@@ -264,8 +264,8 @@ class ModalHandler {
                 url = "/Course/Create";
                 break;
             case "delete":
-                url = "/Delete/DeleteDocument";
-                data["Id"] = parseInt(form.elements["Id"].value);
+                url = "/Delete/DeleteTeacher";
+                //data["Id"] = parseInt(form.elements["Id"].value);
                 break;
         }
         return { url: url, data: data };
@@ -283,8 +283,8 @@ class ModalHandler {
                 url = "/Course/Create";
                 break;
             case "delete":
-                url = "/Delete/DeleteDocument";
-                data["Id"] = parseInt(form.elements["Id"].value);
+                url = "/Delete/DeleteStudent";
+                //data["Id"] = parseInt(form.elements["Id"].value);
                 break;
         }
         return { url: url, data: data };
