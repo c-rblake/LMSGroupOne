@@ -29,11 +29,13 @@ namespace LMSGroupOne.Controllers
             return View();
         }
 
-        public IActionResult CreateModule(int id)
+        public async Task<IActionResult> CreateModule(int id)
         {
-            // Temporary for testing, IRL this will populate from the Course you're creating the Module from
-            //var courses = await uow.CourseRepository.GetAsync();
-            //ViewBag.Courses = courses;
+            // Get Course Name + Dates to display on Module Form to make it easier for user to set Module Dates
+            var course = await uow.CourseRepository.GetCourse(id);
+            ViewBag.courseName = $"{course.Name}";
+            ViewBag.courseDates = $"{ course.StartDate.ToString("yyyy-MM-dd")} - { course.EndDate?.Date.ToString("yyyy-MM-dd")}";
+            
             var model = new CreateModuleViewModel
             {
                 
@@ -123,19 +125,16 @@ namespace LMSGroupOne.Controllers
         [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> EditModule(int id)
         {
-            //if (id == null)
-            //{
-            //    return NotFound();
-            //}
+            // Get Course Name + Dates to display on Module Form to make it easier for user to set Module Dates
+            var course = await uow.CourseRepository.GetCourse(id);
+            ViewBag.courseName = $"{course.Name}";
+            ViewBag.courseDates = $"{ course.StartDate.ToString("yyyy-MM-dd")} - { course.EndDate?.Date.ToString("yyyy-MM-dd")}";
+
             var module = mapper.Map<EditModuleViewModel>(await uow.ModuleRepository.FindAsync(id));
             if (module == null)
             {
                 return NotFound();
             }
-
-            Debug.WriteLine("startDate:"+module.StartDate+"    endDate:"+module.EndDate);
-            //var modules = await uow.ModuleRepository.GetAsync();
-            //ViewBag.modules = modules;
 
             return PartialView(module);
         }

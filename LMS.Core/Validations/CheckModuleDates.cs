@@ -14,7 +14,7 @@ namespace LMSGroupOne.Validations
         CreateModuleViewModel moduleCreate;
         EditModuleViewModel moduleEdit;
 
-        protected async override ValidationResult IsValid(Object value, ValidationContext validationContext)
+        protected override ValidationResult IsValid(Object value, ValidationContext validationContext)
         {
             int CourseId = 0;
             int ModuleId = 0;
@@ -22,6 +22,7 @@ namespace LMSGroupOne.Validations
             DateTime EndDate = DateTime.Now;
             string errorMessage = "";
             
+           
 
             // Determine which ViewModel to use as Source
             if (value is DateTime input)
@@ -44,7 +45,7 @@ namespace LMSGroupOne.Validations
                     EndDate = moduleEdit.EndDate;
                 }
                     
-
+                                
                 // Verify that Dates on this Module don't start earlier or end later than its Course
                 var course = await uow.CourseRepository.GetCourse(CourseId);
                 
@@ -73,6 +74,8 @@ namespace LMSGroupOne.Validations
                 }
 
             }
+
+            
 
             return new ValidationResult(errorMessage);
         }
