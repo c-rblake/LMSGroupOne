@@ -58,10 +58,23 @@ class ModalHandler {
     }
 
     static OnSuccess(form, type, operation)
-    {        
+    {
+        form = document.getElementById("formId");
         document.getElementById("centerModalButton").style.display = "none";
         let path = document.getElementById("centerModalId").dataset.itemParentId;
-        let returnId = parseInt(form.elements["ReturnId"].value);        
+
+        let returnId = "";
+        if ((parseInt(type) == TreeFactory.NodeTypes.TEACHER) || (parseInt(type) == TreeFactory.NodeTypes.STUDENT) )
+        {
+            returnId = form.elements["PersonReturnId"].value;
+        }
+        else
+        {
+            returnId = parseInt(form.elements["ReturnId"].value);
+        }
+        
+         
+
         
         switch (operation)
         {
@@ -123,6 +136,10 @@ class ModalHandler {
                 return ModalHandler.GetDocumentRepostData(operation, token, data);
             case TreeFactory.NodeTypes.AUTHOR:
                 return ModalHandler.GetAuthorRepostData(operation, token, data);
+            case TreeFactory.NodeTypes.TEACHER:
+                return ModalHandler.GetTeacherRepostData(operation, token, data);
+            case TreeFactory.NodeTypes.STUDENT:
+                return ModalHandler.GetStudentRepostData(operation, token, data);
             
         }
     }
@@ -223,6 +240,44 @@ class ModalHandler {
         switch (operation) {
             case "new":
                 url = "/Authors/Create";
+                break;
+            case "edit":
+                url = "/Course/Create";
+                break;
+            case "delete":
+                url = "/Delete/DeleteDocument";
+                data["Id"] = parseInt(form.elements["Id"].value);
+                break;
+        }
+        return { url: url, data: data };
+    }
+    static GetTeacherRepostData(operation, token, data) {
+
+        let form = document.getElementById("formId");
+        let url = "";
+
+        switch (operation) {
+            case "new":
+                url = "/Account/CreateTeacher";
+                break;
+            case "edit":
+                url = "/Course/Create";
+                break;
+            case "delete":
+                url = "/Delete/DeleteDocument";
+                data["Id"] = parseInt(form.elements["Id"].value);
+                break;
+        }
+        return { url: url, data: data };
+    }
+    static GetStudentRepostData(operation, token, data) {
+
+        let form = document.getElementById("formId");
+        let url = "";
+
+        switch (operation) {
+            case "new":
+                url = "/Account/CreateStudent";
                 break;
             case "edit":
                 url = "/Course/Create";

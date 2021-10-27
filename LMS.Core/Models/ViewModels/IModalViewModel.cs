@@ -12,6 +12,6 @@ namespace LMS.Core.Models.ViewModels
         string Message { get; set; }   // returnmessage
         int ReturnId { get; set; }    // return id when created
 
-        Guid PersonId { get; set; }   // a person id when needed
+        string PersonReturnId { get; set; }   // a person id when needed
     }
 }

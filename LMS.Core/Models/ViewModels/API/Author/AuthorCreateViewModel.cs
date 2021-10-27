@@ -20,7 +20,7 @@ namespace LMS.Core.Models.ViewModels.API
         public bool Success { get; set; }
         public string Message { get; set; }
         public int ReturnId { get; set; }
-        public Guid PersonId { get; set; }
+        public string PersonReturnId { get; set; }
 
         //public ICollection<Work> Works { get; set; }
     }

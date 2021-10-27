@@ -455,6 +455,21 @@ class TreeHandler {
                 modal.style.display = "block";
                 title.innerHTML = "Create Document";
                 break;
+            case TreeFactory.NodeTypes.STUDENT:
+                url = "/Account/CreateTeacher";
+                data = event.target.dataset.itemParentId;
+                modal.style.display = "block";
+                title.innerHTML = "Create Student";
+                break;
+            case TreeFactory.NodeTypes.TEACHER:
+                url = "/Account/CreateTeacher";
+                data = {},
+                modal.style.display = "block";
+                title.innerHTML = "Create Teacher";
+                break;
+
+            default:
+                return;
         }        
 
         $.ajax({

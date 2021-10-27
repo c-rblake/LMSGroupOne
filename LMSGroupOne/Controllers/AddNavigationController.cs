@@ -2,6 +2,7 @@
 using LMS.Core.Models.ViewModels.Course;
 using LMS.Core.Repositories;
 using LMSGroupOne.Models.MainNavigation;
+using LMSGroupOne.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -17,13 +18,13 @@ namespace LMSGroupOne.Controllers
     {
         
         
-        private readonly IJTUnitOfWork uow;
-        private readonly UserManager<Person> userManager;
-        public AddNavigationController(IJTUnitOfWork uow, UserManager<Person> userManager)
+        //private readonly IJTUnitOfWork uow;
+        //private readonly UserManager<Person> userManager;
+        public AddNavigationController()    //IJTUnitOfWork uow, UserManager<Person> userManager)
         {
-            this.uow = uow;
+            //this.uow = uow;
 
-            this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
+            //this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
 
             //userManager.GetUsersInRoleAsync("RoleName");
             
@@ -45,17 +46,17 @@ namespace LMSGroupOne.Controllers
                 switch (nodeType)
                 {
                     case (int)NodeType.student:
-                        return StudentNode(path,id.ToString(), name);
+                        return TreeNodeFactory.StudentNode(path,id.ToString(), name);
                     case (int)NodeType.teacher:
-                        return TeacherNode(path,id.ToString(), name);
+                        return TreeNodeFactory.TeacherNode(path,id.ToString(), name);
                     case (int)NodeType.file:
-                        return FileNode(path,id.ToString(), name);
+                        return TreeNodeFactory.FileNode(path,id.ToString(), name);
                     case (int)NodeType.activity:                        
-                        return ActivityNode(path,id.ToString(), name);
+                        return TreeNodeFactory.ActivityNode(path,id.ToString(), name);
                     case (int)NodeType.module:
-                        return ModuleNode(path, id.ToString(), name);
+                        return TreeNodeFactory.ModuleNode(path, id.ToString(), name);
                     case (int)NodeType.course:                        
-                        return CourseNode(path, id.ToString(), name);
+                        return TreeNodeFactory.CourseNode(path, id.ToString(), name);
                 }
             }            
 
@@ -68,103 +69,7 @@ namespace LMSGroupOne.Controllers
 
             return jsonData;           
 
-        }
-               
-
-        private TreeNode MakeNode(string id, string name, NodeType type, NodeType creates, TreeNode[] childNodes)
-        {
-            return new TreeNode
-            {
-                Id = id,
-                Type = type,
-                Name = name,
-                Open = false,
-                CanCreate = creates,
-                Editable = false,
-                Nodes = childNodes
-            };
-        }
-
-        private string StudentNode(string path,string id, string name)
-        {            
-            TreeNode node = MakeNode(id, name, NodeType.student, NodeType.none, null);            
-            return MakeJsonReturnData(true, NodeType.student, path, node);
-        }
-
-        private string TeacherNode(string path, string id, string name)
-        {                        
-            TreeNode node = MakeNode(id, name, NodeType.teacher, NodeType.none, null);
-            return MakeJsonReturnData(true, NodeType.teacher, path, node);
-        }
-
-        private string FileNode(string path, string id, string name)
-        {                        
-            TreeNode node = MakeNode(id, name, NodeType.file, NodeType.none, null);
-            return MakeJsonReturnData(true, NodeType.file, path, node);
-        }
-
-        private string MakeChildId(string path, NodeType type, string parentId)
-        {            
-            return $"{path}|{type}={parentId}";
-        }
-
-        private string ActivityNode(string path, string id, string name)
-        {
-
-            TreeNode[] childNodes = new TreeNode[]
-            {                
-                MakeNode(MakeChildId(path,NodeType.folder,id), "Documents", NodeType.folder, NodeType.file, new TreeNode[]{ })
-            };
-
-            TreeNode node = MakeNode(id, name, NodeType.activity, NodeType.none, childNodes);
-
-            return MakeJsonReturnData(true, NodeType.activity, path, node);
-
-        }
-
-        private string ModuleNode(string path, string id, string name)
-        {
-            TreeNode[] childNodes = new TreeNode[]
-            {
-                MakeNode(MakeChildId(path,NodeType.folder,id), "Activities", NodeType.folder, NodeType.activity, new TreeNode[]{ }),
-                MakeNode(MakeChildId(path,NodeType.folder,id), "Documents", NodeType.folder, NodeType.file, new TreeNode[]{ })
-            };
-
-            TreeNode node = MakeNode(id, name, NodeType.module, NodeType.none, childNodes);
-
-            return MakeJsonReturnData(true, NodeType.module, path, node);
-
-        }
-
-        private string CourseNode(string path, string id, string name)
-        {
-            TreeNode[] childNodes = new TreeNode[]
-            {
-                MakeNode(MakeChildId(path,NodeType.folder,id), "Modules", NodeType.folder, NodeType.module, new TreeNode[]{ }),
-                MakeNode(MakeChildId(path,NodeType.folder,id), "Documents", NodeType.folder, NodeType.file, new TreeNode[]{ }),
-                MakeNode(MakeChildId(path,NodeType.folder,id), "Student", NodeType.folder, NodeType.student, new TreeNode[]{ })
-            };
-
-            TreeNode node = MakeNode(id, name, NodeType.course, NodeType.none, childNodes);
-
-            return MakeJsonReturnData(true, NodeType.course, path, node);
-        }
-
-
-        private string MakeJsonReturnData(bool success, NodeType nodeType, string path, TreeNode node)
-        {
-            string jsonData = JsonConvert.SerializeObject(
-                new
-                {
-                    success = success,
-                    type = nodeType,
-                    path = path,
-                    subTree = node
-                });
-
-            return jsonData;
-
-        }
+        }               
 
     }
 

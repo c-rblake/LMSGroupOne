@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace LMS.Core.Models.ViewModels.Account
 {
-    public class AccountCreateViewModel
+    public class AccountCreateViewModel:IModalViewModel
     {
         [Required(ErrorMessage = "Please enter first name")]
         [MaxLength(40, ErrorMessage = "Max length for first name is 40 characters")]
@@ -37,5 +38,10 @@ namespace LMS.Core.Models.ViewModels.Account
         [Display(Name = "Course")]
         public int? CourseId { get; set; }
 
+
+        public bool Success { get; set; }
+        public string Message { get; set; }
+        public int ReturnId { get; set; }
+        public string PersonReturnId { get; set; }
     }
 }
