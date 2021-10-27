@@ -12,7 +12,12 @@ class SearchHandler
         $.ajax({
             type: "GET",
             url: "/Authors/List",
-            data: { Name: form.elements["Name"].value, OrderOnAge: $('input#ageOrdered').prop('checked')},      //reposts values, numbers etc might need some manipulation
+            data: {
+                Name: form.elements["Name"].value,
+                OrderOnAge: $('input#ageOrdered').prop('checked'),
+                NameOrdered: $('input#nameOrdered').prop('checked')
+
+            },      //reposts values, numbers etc might need some manipulation
             cache: false,
             success: result => { //form.elements["OrderOnAge"].value
                 console.log(result);

@@ -153,6 +153,11 @@ namespace LMSGroupOne.Controllers
             {
                 model = model.OrderBy(a => a.Age).ToList();
             }
+            if (search.NameOrdered)
+            {
+                model = model.OrderBy(a => a.Name).ToList();
+            }
+
 
             TempData["SearchTerm"] = search.Name;
 
