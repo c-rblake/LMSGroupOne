@@ -53,6 +53,7 @@ namespace LMSGroupOne.Controllers
 
             return View();
         }
+
         public async Task<ActionResult> GetAuthors()
         {
             var client = httpClientFactory.CreateClient("LMSClient");

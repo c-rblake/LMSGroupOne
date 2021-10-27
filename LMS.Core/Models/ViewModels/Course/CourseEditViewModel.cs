@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LMSGroupOne.Validations;
 
 namespace LMS.Core.Models.ViewModels.Course
 {
@@ -18,6 +19,7 @@ namespace LMS.Core.Models.ViewModels.Course
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-ddTHH:mm}", ApplyFormatInEditMode = true)]
         public DateTime StartDate { get; set; }
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-ddTHH:mm}", ApplyFormatInEditMode = true)]
+        [CheckDates]
         public DateTime EndDate { get; set; }
 
 
