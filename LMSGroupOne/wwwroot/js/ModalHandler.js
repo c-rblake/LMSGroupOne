@@ -11,6 +11,18 @@ class ModalHandler {
         $.validator.unobtrusive.parse(form);
     }
 
+    static FixValidation2() {
+        $(function hideOnLoad() {
+            if ($("#role").val() == "Teacher") { $("#course").hide(); }
+        });
+        $(function () {
+            $("#role").change(function () {
+                if ($(this).val() == "Student") { $("#course").toggle(); }
+                else if ($(this).val() == "Teacher") { $("#course-select")[0].selectedIndex = -1; $("#course").hide('slow'); }
+            });
+        });
+    }
+
     OnCloseButton() {
         let modal = document.getElementById("centerModalId");
         modal.style.display = "none";
@@ -42,6 +54,7 @@ class ModalHandler {
                 let modalContent = document.getElementById("centerModalBodyId");
                 modalContent.innerHTML = result;
                 ModalHandler.FixValidation();
+                ModalHandler.FixValidation2();
 
                 let form = document.getElementById("formId");
                 let success = JSON.parse((form.elements["Success"].value).toLowerCase());
@@ -261,7 +274,7 @@ class ModalHandler {
                 url = "/Account/CreateTeacher";
                 break;
             case "edit":
-                url = "/Course/Create";
+                url = "/Account/Edit";
                 break;
             case "delete":
                 url = "/Delete/DeleteTeacher";
@@ -280,7 +293,7 @@ class ModalHandler {
                 url = "/Account/CreateStudent"; 
                 break;
             case "edit":
-                url = "/Course/Create";
+                url = "/Account/Edit";
                 break;
             case "delete":
                 url = "/Delete/DeleteStudent";
@@ -289,5 +302,4 @@ class ModalHandler {
         }
         return { url: url, data: data };
     }
-
 }
