@@ -43,8 +43,11 @@ namespace LMS.Data.Data
 
                 var teacher = await AddTeacherAsync(teacherPw);
                 var aime = await AddTeacherAimeAsync(teacherPw);
+                var storyTeacher = await AddStoryTeacherAsync(teacherPw);
+
                 await AddTeacherToRoleAsync(teacher);
                 await AddTeacherToRoleAsync(aime);
+                await AddTeacherToRoleAsync(storyTeacher);
 
                 var actTypeTypes = new List<string>
                 {
@@ -201,6 +204,28 @@ namespace LMS.Data.Data
             return teacher;
         }
 
+        private static async Task<User> AddStoryTeacherAsync(string teacherPw)
+        {
+            var firstName = "Anders";
+            var lastName = "Svensson";
+            var emailFirstName = firstName.ToLower();
+            var emailLastName = lastName.ToLower();
+
+            var teacher = new User
+            {
+                FirstName = firstName,
+                LastName = lastName,
+                Documents = GetDocuments(2),
+                Email = $"{emailFirstName}.{emailLastName}@lexicon.se",
+                UserName = $"{emailFirstName}.{emailLastName}@lexicon.se"
+            };
+
+            var result = await userManager.CreateAsync(teacher, teacherPw);
+            if (!result.Succeeded) throw new Exception(string.Join("\n", result.Errors));
+
+            return teacher;
+        }
+
         private static List<ActivityType> GetActivityType(List<string> actTypeTypes)
         {
             var actTypes = new List<ActivityType>();
@@ -277,13 +302,16 @@ namespace LMS.Data.Data
         }
         private static List<User> GetStudents(int amount, List<Course> courses)
         {
+            var random = new Random();
+            
+
             var students = new List<User>();
 
             for (int i = 0; i < amount; i++)
             {
                 var firstName = fake.Name.FirstName();
                 var lastName = fake.Name.LastName();
-                var random = new Random();
+                random = new Random();
                 var emailFirstName = firstName.ToLower();
                 var emailLastName = lastName.ToLower();
 
@@ -297,6 +325,21 @@ namespace LMS.Data.Data
                 };
                 students.Add(user);
             }
+
+
+            // Story User
+            random = new Random();
+            var storyUser = new User
+            {
+                FirstName = "Peter",
+                LastName = "Andersson",
+                Documents = GetDocuments(1),
+                UserName = "peter.andersson@lexicon.se",
+                Course = courses[random.Next(0, courses.Count)]
+            };
+
+            students.Add(storyUser);
+
             return students;
 
         }
