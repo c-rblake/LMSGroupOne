@@ -1,0 +1,70 @@
+﻿@model LMS.Core.Models.ViewModels.API.Author.AuthorWorksViewModel
+
+@{
+    ViewData["Title"] = "GetAuthorAndWorks";
+}
+
+<h1>GetAuthorAndWorks</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Age)
+            </th>
+        </tr>
+        <tr>
+            <td>
+                @Html.DisplayFor(model => model.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.Age)
+            </td>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Works)
+        {
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(modelItem => item.Title)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(modelItem => item.PublicationDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(modelItem => item.Description)
+                </th>
+            </tr>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PublicationDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                @*<td>
+                        @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                        @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                        @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                    </td>*@
+            </tr>
+        }
+    </tbody>
+</table>

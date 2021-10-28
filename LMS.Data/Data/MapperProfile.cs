@@ -30,7 +30,7 @@ namespace LMS.Data.Data
             CreateMap<WorksViewModel, WorkDto>().ReverseMap();
             CreateMap<Work, WorkDto>().ReverseMap();
             CreateMap<WorkAuthorDto, Author>().ReverseMap();
-            //CreateMap<AuthorWorksViewModel, AuthorDto>().ReverseMap();
+            CreateMap<CreateWorkViewModel, WorkCreateDto>().ReverseMap();
 
 
             CreateMap<AuthorWorksViewModel, WorkAuthorDto>().ReverseMap();

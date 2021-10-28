@@ -300,6 +300,7 @@ namespace LMSGroupOne.Controllers
 
             return RedirectToAction(nameof(GetAuthors));
         }
+
         public IActionResult Create()
         {
             new AuthorCreateViewModel
@@ -310,11 +311,38 @@ namespace LMSGroupOne.Controllers
 
             return PartialView(new AuthorCreateViewModel());
         }
+        public IActionResult Create2()
+        {
 
+            return View();
+        }
+        public async Task<ActionResult> CreateAuthor2(Author author)
+        {
+            var client = httpClientFactory.CreateClient("LMSClient");
+            JsonContent content = JsonContent.Create(author);
+
+            var response = await client.PostAsync("Authors", content);
+
+            //If success received   
+            AuthorCreateDto authorCreated = default;
+            if (response.IsSuccessStatusCode)
+            {
+                authorCreated = await response.Content.ReadAsAsync<AuthorCreateDto>();
+
+            }
+            else
+            {
+                //Error response received   
+                //courses = Enumerable.Empty<CourseViewModel>();
+                ModelState.AddModelError(string.Empty, "Server error.");
+            }
+
+            return RedirectToAction(nameof(GetAuthors));
+        }
         // POST: Authors/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        
+
         //[HttpPost]
         //[ValidateAntiForgeryToken]
         //public async Task<IActionResult> Create(Author author)
@@ -322,7 +350,7 @@ namespace LMSGroupOne.Controllers
         //    if (ModelState.IsValid)
         //    {
         //        var auth = await CreateAuthor(author);
-            
+
         //        return RedirectToAction(nameof(GetAuthors));
         //    }
         //    return PartialView(author);

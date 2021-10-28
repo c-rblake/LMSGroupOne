@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using LMS.Core.Models.Dto;
+using LMS.Core.Models.Entities.API;
 using LMS.Core.Models.ViewModels.API.Work;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 
 namespace LMSGroupOne.Controllers
@@ -54,6 +56,35 @@ namespace LMSGroupOne.Controllers
             //     StartDate = p.StartDate
             // });
             return View("GetWorks", model.ToList());
+        }
+        public async Task<ActionResult> CreateWork([Bind("GenreId,TypeId,Title,Description,Level,PublicationDate")] Work work)
+        {
+            var client = httpClientFactory.CreateClient("LMSClient");
+            JsonContent content = JsonContent.Create(work);
+
+            var response = await client.PostAsync("Works", content);
+
+            //If success received   
+            WorkCreateDto workCreated = default;
+            if (response.IsSuccessStatusCode)
+            {
+                workCreated = await response.Content.ReadAsAsync<WorkCreateDto>();
+
+            }
+            else
+            {
+                //Error response received   
+                //courses = Enumerable.Empty<CourseViewModel>();
+                ModelState.AddModelError(string.Empty, "Server error.");
+            }
+
+            return RedirectToAction(nameof(GetWorks));
+        }
+        public IActionResult Create()
+        {
+
+
+            return View();
         }
     }
 }
