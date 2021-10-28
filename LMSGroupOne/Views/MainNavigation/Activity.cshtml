@@ -14,7 +14,7 @@
     @if (User.IsInRole("Teacher"))
     {
         <button id="editButtonId" data-item-id=@Model.Id data-item-type=@((int)(NodeType.activity)) class="btn btn-outline-primary">Edit</button><br /><br />
-        <button id="uploadActivityDocumentsButtonId" data-item-id=@Model.Id data-item-type=@((int)(NodeType.fileactivity)) class="btn btn-outline-primary">Upload</button>
+        <button id="uploadÁctivityDocumentsButtonId" data-item-creates=@((int)(NodeType.fileactivity)) data-item-parent-id=@Model.Id data-item-extra="new" data-item-parent-type=@((int)(NodeType.activity)) data-item-id=@Model.Id data-item-type=@((int)(NodeType.fileactivity)) class="btn btn-outline-primary">Upload</button>
     }
 
 </div>

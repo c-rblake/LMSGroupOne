@@ -296,6 +296,7 @@ class ModalHandler {
                 break;
             case "uploadcoursedocuments":
                 url = "/Account/UploadCourseDocuments";
+                data["Id"] = parseInt(form.elements["Id"].value);
                 break;
             case "uploadmoduledocuments":
                 url = "/Account/UploadModuleDocument";
