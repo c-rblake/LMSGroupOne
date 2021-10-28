@@ -192,9 +192,9 @@ namespace LMSGroupOne.Controllers
          - Module.StartDate < Course.StartDate
          - Module.EndDate > Course.EndDate
 
-        Test av Module mot ExistingModule på samma Course:
+       Test av Module mot ExistingModule på samma Course:
          - Module.StartDate < ExistingModule.EndDate && Module.EndDate > ExistingModule.StartDate
-         - Module.EndDate > ExistingModule.StartDate && Module.EndDate < ExistingModule.StartDate
+         - Module.EndDate > ExistingModule.StartDate && Module.StartDate < ExistingModule.EndDate
         
          */
 
