@@ -33,24 +33,23 @@ namespace LMSGroupOne.Controllers
 
 
         [Authorize(Roles = "Teacher")]
-        [Route("/document/uploadcoursedocuments/{id}")]
         public async Task<IActionResult> UploadCourseDocuments(int id)
         {
             var course = await _db.Courses.Where(c => c.Id == id).FirstOrDefaultAsync();
 
             var viewModel = new UploadCourseDocumentsViewModel
             {
+                Id = id,
                 Course = course
             };
 
-            return View(viewModel);
+            return PartialView(viewModel);
         }
 
 
         [HttpPost]
         [Authorize(Roles = "Teacher")]
         [ValidateAntiForgeryToken]
-        [Route("/document/uploadcoursedocuments/{id}")]
         public async Task<IActionResult> UploadCourseDocuments(int id, List<IFormFile> postedDocuments, UploadCourseDocumentsViewModel viewModel)
         {
             if (ModelState.IsValid)
@@ -75,7 +74,7 @@ namespace LMSGroupOne.Controllers
                         if (postedDocument == null || postedDocument.Length == 0)
                         {
                             ModelState.AddModelError("Document", $"Document {postedDocument.FileName} is empty or null");
-                            return View();
+                            return PartialView(viewModel);
                         }
 
                         string documentName = Path.GetFileName(postedDocument.FileName);
@@ -85,7 +84,7 @@ namespace LMSGroupOne.Controllers
                         if (DocumentExists(documentName.Split(".")[0]) == true)
                         {
                             ModelState.AddModelError("Document", $"A document with file name {postedDocument.FileName} already exists");
-                            return View();
+                            return PartialView(viewModel);
                         }
 
                         using (FileStream stream = new FileStream(documentUrl, FileMode.Create))
@@ -95,13 +94,11 @@ namespace LMSGroupOne.Controllers
 
                         var document = new Document
                         {
-                            Name = documentName.Split(".")[0],
+                            Name = viewModel.Name,
                             DocumentUrl = documentUrl,
                             TimeStamp = DateTime.Now,
                             Person = person,
                             Course = course,
-                            //PersonId = userId,
-                            //CourseId = course.Id,
                             Description = viewModel.Description
                         };
 
@@ -109,21 +106,24 @@ namespace LMSGroupOne.Controllers
                         await _db.SaveChangesAsync();
                     }
 
-                    long size = postedDocuments.Sum(f => f.Length);
-
-                    ViewBag.Result = $"{postedDocuments.Count} document(s) with total size {size} bytes was successfully uploaded";
+                    viewModel.Success = true;
+                    viewModel.ReturnId = id;
+                    viewModel.Message = "Document(s) were successfully uploaded";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
                     throw;
                 }
-                return View();
+                return PartialView(viewModel);
             }
-            return View();
+            viewModel.Success = false;
+            viewModel.ReturnId = id;
+            viewModel.Message = "Could not upload document(s)";
+
+            return PartialView(viewModel);
         }
 
         [Authorize(Roles = "Teacher")]
-        [Route("/document/uploadmoduledocuments/{id}")]
         public async Task<IActionResult> UploadModuleDocuments(int id)
         {
             var module = await _db.Modules.Where(a => a.Id == id).FirstOrDefaultAsync();
@@ -133,16 +133,16 @@ namespace LMSGroupOne.Controllers
             var viewModel = new UploadModuleDocumentsViewModel
             {
                 Module = module,
-                Course = parentCourse
+                Course = parentCourse,
+                Id = id
             };
 
-            return View(viewModel);
+            return PartialView(viewModel);
         }
 
         [HttpPost]
         [Authorize(Roles = "Teacher")]
         [ValidateAntiForgeryToken]
-        [Route("/document/uploadmoduledocuments/{id}")]
         public async Task<IActionResult> UploadModuleDocuments(int id, List<IFormFile> postedDocuments, UploadModuleDocumentsViewModel viewModel)
         {
             if (ModelState.IsValid)
@@ -170,10 +170,10 @@ namespace LMSGroupOne.Controllers
 
                         string documentUrl = Path.Combine(path, documentName);
 
-                        if (DocumentExists(documentName.Split(".")[0]) == true)
+                        if (DocumentExists(documentName) == true)
                         {
                             ModelState.AddModelError("Document", $"A document with file name {postedDocument.FileName} already exists");
-                            return View();
+                            return PartialView(viewModel);
                         }
 
                         using (FileStream stream = new FileStream(documentUrl, FileMode.Create))
@@ -183,15 +183,12 @@ namespace LMSGroupOne.Controllers
 
                         var document = new Document
                         {
-                            Name = documentName.Split(".")[0],
+                            Name = viewModel.Name,
                             DocumentUrl = documentUrl,
                             TimeStamp = DateTime.Now,
                             Person = person,
                             Module = module,
                             Course = parentCourse,
-                            //PersonId = userId,
-                            //ModuleId = module.Id,
-                            //CourseId = parentCourse.Id,
                             Description = viewModel.Description
                         };
 
@@ -199,22 +196,26 @@ namespace LMSGroupOne.Controllers
                         await _db.SaveChangesAsync();
                     }
 
-                    long size = postedDocuments.Sum(f => f.Length);
-
-                    ViewBag.Result = $"{postedDocuments.Count} document(s) with total size {size} bytes was successfully uploaded";
+                    viewModel.Success = true;
+                    viewModel.ReturnId = id;
+                    viewModel.Message = "Document(s) were successfully uploaded";
                 }
 
                 catch (DbUpdateConcurrencyException)
                 {
                     throw;
                 }
-                return View();
+                return PartialView(viewModel);
             }
-            return View();
+
+            viewModel.Success = false;
+            viewModel.ReturnId = id;
+            viewModel.Message = "Could not upload document(s)";
+
+            return PartialView(viewModel);
         }
 
         [Authorize]
-        [Route("/document/uploadactivitydocuments/{id}")]
         public async Task<IActionResult> UploadActivityDocuments(int id)
         {
             var activity = await _db.Activities.Where(a => a.Id == id).FirstOrDefaultAsync();
@@ -227,10 +228,11 @@ namespace LMSGroupOne.Controllers
             {
                 Activity = activity,
                 Module = parentModule,
-                Course = parentCourse
+                Course = parentCourse,
+                Id = id
             };
 
-            return View(viewModel);
+            return PartialView(viewModel);
         }
 
         [HttpPost]
@@ -248,7 +250,116 @@ namespace LMSGroupOne.Controllers
                 if (User.IsInRole("Student") && activityType.Name != "Assignment")
                 {
                     ModelState.AddModelError("ActivityType", "Students cannot upload documents to activities that are not assignments");
-                    return View(viewModel);
+                    return PartialView(viewModel);
+                }
+
+                var parentModule = _db.Modules.Where(c => c.Id == activity.ModuleId).FirstOrDefault();
+
+                var parentCourse = _db.Courses.Where(c => c.Id == parentModule.CourseId).FirstOrDefault();
+
+                string path = Path.Combine(_environment.WebRootPath, $"documents/{parentCourse.Name}/{parentModule.Name}/{activity.Name}");
+
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+
+                var userId = _userManager.GetUserId(User);
+
+                var person = await _db.Persons.Where(p => p.Id == userId).FirstOrDefaultAsync();
+
+                try
+                {
+                    foreach (IFormFile postedDocument in postedDocuments)
+                    {
+                        string documentName = Path.GetFileName(postedDocument.FileName);
+
+                        string documentUrl = Path.Combine(path, documentName);
+
+                        if (DocumentExists(documentUrl) == true)
+                        {
+                            ModelState.AddModelError("Document", $"A document with file name {postedDocument.FileName} already exists in this location");
+                            return PartialView(viewModel);
+                        }
+
+                        using (FileStream stream = new FileStream(documentUrl, FileMode.Create))
+                        {
+                            await postedDocument.CopyToAsync(stream);
+                        }
+
+                        var document = new Document
+                        {
+                            Name = viewModel.Name,
+                            DocumentUrl = documentUrl,
+                            TimeStamp = DateTime.Now,
+                            Person = person,
+                            Activity = activity,
+                            Module = parentModule,
+                            Course = parentCourse,
+                            Description = viewModel.Description
+                        };
+
+                        _db.Documents.AddRange(document);
+                        await _db.SaveChangesAsync();
+                    }
+
+                    viewModel.Success = true;
+                    viewModel.ReturnId = id;
+                    viewModel.Message = "Document(s) were successfully uploaded";
+                }
+
+                catch (DbUpdateConcurrencyException)
+                {
+                    throw;
+                }
+                return PartialView(viewModel);
+            }
+
+            viewModel.Success = false;
+            viewModel.ReturnId = id;
+            viewModel.Message = "Could not upload document(s)";
+
+            return PartialView(viewModel);
+        }
+
+
+        [Authorize]
+        [Route("/document/uploadactivitydocuments1/{id}")]
+        public async Task<IActionResult> UploadActivityDocuments1(int id)
+        {
+            var activity = await _db.Activities.Where(a => a.Id == id).FirstOrDefaultAsync();
+
+            var parentModule = await _db.Modules.Where(m => m.Id == activity.ModuleId).FirstOrDefaultAsync();
+
+            var parentCourse = await _db.Courses.Where(c => c.Id == parentModule.CourseId).FirstOrDefaultAsync();
+
+            var viewModel = new UploadActivityDocumentsViewModel
+            {
+                Activity = activity,
+                Module = parentModule,
+                Course = parentCourse,
+                Id = id
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        [Route("/document/uploadactivitydocuments1/{id}")]
+        public async Task<IActionResult> UploadActivityDocuments1(int id, List<IFormFile> postedDocuments, UploadActivityDocumentsViewModel viewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var activity = await _db.Activities.Where(a => a.Id == id).FirstOrDefaultAsync();
+
+                var activityType = _db.ActivityTypes.Where(a => a.Id == activity.ActivityTypeId).FirstOrDefault();
+
+                if (User.IsInRole("Student") && activityType.Name != "Assignment")
+                {
+                    ModelState.AddModelError("ActivityType", "Students cannot upload documents to activities that are not assignments");
+                    return View();
                 }
 
                 var parentModule = _db.Modules.Where(c => c.Id == activity.ModuleId).FirstOrDefault();
@@ -287,7 +398,7 @@ namespace LMSGroupOne.Controllers
 
                         var document = new Document
                         {
-                            Name = documentName.Split(".")[0],
+                            Name = viewModel.Name,
                             DocumentUrl = documentUrl,
                             TimeStamp = DateTime.Now,
                             Person = person,
@@ -304,15 +415,17 @@ namespace LMSGroupOne.Controllers
                     long size = postedDocuments.Sum(f => f.Length);
 
                     ViewBag.Result = $"{postedDocuments.Count} document(s) with total size {size} bytes was successfully uploaded";
+ 
                 }
 
                 catch (DbUpdateConcurrencyException)
                 {
                     throw;
                 }
-                return View();
+                return View(viewModel);
             }
-            return View();
+
+            return View(viewModel);
         }
 
         public bool DocumentExists(string documentUrl)
@@ -321,7 +434,7 @@ namespace LMSGroupOne.Controllers
         }
 
 
-        //Authorize Todo
+        [Authorize]
         public async Task<IActionResult> Index()
         {
             var model = await _db.Documents.ToListAsync();
@@ -348,10 +461,7 @@ namespace LMSGroupOne.Controllers
 
             byte[] fileBytes = GetFile(filePath);
 
-            
-
-            return File(
-        fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, filePath);
+            return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, filePath);
 
         }
 
@@ -364,20 +474,5 @@ namespace LMSGroupOne.Controllers
                 throw new System.IO.IOException(s);
             return data;
         }
-
-        //public FileResult Download(string id)
-        //{
-        //    int fid = Convert.ToInt32(id);
-        //    var files = objData.GetFiles();
-        //    string filename = (from f in files
-        //                       where f.FileId == fid
-        //                       select f.FilePath).First();
-        //    string contentType = "application/pdf";
-        //    //Parameters to file are
-        //    //1. The File Path on the File Server
-        //    //2. The content type MIME type
-        //    //3. The parameter for the file save by the browser
-        //    return File(filename, contentType, "Report.pdf");
-        //}
     }
 }

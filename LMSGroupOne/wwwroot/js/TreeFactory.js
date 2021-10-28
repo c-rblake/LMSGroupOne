@@ -29,7 +29,10 @@ class TreeFactory {
             SEARCH: 8,
             NONE: 9,
             TRASH: 10,
-            AUTHOR: 11
+            AUTHOR: 11,
+            FILECOURSE: 12,
+            FILEMODULE: 13,
+            FILEACTIVITY: 14
         }
 
     static GetIconClass(type, isOpen)

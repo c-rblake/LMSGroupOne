@@ -168,6 +168,23 @@ class TreeHandler {
                     editButton.addEventListener("click", (event) => { this.#OnEdit(event) });
                 }
 
+                let uploadCourseDocumentsButton = document.getElementById("uploadCourseDocumentsButtonId");
+                if (uploadCourseDocumentsButton) {
+                    uploadCourseDocumentsButton.addEventListener("click", (event) => { this.#OnNew(event) });
+                }
+
+                let uploadModuleDocumentsButton = document.getElementById("uploadModuleDocumentsButtonId");
+                if (uploadModuleDocumentsButton) {
+                    uploadModuleDocumentsButton.addEventListener("click", (event) => { this.#OnNew(event) });
+                }
+
+                let uploadActivityDocumentsButton = document.getElementById("uploadActivityDocumentsButtonId");
+                if (uploadActivityDocumentsButton) {
+                    uploadActivityDocumentsButton.addEventListener("click", (event) => { this.#OnNew(event) });
+                }
+
+
+
                 let searchForm = document.getElementById("searchFormId");
                 if (searchForm)
                 {                    
@@ -245,7 +262,6 @@ class TreeHandler {
                 modal.style.display = "block";
                 title.innerHTML = "Edit Account";
                 break;
-
             
         }
 
@@ -400,6 +416,24 @@ class TreeHandler {
                 modal.style.display = "block";
                 title.innerHTML = "Delete Document";
                 break;
+            case TreeFactory.NodeTypes.FILECOURSE:
+                url = "/Delete/DeleteDocument";
+                data = { Id: id };
+                modal.style.display = "block";
+                title.innerHTML = "Delete Document";
+                break;
+            case TreeFactory.NodeTypes.FILEMODULE:
+                url = "/Delete/DeleteDocument";
+                data = { Id: id };
+                modal.style.display = "block";
+                title.innerHTML = "Delete Document";
+                break;
+            case TreeFactory.NodeTypes.FILEACTIVITY:
+                url = "/Delete/DeleteDocument";
+                data = { Id: id };
+                modal.style.display = "block";
+                title.innerHTML = "Delete Document";
+                break;
             case TreeFactory.NodeTypes.TEACHER:
                 url = "/Delete/DeleteTeacher";
                 data = { Id: id };
@@ -499,6 +533,24 @@ class TreeHandler {
                 data = {},
                 modal.style.display = "block";
                 title.innerHTML = "Create Teacher";
+                break;
+            case TreeFactory.NodeTypes.FILECOURSE:
+                url = "/Document/UploadCourseDocuments";
+                data = {},
+                    modal.style.display = "block";
+                title.innerHTML = "Create Course Document";
+                break;
+            case TreeFactory.NodeTypes.FILEMODULE:
+                url = "/Document/UploadModuleDocuments";
+                data = {},
+                    modal.style.display = "block";
+                title.innerHTML = "Create Module Document(s)";
+                break;
+            case TreeFactory.NodeTypes.FILEACTIVITY:
+                url = "/Document/UploadActivityDocuments(s)";
+                data = {},
+                    modal.style.display = "block";
+                title.innerHTML = "Create Activity Document(s)";
                 break;
 
             default:

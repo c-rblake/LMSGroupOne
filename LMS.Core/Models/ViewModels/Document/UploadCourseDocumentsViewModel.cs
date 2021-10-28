@@ -8,8 +8,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace LMS.Core.Models.ViewModels.Document
 {
-    public class UploadCourseDocumentsViewModel
+    public class UploadCourseDocumentsViewModel : IModalViewModel
     {
+        public int Id { get; set; }
         public string Name { get; set; }
         [MaxLength(100, ErrorMessage = "Max length for document description is 250 characters")]
         [Display(Name = "Document description (optional)")]
@@ -26,5 +27,10 @@ namespace LMS.Core.Models.ViewModels.Document
         [AllowedDocumentExtensions(new string[] { ".jpg", ".jpeg", ".png", ".gif",".txt", ".doc", ".ppt", ".pdf", ".xd" })]
         [MaxDocumentSize(10 * 1024 * 1024)]
         public List<IFormFile> PostedDocuments { get; set; }
+
+        public bool Success { get; set; }
+        public string Message { get; set; }
+        public int ReturnId { get; set; }
+        public string PersonReturnId { get; set; }
     }
 }

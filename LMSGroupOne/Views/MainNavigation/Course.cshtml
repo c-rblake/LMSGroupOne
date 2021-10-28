@@ -10,7 +10,8 @@
 
     @if (User.IsInRole("Teacher"))
     {
-        <button id="editButtonId" data-item-id=@Model.Id data-item-type=@((int)(NodeType.course)) class="btn btn-outline-primary">Edit</button>
+        <button id="editButtonId" data-item-id=@Model.Id data-item-type=@((int)(NodeType.course)) class="btn btn-outline-primary">Edit</button><br /><br />
+        <button id="uploadCourseDocumentsButtonId" data-item-id=@Model.Id data-item-type=@((int)(NodeType.filecourse)) class="btn btn-outline-primary">Upload</button>
     }
 
 </div>

@@ -19,6 +19,9 @@ namespace LMSGroupOne.Models.MainNavigation
         none=9,
         trash=10,
         author=11,
+        filecourse=12,
+        filemodule=13,
+        fileactivity=14
 
     }
 }

@@ -23,6 +23,16 @@ class ModalHandler {
         });
     }
 
+    static FixValidation3() {
+        function validateForm() {
+            var x = document.forms["UploadCourseDocumentsForm"]["postedDocuments"].value;
+            if (x == "") {
+                alert("Please choose document(s) to upload");
+                return false;
+            }
+        }
+}
+
     OnCloseButton() {
         let modal = document.getElementById("centerModalId");
         modal.style.display = "none";
@@ -55,6 +65,8 @@ class ModalHandler {
                 modalContent.innerHTML = result;
                 ModalHandler.FixValidation();
                 ModalHandler.FixValidation2();
+                ModalHandler.FixValidation3();
+
 
                 let form = document.getElementById("formId");
                 let success = JSON.parse((form.elements["Success"].value).toLowerCase());
@@ -114,10 +126,53 @@ class ModalHandler {
                 console.log("deleted");
                 treeHandler.UpdateAfterDelete(parseInt(returnId), type);                
                 break;
+            case "uploadcoursedocuments":
+                console.log("id in succsses:" + returnId)
+                $.ajax({
+                    type: "GET",
+                    url: "/AddNavigation/OnNew",
+                    data: { path: path, id: returnId, type: type, name: form.elements["Name"].value },
+                    cache: false,
+                    success: result => {
+                        let obj = JSON.parse(result);
+                        if (obj.success) {
+                            treeHandler.AddSubTree(obj.subTree, obj.type, obj.path);
+                        }
+                    }
+                });
+                break;
+            case "uploadmoduledocuments":
+                console.log("id in succsses:" + returnId)
+                $.ajax({
+                    type: "GET",
+                    url: "/AddNavigation/OnNew",
+                    data: { path: path, id: returnId, type: type, name: form.elements["Name"].value },
+                    cache: false,
+                    success: result => {
+                        let obj = JSON.parse(result);
+                        if (obj.success) {
+                            treeHandler.AddSubTree(obj.subTree, obj.type, obj.path);
+                        }
+                    }
+                });
+                break;
+            case "uploadactivitydocuments":
+                console.log("id in succsses:" + returnId)
+                $.ajax({
+                    type: "GET",
+                    url: "/AddNavigation/OnNew",
+                    data: { path: path, id: returnId, type: type, name: form.elements["Name"].value },
+                    cache: false,
+                    success: result => {
+                        let obj = JSON.parse(result);
+                        if (obj.success) {
+                            treeHandler.AddSubTree(obj.subTree, obj.type, obj.path);
+                        }
+                    }
+                });
+                break;
 
         }
-
-
         
     }
 
@@ -152,6 +207,12 @@ class ModalHandler {
             case TreeFactory.NodeTypes.TEACHER:
                 return ModalHandler.GetTeacherRepostData(operation, token, data);
             case TreeFactory.NodeTypes.STUDENT:
+                return ModalHandler.GetStudentRepostData(operation, token, data);
+            case TreeFactory.NodeTypes.FILECOURSE:
+                return ModalHandler.GetStudentRepostData(operation, token, data);
+            case TreeFactory.NodeTypes.FILEMODULE:
+                return ModalHandler.GetStudentRepostData(operation, token, data);
+            case TreeFactory.NodeTypes.FILEACTIVITY:
                 return ModalHandler.GetStudentRepostData(operation, token, data);
             
         }
@@ -232,6 +293,15 @@ class ModalHandler {
         switch (operation) {
             case "new":
                 url = "/Course/Create";
+                break;
+            case "uploadcoursedocuments":
+                url = "/Account/UploadCourseDocuments";
+                break;
+            case "uploadmoduledocuments":
+                url = "/Account/UploadModuleDocument";
+                break;
+            case "uploadactivitydocuments":
+                url = "Account/ActivityDocument";
                 break;
             case "edit":
                 url = "/Course/Create";
