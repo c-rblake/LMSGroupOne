@@ -142,8 +142,6 @@ namespace LMSGroupOne.Controllers
             }
 
 
-
-
             //Map 
             var model = mapper.Map<List<AuthorsViewmodel>>(authors);
             if (model is not null && reWorksAuthorsViewmodel is not null)
@@ -167,12 +165,42 @@ namespace LMSGroupOne.Controllers
 
             return PartialView(model);
         }
-       
 
 
+        public async Task<ActionResult> GetAuthorAndWorks(int? id)
+        {
+            var client = httpClientFactory.CreateClient("LMSClient");
+            var response = await client.GetAsync("authors/" + id + "?includeWorks=true");
 
+            //If success received
+            WorkAuthorDto authorWorks = default;
+            if (response.IsSuccessStatusCode)
+            {
+                authorWorks = await response.Content.ReadAsAsync<WorkAuthorDto>();
 
+            }
+            else
+            {
+                //Error response received
+                //courses = Enumerable.Empty<CourseViewModel>();
+                ModelState.AddModelError(string.Empty, "Server error.");
+            }
 
+            //Map
+            var model = mapper.Map<AuthorWorksViewModel>(authorWorks);
+
+            //return View(courses);
+            //var model = courses
+            // //.Where(p => p.Category == searchText || p.Name == searchText)
+            // .Select(p => new CourseViewModel
+            // {
+            // Title = p.Title,
+            // StartDate = p.StartDate
+            // });
+
+            return View("GetAuthorAndWorks", model);
+        }
+        
 
         public async Task<ActionResult> GetAuthor(LibrarySearch search)
         {
