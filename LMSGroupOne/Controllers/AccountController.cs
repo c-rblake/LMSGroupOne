@@ -110,7 +110,7 @@ namespace LMSGroupOne.Controllers
                 Role = "Student",
             };
 
-            return PartialView(new AccountCreateViewModel());
+            return PartialView(model);
         }
 
 
@@ -121,7 +121,7 @@ namespace LMSGroupOne.Controllers
         public async Task<IActionResult> CreateTeacher(AccountCreateViewModel newAccount)
         {
             newAccount.Role = "Teacher";
-            newAccount.CourseId = null;
+            //newAccount.CourseId = null;
 
             if (ModelState.IsValid)
             {
@@ -173,7 +173,7 @@ namespace LMSGroupOne.Controllers
         public async Task<IActionResult> CreateStudent(AccountCreateViewModel newAccount)
         {
             newAccount.Role = "Student";
-            newAccount.CourseId = null;
+            //newAccount.CourseId = null;
 
             if (ModelState.IsValid)
             {

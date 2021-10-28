@@ -277,7 +277,7 @@ class ModalHandler {
 
         switch (operation) {
             case "new":
-                url = "/Account/CreateStudent";
+                url = "/Account/CreateStudent"; 
                 break;
             case "edit":
                 url = "/Course/Create";

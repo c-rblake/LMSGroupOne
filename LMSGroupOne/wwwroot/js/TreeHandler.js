@@ -468,8 +468,8 @@ class TreeHandler {
                 title.innerHTML = "Create Document";
                 break;
             case TreeFactory.NodeTypes.STUDENT:
-                url = "/Account/CreateTeacher";
-                data = event.target.dataset.itemParentId;
+                url = "/Account/CreateStudent";
+                data = { courseId: event.target.dataset.itemParentId };
                 modal.style.display = "block";
                 title.innerHTML = "Create Student";
                 break;
