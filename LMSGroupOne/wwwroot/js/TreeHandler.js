@@ -226,7 +226,27 @@ class TreeHandler {
                 data = { id :id };
                 modal.style.display = "block";
                 title.innerHTML = "Edit Activity";
-                break;            
+                break;
+            case TreeFactory.NodeTypes.TEACHER:
+                url = "/Account/Edit";
+                data = { id: id };
+                modal.style.display = "block";
+                title.innerHTML = "Edit Account";
+                break;
+            case TreeFactory.NodeTypes.TEACHER:
+                url = "/Activity/Edit";
+                data = { id: id };
+                modal.style.display = "block";
+                title.innerHTML = "Edit Activity";
+                break;
+            case TreeFactory.NodeTypes.STUDENT:
+                url = "/Account/Edit";
+                data = { id: id };
+                modal.style.display = "block";
+                title.innerHTML = "Edit Account";
+                break;
+
+            
         }
 
         $.ajax({
@@ -238,6 +258,7 @@ class TreeHandler {
                 let modalContent = document.getElementById("centerModalBodyId");
                 modalContent.innerHTML = result;
                 ModalHandler.FixValidation();
+                ModalHandler.FixValidation2();
             }
         });
     }
@@ -500,6 +521,10 @@ class TreeHandler {
 
     UpdateAfterEdit(id, type, name)
     {
+        //if (type == TreeFactory.NodeTypes.TEACHER) {
+        //    location.reload();   //JP
+        //}
+
         let item = this.#FindItem(type, id);
         
         // rename the treenode

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace LMS.Core.Models.ViewModels.Account
 {
-    public class AccountEditViewModel
+    public class AccountEditViewModel:IModalViewModel
     {
         [Required]
         public string Id { get; set; }
@@ -33,5 +33,11 @@ namespace LMS.Core.Models.ViewModels.Account
 
         [Display(Name = "Course")]
         public int? CourseId { get; set; }
+
+
+        public bool Success { get; set; }
+        public string Message { get; set; }
+        public int ReturnId { get; set; }
+        public string PersonReturnId { get; set; }
     }
 }

@@ -9,18 +9,17 @@ class SearchHandler
 
         let form = document.getElementById("searchFormId");
 
-        
-
-
-
-
-
         $.ajax({
             type: "GET",
             url: "/Authors/List",
-            data: { Name:form.elements["Name"].value},      //reposts values, numbers etc might need some manipulation
+            data: {
+                Name: form.elements["Name"].value,
+                OrderOnAge: $('input#ageOrdered').prop('checked'),
+                NameOrdered: $('input#nameOrdered').prop('checked')
+
+            },      //reposts values, numbers etc might need some manipulation
             cache: false,
-            success: result => {
+            success: result => { //form.elements["OrderOnAge"].value
                 console.log(result);
 
                 // dynamically adds the loaded the return from /Search/Search
