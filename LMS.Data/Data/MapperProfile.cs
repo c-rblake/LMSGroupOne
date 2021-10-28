@@ -9,6 +9,7 @@ using LMS.Core.Models.ViewModels.API.Work;
 using LMS.Core.Models.Entities.API;
 using LMS.Core.Models.ViewModels.Module;
 using LMS.Core.Models.ViewModels;
+using LMS.Core.Models.ViewModels.API.Author;
 
 namespace LMS.Data.Data
 {
@@ -29,8 +30,9 @@ namespace LMS.Data.Data
             CreateMap<WorksViewModel, WorkDto>().ReverseMap();
             CreateMap<Work, WorkDto>().ReverseMap();
             CreateMap<WorkAuthorDto, Author>().ReverseMap();
+            CreateMap<AuthorWorksViewModel, AuthorDto>().ReverseMap();
 
-
+            
 
             CreateMap<Person, AccountCreateViewModel>().ReverseMap();
             CreateMap<Person, AccountEditViewModel>().ReverseMap();
