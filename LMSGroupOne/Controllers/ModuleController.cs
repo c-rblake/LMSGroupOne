@@ -66,41 +66,14 @@ namespace LMSGroupOne.Controllers
             ViewBag.courseName = $"{course.Name}";
             ViewBag.courseDates = $"{ course.StartDate.ToString("yyyy-MM-dd")} - { course.EndDate?.Date.ToString("yyyy-MM-dd")}";
 
-            // Verify Modules dates vs Courses dates
-            if (createdModule.StartDate.Date < course.StartDate.Date)
+            // Verify Dates
+            Task<string> dateCheckMessage = areModuleDatesValid(course, createdModule.StartDate, createdModule.EndDate, createdModule.Id);
+
+            if (dateCheckMessage.Result != "")
             {
-                ModelState.AddModelError("StartDate", $"This Modules Start Date is earlier than the Course Start Date");
-                return PartialView(createdModule);
+                ModelState.AddModelError("Name", dateCheckMessage.Result);
             }
 
-            if (createdModule.EndDate.Date > course.EndDate?.Date)
-            {
-                ModelState.AddModelError("EndDate", $"This Modules End Date is later than the Course End Date");
-                return PartialView(createdModule);
-            }
-
-            // Get all modules on course except this one being edited
-            IEnumerable<Module> modules = await GetAllModulesByCourseAsync(course.Id);
-            modules = modules.Where(a => a.Id != createdModule.Id);
-
-            // Verify Module Dates to existing Module Dates
-            foreach (Module existingModule in modules)
-            {
-                if (createdModule.StartDate.Date < existingModule.EndDate.Date && createdModule.EndDate.Date > existingModule.StartDate.Date)
-                {
-                    String moduleWithDates = $"Module {existingModule.Name} ({existingModule.StartDate.ToString("yyyy-MM-dd")} - {existingModule.EndDate.ToString("yyyy-MM-dd")})";
-                    ModelState.AddModelError("StartDate", $"This modules dates overlaps existing {moduleWithDates}");
-                    return PartialView(createdModule);
-                }
-     
-                if (createdModule.EndDate.Date > existingModule.StartDate.Date)
-                {
-                    String moduleWithDates = $"Module {existingModule.Name} ({existingModule.StartDate.ToString("yyyy-MM-dd")} - {existingModule.EndDate.ToString("yyyy-MM-dd")})";
-                    ModelState.AddModelError("EndDate", $"This modules End Date is later than the Start Date of existing {moduleWithDates}");
-                    return PartialView(createdModule);
-                }
-
-            }
 
             if (ModelState.IsValid)
             {
@@ -118,8 +91,6 @@ namespace LMSGroupOne.Controllers
                 createdModule.Message = "Could not create Module!";
             }
 
-            //var courses = await uow.CourseRepository.GetAsync();
-            //ViewBag.Courses = courses;
 
             return PartialView(createdModule);
         }
@@ -140,17 +111,18 @@ namespace LMSGroupOne.Controllers
         public async Task<IActionResult> EditModule(int id)
         {
             // Get Course Name + Dates to display on Module Form to make it easier for user to set Module Dates
-            var course = await uow.CourseRepository.GetCourse(id);
+            var module = await uow.ModuleRepository.GetModule(id);
+            var course = await uow.CourseRepository.GetCourse(module.CourseId);
             ViewBag.courseName = $"{course.Name}";
             ViewBag.courseDates = $"{ course.StartDate.ToString("yyyy-MM-dd")} - { course.EndDate?.Date.ToString("yyyy-MM-dd")}";
 
-            var module = mapper.Map<EditModuleViewModel>(await uow.ModuleRepository.FindAsync(id));
-            if (module == null)
+            var moduleViewModel = mapper.Map<EditModuleViewModel>(await uow.ModuleRepository.FindAsync(id));
+            if (moduleViewModel == null)
             {
                 return NotFound();
             }
 
-            return PartialView(module);
+            return PartialView(moduleViewModel);
         }
 
         // Edit Module POST
@@ -159,44 +131,16 @@ namespace LMSGroupOne.Controllers
         public async Task<IActionResult> EditModule(EditModuleViewModel editedModule)
         {
             // Get Course Name + Dates to display on Module Form to make it easier for user to set Module Dates
-            var course = await uow.CourseRepository.GetCourse(editedModule.Id);
+            var course = await uow.CourseRepository.GetCourse(editedModule.CourseId);
             ViewBag.courseName = $"{course.Name}";
             ViewBag.courseDates = $"{ course.StartDate.ToString("yyyy-MM-dd")} - { course.EndDate?.Date.ToString("yyyy-MM-dd")}";
 
-            // Verify Modules dates vs Courses dates
-            if (editedModule.StartDate.Date < course.StartDate.Date)
+            // Verify Dates
+            Task<string> dateCheckMessage = areModuleDatesValid(course, editedModule.StartDate, editedModule.EndDate, editedModule.Id);
+
+            if (dateCheckMessage.Result != "")
             {
-                ModelState.AddModelError("StartDate", $"This Modules Start Date is earlier than the Course Start Date");
-                return PartialView(editedModule);
-            }
-
-            if (editedModule.EndDate.Date > course.EndDate?.Date)
-            {
-                ModelState.AddModelError("EndDate", $"This Modules End Date is later than the Course End Date");
-                return PartialView(editedModule);
-            }
-
-            // Get all modules on course except this one being edited
-            IEnumerable<Module> modules = await GetAllModulesByCourseAsync(course.Id);
-            modules = modules.Where(a => a.Id != editedModule.Id);
-
-            // Verify Module Dates to existing Module Dates
-            foreach (Module existingModule in modules)
-            {
-                if (editedModule.StartDate.Date < existingModule.EndDate.Date && editedModule.EndDate.Date > existingModule.StartDate.Date)
-                {
-                    String moduleWithDates = $"Module {existingModule.Name} ({existingModule.StartDate.ToString("yyyy-MM-dd")} - {existingModule.EndDate.ToString("yyyy-MM-dd")})";
-                    ModelState.AddModelError("StartDate", $"This modules dates overlaps existing {moduleWithDates}");
-                    return PartialView(editedModule);
-                }
-
-                if (editedModule.EndDate.Date > existingModule.StartDate.Date)
-                {
-                    String moduleWithDates = $"Module {existingModule.Name} ({existingModule.StartDate.ToString("yyyy-MM-dd")} - {existingModule.EndDate.ToString("yyyy-MM-dd")})";
-                    ModelState.AddModelError("EndDate", $"This modules End Date is later than the Start Date of existing {moduleWithDates}");
-                    return PartialView(editedModule);
-                }
-
+                ModelState.AddModelError("Name", dateCheckMessage.Result);
             }
 
             if (ModelState.IsValid)
@@ -230,6 +174,66 @@ namespace LMSGroupOne.Controllers
             editedModule.Success = false;
             editedModule.ReturnId = editedModule.Id;
             return PartialView(editedModule);
+        }
+
+        /*
+        #################################################
+                DATE VALIDATION
+        #################################################
+
+        Module är den modul man skapar eller editerar.
+        ExistingModule är andra moduler på samma kurs.
+        Fel uppstår om:
+
+        Test av Modulens egna Start/Slutdatum (Görs via Annotation i Model, Se LMS.Core.Validations.CheckModuleDates)
+         - Module.StartDate > Module.EndDate
+
+        Test av Module mot Course:
+         - Module.StartDate < Course.StartDate
+         - Module.EndDate > Course.EndDate
+
+        Test av Module mot ExistingModule på samma Course:
+         - Module.StartDate < ExistingModule.EndDate && Module.EndDate > ExistingModule.StartDate
+         - Module.EndDate > ExistingModule.StartDate && Module.EndDate < ExistingModule.StartDate
+        
+         */
+
+        private async Task<string> areModuleDatesValid(Course course, DateTime moduleStartDate, DateTime moduleEndDate, int moduleId)
+        {
+            // Verify Modules dates vs Courses dates
+            if (moduleStartDate.Date < course.StartDate.Date)
+            {
+                return "This Modules Start Date is earlier than the Course Start Date";
+            }
+
+            if (moduleEndDate.Date > course.EndDate?.Date)
+            {
+                return "This Modules End Date is later than the Course End Date";
+            }
+
+            // Get all modules on course except this one being edited
+            IEnumerable<Module> modules = await GetAllModulesByCourseAsync(course.Id);
+            modules = modules.Where(a => a.Id != moduleId);
+
+            // Verify Module Dates to existing Module Dates
+            foreach (Module existingModule in modules)
+            {
+                if (moduleStartDate.Date < existingModule.EndDate.Date && moduleEndDate.Date > existingModule.StartDate.Date)
+                {
+                    String moduleWithDates = $"Module {existingModule.Name} ({existingModule.StartDate.ToString("yyyy-MM-dd")} - {existingModule.EndDate.ToString("yyyy-MM-dd")})";
+                    return $"This modules dates overlaps existing {moduleWithDates}";
+                }
+
+                if (moduleEndDate.Date > existingModule.StartDate.Date && moduleStartDate < existingModule.EndDate.Date)
+                {
+                    String moduleWithDates = $"Module {existingModule.Name} ({existingModule.StartDate.ToString("yyyy-MM-dd")} - {existingModule.EndDate.ToString("yyyy-MM-dd")})";
+                    return $"This modules End Date is later than the Start Date of existing {moduleWithDates}";
+                }
+
+            }
+
+            return "";
+
         }
 
         private async Task<IEnumerable<Module>> GetAllModulesByCourseAsync(int courseId)
